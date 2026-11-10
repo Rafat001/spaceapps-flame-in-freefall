@@ -27,6 +27,8 @@ make dev                      # API http://localhost:8000/docs  +  web http://lo
 
 Or start separately: `make api` and `make web`. Tests: `make test`.
 
+No `make`? Use the scripts: `./scripts/setup.sh` (add `--local-ai` for sentence-transformers), `./scripts/dev.sh`, `./scripts/test.sh`.
+
 Without `setup-local-ai` the API automatically uses offline **hash embeddings** (no download) and tells you so in
 **AI settings**; without an LLM the assistant runs in **retrieval-only mode** (sources + setup message).
 

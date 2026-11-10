@@ -33,7 +33,9 @@ def split_text(t: str, size: int = 900, overlap: int = 150) -> list[str]:
         out.append(t[i:j].strip())
         if j >= len(t):
             break
-        i = max(j - overlap, i + 1)
+        # overlap: restart at the first sentence boundary inside the last `overlap` chars
+        b = t.find(". ", max(j - overlap, i + 1), j)
+        i = b + 2 if b != -1 else j
     return out
 
 

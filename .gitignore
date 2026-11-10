@@ -1,0 +1,21 @@
+# secrets
+.env
+.env.*
+!.env.example
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+# node / next
+node_modules/
+.next/
+apps/web/next-env.d.ts
+*.tsbuildinfo
+# generated data (rebuild with `make ingest`)
+data/db/
+data/index/
+# os/editor
+.DS_Store
+.idea/
+.vscode/

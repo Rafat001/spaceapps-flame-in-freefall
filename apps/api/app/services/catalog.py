@@ -1,0 +1,91 @@
+"""Catalog search & filters. Unknown values never pass a numeric filter."""
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+from sqlalchemy import and_, select
+from sqlalchemy.orm import Session, selectinload
+
+from app.models import Investigation, TestRun
+from app.retrieval import lexical
+
+
+@dataclass
+class NumericRange:
+    lo: float | None = None
+    hi: float | None = None
+
+    @property
+    def active(self) -> bool:
+        return self.lo is not None or self.hi is not None
+
+
+def run_condition_clause(col_min, col_max, rng: NumericRange):
+    """Known-only overlap test: run range [min,max] must overlap the requested [lo,hi]. NULL never matches."""
+    parts = [col_min.is_not(None), col_max.is_not(None)]
+    if rng.lo is not None:
+        parts.append(col_max >= rng.lo)
+    if rng.hi is not None:
+        parts.append(col_min <= rng.hi)
+    return and_(*parts)
+
+
+def investigations_with_runs(session: Session, oxygen: NumericRange, pressure: NumericRange, airflow: NumericRange,
+                             material: str | None = None, same_run: bool = True) -> set[str] | None:
+    """Return investigation ids having runs satisfying the numeric filters (None if no numeric filter active).
+    same_run=True requires all conditions on the same test run (PRD: conditions belong to test runs)."""
+    clauses = []
+    if oxygen.active:
+        clauses.append(run_condition_clause(TestRun.oxygen_pct_min, TestRun.oxygen_pct_max, oxygen))
+    if pressure.active:
+        clauses.append(run_condition_clause(TestRun.pressure_kpa_min, TestRun.pressure_kpa_max, pressure))
+    if airflow.active:
+        clauses.append(run_condition_clause(TestRun.airflow_m_s_min, TestRun.airflow_m_s_max, airflow))
+    if material:
+        clauses.append(TestRun.material.ilike(f"%{material}%"))
+    if not clauses:
+        return None
+    if same_run:
+        return set(session.scalars(select(TestRun.investigation_id).where(and_(*clauses)).distinct()))
+    ids: set[str] | None = None
+    for c in clauses:
+        s = set(session.scalars(select(TestRun.investigation_id).where(c).distinct()))
+        ids = s if ids is None else ids & s
+    return ids or set()
+
+
+def search(session: Session, *, q: str | None = None, family: str | None = None, fuel_class: str | None = None,
+           hardware: str | None = None, gravity_regime: str | None = None, topic: str | None = None,
+           measurement_type: str | None = None, material: str | None = None,
+           oxygen: NumericRange = NumericRange(), pressure: NumericRange = NumericRange(),
+           airflow: NumericRange = NumericRange()) -> tuple[list[Investigation], dict[str, float]]:
+    stmt = select(Investigation).options(selectinload(Investigation.test_runs), selectinload(Investigation.documents))
+    if family:
+        stmt = stmt.where(Investigation.family == family)
+    if fuel_class:
+        stmt = stmt.where(Investigation.fuel_class == fuel_class)
+    if hardware:
+        stmt = stmt.where(Investigation.hardware.ilike(f"%{hardware}%"))
+    if gravity_regime:
+        stmt = stmt.where(Investigation.gravity_regime == gravity_regime)
+    invs = list(session.scalars(stmt).all())
+    if topic:
+        invs = [i for i in invs if topic in (i.topics or {})]
+    if measurement_type:
+        invs = [i for i in invs if any(measurement_type.lower() in k.lower() for k in (i.measurement_types or {}))]
+    allowed = investigations_with_runs(session, oxygen, pressure, airflow, material)
+    if allowed is not None:
+        invs = [i for i in invs if i.id in allowed]
+    text_scores: dict[str, float] = {}
+    if q and q.strip():
+        ql = q.strip().lower()
+        for cid, s in lexical.search(session, q, k=200):
+            iid = cid.rsplit("-c", 1)[0] if "-c" in cid else None
+            if iid:
+                text_scores[iid] = text_scores.get(iid, 0.0) + max(s, 0.0)
+        for i in invs:
+            if ql in (i.acronym or "").lower() or ql in i.title.lower():
+                text_scores[i.id] = text_scores.get(i.id, 0.0) + 100.0
+        invs = [i for i in invs if i.id in text_scores]
+        invs.sort(key=lambda i: (-text_scores[i.id], i.accession))
+    return invs, text_scores

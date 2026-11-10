@@ -1,0 +1,4 @@
+# Optional: free local embeddings (sentence-transformers). ~1 GB with CPU torch; one-time model download.
+# CPU-only torch keeps the install small:
+#   pip install --index-url https://download.pytorch.org/whl/cpu torch
+sentence-transformers>=3.0

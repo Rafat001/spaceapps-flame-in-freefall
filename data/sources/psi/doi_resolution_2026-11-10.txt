@@ -1,0 +1,17 @@
+# DOI -> PSI page resolution check, 2026-11-10T15:18:11-05:00 (curl, HTTP status + Location)
+PSI-26 10.60555/58h4-dy80 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-26
+PSI-25 10.60555/4qc4-de67 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-25
+PSI-98 10.60555/0t15-1z43 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-98
+PSI-99 10.60555/2chp-m469 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-99
+PSI-100 10.60555/040q-4h36 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-100
+PSI-102 10.60555/gd4k-8h62 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-102
+PSI-101 10.60555/2np7-jv14 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-101
+PSI-47 10.60555/ztgj-d202 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-47
+PSI-69 10.60555/mbq8-0451 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-69
+PSI-68 10.60555/byp8-h018 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-68
+PSI-39 10.60555/m6pj-a914 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-39
+PSI-159 10.60555/cyt1-kh64 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-159
+PSI-20 10.60555/vb93-3y72 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-20
+PSI-22 10.60555/se5a-8c73 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-22
+PSI-107 10.60555/9kbh-e962 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-107
+PSI-106 10.60555/pm12-rg61 302 https://psi.nasa.gov/physci/repo/data/investigations/PSI-106

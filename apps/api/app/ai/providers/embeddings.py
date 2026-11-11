@@ -13,6 +13,7 @@ from functools import lru_cache
 import numpy as np
 
 from app.config import Settings
+from app.runtime_compat import native_ml_supported, unsupported_python_note
 
 
 class EmbeddingProvider:
@@ -55,12 +56,14 @@ class LocalSentenceTransformer(EmbeddingProvider):
         from sentence_transformers import SentenceTransformer  # optional dependency
 
         self.model = model
-        self._m = SentenceTransformer(model)
+        self._m = SentenceTransformer(model, device="cpu")
         getdim = getattr(self._m, "get_embedding_dimension", None) or self._m.get_sentence_embedding_dimension
         self.dim = int(getdim())
 
     def embed(self, texts: list[str]) -> np.ndarray:
-        v = self._m.encode(texts, batch_size=32, normalize_embeddings=True, show_progress_bar=False)
+        v = self._m.encode(
+            texts, batch_size=32, normalize_embeddings=True, show_progress_bar=False, convert_to_numpy=True,
+        )
         return np.asarray(v, dtype="float32")
 
 
@@ -102,13 +105,16 @@ def build_embedder(cfg: Settings) -> tuple[EmbeddingProvider, dict]:
         else:
             note = "AI_EMBEDDING_PROVIDER=openai but OPENAI_API_KEY is not set; using offline hash embeddings."
     elif want == "local":
-        try:
-            p = LocalSentenceTransformer(cfg.local_embedding_model)
-            return p, {"requested": want, "active": p.name, "model": p.model, "ok": True}
-        except Exception as e:  # noqa: BLE001
-            note = (f"Local sentence-transformers model '{cfg.local_embedding_model}' unavailable ({type(e).__name__}). "
-                    "Install with `pip install -r requirements-local-ai.txt` (needs one-time model download). "
-                    "Using offline hash embeddings meanwhile.")
+        if not native_ml_supported():
+            note = unsupported_python_note("local sentence-transformers embeddings")
+        else:
+            try:
+                p = LocalSentenceTransformer(cfg.local_embedding_model)
+                return p, {"requested": want, "active": p.name, "model": p.model, "ok": True}
+            except Exception as e:  # noqa: BLE001
+                note = (f"Local sentence-transformers model '{cfg.local_embedding_model}' unavailable ({type(e).__name__}). "
+                        "Install with `pip install -r requirements-local-ai.txt` (needs one-time model download). "
+                        "Using offline hash embeddings meanwhile.")
     p = HashEmbeddings()
     return p, {"requested": want, "active": p.name, "model": p.model, "ok": want == "hash", "note": note}
 

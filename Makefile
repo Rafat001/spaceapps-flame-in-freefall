@@ -8,8 +8,13 @@ WEB_PORT ?= 3000
 setup: setup-api setup-web ingest ## install everything (core) and build the database + indexes
 
 setup-api:
-	cd apps/api && (command -v uv >/dev/null && uv venv -q .venv && uv pip install -q --python .venv/bin/python -r requirements.txt \
-	  || (python3 -m venv .venv && .venv/bin/pip install -q -r requirements.txt))
+	@PY=$$(./scripts/pick-python.sh) && \
+	if [ -x apps/api/.venv/bin/python ] && ! apps/api/.venv/bin/python -c 'import sys; raise SystemExit(0 if (3, 11) <= sys.version_info[:2] <= (3, 13) else 1)'; then \
+	  echo "Recreating apps/api/.venv (needs Python 3.11–3.13; current venv is $$(apps/api/.venv/bin/python -V))"; \
+	  rm -rf apps/api/.venv; \
+	fi && \
+	cd apps/api && (command -v uv >/dev/null && uv venv -q --python "$$PY" .venv && uv pip install -q --python .venv/bin/python -r requirements.txt \
+	  || ("$$PY" -m venv .venv && .venv/bin/pip install -q -r requirements.txt))
 
 setup-local-ai: ## optional: free local embeddings (sentence-transformers + CPU torch)
 	cd apps/api && (command -v uv >/dev/null && uv pip install --python .venv/bin/python --index-url https://download.pytorch.org/whl/cpu torch \

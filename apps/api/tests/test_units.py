@@ -26,3 +26,35 @@ def test_pressure_and_velocity_normalisation():
     assert not pressure_kpa("2", None).known  # no unit -> unknown, never guessed
     assert velocity_m_s("20 cm/s", None).vmin == 0.2
     assert not velocity_m_s("-5.92", "cm/s").known
+
+
+def test_native_ml_range_and_note():
+    from app.runtime_compat import MAX_PY, MIN_PY, unsupported_python_note
+
+    assert MIN_PY == (3, 11) and MAX_PY == (3, 13)
+    note = unsupported_python_note("faiss")
+    assert "brew install python@3.13" in note
+    assert "faiss" in note
+
+
+def test_local_embedder_skipped_on_unsupported_python(monkeypatch):
+    from app.ai.providers import embeddings as emb
+    from app.config import Settings
+
+    monkeypatch.setattr(emb, "native_ml_supported", lambda: False)
+    provider, status = emb.build_embedder(Settings(ai_embedding_provider="local"))
+    assert provider.name == "hash"
+    assert status["ok"] is False
+    assert "Python" in (status.get("note") or "")
+
+
+def test_faiss_skipped_on_unsupported_python(monkeypatch, tmp_path):
+    import numpy as np
+
+    from app.retrieval import vector as vmod
+
+    monkeypatch.setattr(vmod, "native_ml_supported", lambda: False)
+    used = vmod.VectorIndex(tmp_path).build(
+        ["a"], np.ones((1, 4), dtype="float32"), "hash:x:4", backend="faiss",
+    )
+    assert used == "numpy"

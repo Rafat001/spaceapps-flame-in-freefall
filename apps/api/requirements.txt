@@ -1,3 +1,4 @@
+# Requires Python 3.11–3.13 (3.14 can abort during ingest; see README).
 # Core API (no ML model needed). Catalog/filters/coverage/compare/ranking + lexical RAG work with only these.
 fastapi>=0.115
 uvicorn[standard]>=0.30

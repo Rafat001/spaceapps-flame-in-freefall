@@ -6,6 +6,8 @@ from pathlib import Path
 
 import numpy as np
 
+from app.runtime_compat import native_ml_supported
+
 
 class VectorIndex:
     def __init__(self, directory: Path):
@@ -20,7 +22,7 @@ class VectorIndex:
         self.dir.mkdir(parents=True, exist_ok=True)
         vectors = np.asarray(vectors, dtype="float32")
         used = "numpy"
-        if backend == "faiss":
+        if backend == "faiss" and native_ml_supported():
             try:
                 import faiss
 
@@ -43,7 +45,7 @@ class VectorIndex:
             return False
         self.meta = json.loads(mp.read_text())
         self.ids = json.loads((self.dir / "chunk_ids.json").read_text())
-        if self.meta.get("backend") == "faiss":
+        if self.meta.get("backend") == "faiss" and native_ml_supported():
             try:
                 import faiss
 

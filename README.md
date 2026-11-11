@@ -14,7 +14,7 @@ Official challenge resources are published **Friday 13 Nov 2026** and are **not*
 
 ## Quick start (local, no Docker)
 
-Requirements: Python 3.11+ (3.13 tested), Node 20+ (22/24 tested), optionally [`uv`](https://docs.astral.sh/uv/).
+Requirements: Python **3.11–3.13** (3.13 tested), Node 20+ (22/24 tested), optionally [`uv`](https://docs.astral.sh/uv/). Python 3.14 is not supported yet — Homebrew’s `python3` may already be 3.14 and can crash during `make ingest` (Error 134). Use `brew install python@3.13` and let `make setup` pick it.
 
 ```bash
 cd spaceapps-flame-in-freefall
@@ -26,6 +26,16 @@ make dev                      # API http://localhost:8000/docs  +  web http://lo
 ```
 
 Or start separately: `make api` and `make web`. Tests: `make test`.
+
+If `make ingest` exits with **Error 134** and a loky/semaphore warning, the venv is almost certainly Python 3.14. After pulling this fix, ingest falls back to offline hash embeddings instead of aborting. For real local sentence-transformers embeddings:
+
+```bash
+brew install python@3.13
+rm -rf apps/api/.venv
+make setup
+make setup-local-ai
+make ingest
+```
 
 No `make`? Use the scripts: `./scripts/setup.sh` (add `--local-ai` for sentence-transformers), `./scripts/dev.sh`, `./scripts/test.sh`.
 

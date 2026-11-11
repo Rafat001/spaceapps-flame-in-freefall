@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { api } from "@/lib/api";
-import { ErrorBox, EvidenceLabel, Loading, Notice } from "@/components/ui";
+import { ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
 
 const EXAMPLES = [
   "What does BASS tell us about airflow?",
@@ -28,39 +28,46 @@ export default function Assistant() {
   }
   return (
     <>
-      <h1>Ask the evidence</h1>
-      <p className="muted">Answers come only from indexed sources (PSI records, PSI experimental table summaries, official challenge brief),
-        with citations. The assistant says so when the evidence is insufficient. AI text is labeled <EvidenceLabel text="AI interpretation" />.</p>
-      <form onSubmit={(e) => { e.preventDefault(); ask(q); }} className="panel">
+      <PageHead no="05" kicker="Ask" title="Ask the evidence">
+        Answers come only from indexed sources (PSI records, PSI experimental table summaries, official challenge brief),
+        with citations. The assistant says so when the evidence is insufficient. AI text is labeled <EvidenceLabel text="AI interpretation" />.
+      </PageHead>
+      <form onSubmit={(e) => { e.preventDefault(); ask(q); }} className="ask">
         <label htmlFor="question">Question</label>
-        <textarea id="question" rows={3} maxLength={1000} value={q} onChange={(e) => setQ(e.target.value)} />
-        <div style={{ marginTop: 10 }}><button type="submit" disabled={busy}>{busy ? "Retrieving…" : "Ask"}</button></div>
-        <p className="small muted">Try:</p>
-        <div className="chips">{EXAMPLES.map((x) => <button type="button" key={x} className="secondary small" onClick={() => ask(x)}>{x}</button>)}</div>
+        <textarea id="question" rows={3} maxLength={1000} value={q} onChange={(e) => setQ(e.target.value)} placeholder="What has been measured about…" />
+        <div className="actions"><button type="submit" disabled={busy}>{busy ? "Retrieving…" : "Ask"}</button></div>
+        <p className="prompts-title">Try:</p>
+        <ol className="prompts">{EXAMPLES.map((x) => <li key={x}><button type="button" onClick={() => ask(x)}>{x}</button></li>)}</ol>
       </form>
       <ErrorBox error={err} />
       {busy && <Loading what="Searching sources" />}
       {hist.map((r, i) => (
-        <section key={i} className="panel" style={{ marginTop: 16 }} aria-live="polite">
-          <h2 style={{ marginTop: 0 }}>{r.question}</h2>
+        <section key={i} className="dossier" aria-live="polite">
+          <p className="dossier-no">Inquiry {String(hist.length - i).padStart(2, "0")}</p>
+          <h2>{r.question}</h2>
           {r.policy_notes.map((n: string) => <Notice key={n} kind="warn">{n}</Notice>)}
           {r.mode === "abstained" && <Notice kind="warn"><strong>{r.answer}</strong></Notice>}
           {r.mode === "retrieval_only" && <Notice>{r.setup_message} <Link href="/settings">AI settings →</Link></Notice>}
           {r.mode === "llm" && (<>
-            <p><EvidenceLabel text={r.answer_label} /> <span className="muted small">{r.llm.provider} · {r.llm.model}</span></p>
-            <div style={{ whiteSpace: "pre-wrap" }}>{r.answer}</div>
+            <p className="answer-meta"><EvidenceLabel text={r.answer_label} /> <span>{r.llm.provider} · {r.llm.model}</span></p>
+            <div className="answer">{r.answer}</div>
             {r.warnings?.map((w: string) => <Notice key={w} kind="warn">{w}</Notice>)}
           </>)}
-          <h3>{r.mode === "retrieval_only" ? "Retrieved source snippets" : "Sources"}</h3>
+          <h3 className="sources-title">{r.mode === "retrieval_only" ? "Retrieved source snippets" : "Sources"}</h3>
           {r.citations.length === 0 ? <p className="cond-unknown">No sources retrieved.</p> : (
-            <ol>{r.citations.map((c: any) => (
-              <li key={c.chunk_id} style={{ marginBottom: 8 }}>
-                <strong>[{c.ref}] {c.acronym || "Challenge brief"}</strong> · {c.section} <EvidenceLabel text={c.label} />
-                {c.injection_flagged && <span className="label label-nr">instruction-like text removed</span>}
+            <ol className="sources">{r.citations.map((c: any) => (
+              <li key={c.chunk_id} className="source">
+                <div className="source-head">
+                  <span className="source-ref">[{c.ref}]</span>
+                  <span className="source-name">{c.acronym || "Challenge brief"}</span>
+                  <span className="source-sec">{c.section}</span>
+                  <EvidenceLabel text={c.label} />
+                  {c.injection_flagged && <span className="label label-nr">instruction-like text removed</span>}
+                </div>
                 <blockquote>{c.excerpt}</blockquote>
-                <span className="small">{c.source_url && <a href={c.source_url} target="_blank" rel="noreferrer">source ↗</a>}
-                  {c.investigation_id && <> · <Link href={`/investigations/${c.investigation_id}`}>record</Link></>}
-                  <span className="muted"> · page: {c.page}</span></span>
+                <span className="source-links">{c.source_url && <a href={c.source_url} target="_blank" rel="noreferrer">source ↗</a>}
+                  {c.investigation_id && <Link href={`/investigations/${c.investigation_id}`}>record</Link>}
+                  <span>page: {c.page}</span></span>
               </li>))}</ol>
           )}
         </section>

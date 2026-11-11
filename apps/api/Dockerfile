@@ -10,4 +10,4 @@ COPY data/seed /repo/data/seed
 COPY data/sources /repo/data/sources
 ENV DATA_DIR=/repo/data
 EXPOSE 8000
-CMD ["sh", "-c", "python -m app.ingest && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "python -m app.ingest && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

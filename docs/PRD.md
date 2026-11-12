@@ -1,11 +1,11 @@
 ## PRODUCT REQUIREMENTS DOCUMENT
 
-# NASA PSI Fire Safety
+# Flame in Freefall — PSI Fire Safety
 Intelligence Platform
 
 *A developer-first specification for a hybrid RAG research dashboard that makes NASA microgravity combustion evidence searchable, comparable, and understandable.*
 
-**Project:** NASA Space Apps Challenge 2026 - Flame in Freefall
+**Project:** 2026 NASA Space Apps Challenge - Flame in Freefall (independent participant project; not endorsed by NASA)
 **Version:** 1.0 | **Date:** 8 November 2026 | **Status:** Proposed hackathon MVP
 **Audience:** Software engineers without prior fire science knowledge
 

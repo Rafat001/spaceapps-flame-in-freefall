@@ -1,6 +1,6 @@
 # Flame in Freefall — microgravity combustion evidence explorer
 
-NASA Space Apps Challenge 2026 · [Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion Data](https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/?tab=details)
+2026 NASA Space Apps Challenge · [Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion Data](https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/?tab=details)
 
 A research-discovery dashboard over NASA **Physical Sciences Informatics (PSI)** combustion investigations that answers
 **"has work already been done for these parameters?"** (fuel/material, oxygen, pressure, airflow, gravity regime, hardware,
@@ -125,6 +125,21 @@ partial-gravity gap (no records invented). See `data/README.md` for provenance a
   elevated O2 at reduced pressure. Review with the domain lead.
 - Runtime AI-setting changes are in-memory; no auth / rate limiting (local demo only).
 - The challenge Details text was captured from the team's paste, not a direct fetch.
+
+## Brand, attribution and independence
+
+We follow the [NASA Space Apps Brand Guidelines](https://www.spaceappschallenge.org/brand/) (PDF updated June 25, 2026);
+the rules we apply and where, with page numbers, are in [`docs/BRAND.md`](docs/BRAND.md). In short:
+
+- The event is the **NASA Space Apps Challenge** (short form **NASA Space Apps**); we write "2026 NASA Space Apps Challenge".
+- This is an **independent participant project**. It is not affiliated with, sponsored by, or endorsed by NASA or the
+  NASA Space Apps Challenge. NASA names are used only to describe our participation and to cite NASA data.
+- We do **not** use the NASA insignia ("meatball"), the NASA logotype ("worm"), other NASA or partner-agency logos, or
+  the Space Apps logo. The flame monogram is our own artwork.
+- The web UI uses the Space Apps palette (Deep Blue, Electric Blue, Blue Yonder, Neon Yellow accents, Rocket Red only in
+  artwork) and typefaces (Fira Sans, Overpass, Fira Code — SIL OFL, via Google Fonts), with ≥ 4.5:1 text contrast.
+- Hashtag: **#SpaceApps**.
+- Data: NASA Physical Sciences Informatics (PSI) public records and experimental tables, cited per value in the app.
 
 ## Repo layout
 

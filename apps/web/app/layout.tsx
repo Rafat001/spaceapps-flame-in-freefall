@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
-import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { Fira_Code, Fira_Sans, Overpass } from "next/font/google";
 import Link from "next/link";
 import CatalogStatus from "@/components/CatalogStatus";
 import Mark from "@/components/Mark";
 import Nav from "@/components/Nav";
 import "./globals.css";
 
-const display = Fraunces({ subsets: ["latin"], variable: "--font-display", axes: ["opsz", "SOFT"], style: ["normal", "italic"], display: "swap" });
-const sans = IBM_Plex_Sans({ subsets: ["latin"], variable: "--font-sans", weight: ["400", "500", "600"], style: ["normal", "italic"], display: "swap" });
-const mono = IBM_Plex_Mono({ subsets: ["latin"], variable: "--font-mono", weight: ["400", "500"], display: "swap" });
+// NASA Space Apps Brand Guidelines (June 25, 2026), p.11: Fira Sans (titles & headings), Overpass (body copy),
+// Fira Code (code & pre-formatted text). All SIL OFL, served via Google Fonts.
+const display = Fira_Sans({ subsets: ["latin"], variable: "--font-display", weight: ["700", "900"], display: "swap" });
+const sans = Overpass({ subsets: ["latin"], variable: "--font-sans", weight: ["300", "400", "600", "700"], style: ["normal", "italic"], display: "swap" });
+const mono = Fira_Code({ subsets: ["latin"], variable: "--font-mono", weight: ["400", "500"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "Flame in Freefall — microgravity combustion evidence explorer",
-  description: "Find, compare and question NASA PSI microgravity combustion investigations for fire-safety research.",
+  description: "Find, compare and question microgravity combustion investigations from NASA Physical Sciences Informatics (PSI) for fire-safety research. An independent team project for the 2026 NASA Space Apps Challenge; not endorsed by NASA.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -38,9 +40,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <span>Flame <i>in</i> Freefall</span>
             </div>
             <dl className="colophon-notes">
-              <div><dt>Prepared for</dt><dd>NASA Space Apps Challenge 2026 — prototype</dd></div>
+              <div><dt>Built for</dt><dd>The 2026 NASA Space Apps Challenge — <i>Flame in Freefall</i> challenge. Prototype. <span className="hashtag">#SpaceApps</span></dd></div>
               <div><dt>Sources</dt><dd>NASA Physical Sciences Informatics (PSI) public records and experimental tables (CC0), plus the official challenge brief.</dd></div>
               <div><dt>Scope</dt><dd>Research relevance only — not a hazard score or safety certification. Official challenge resources arrive Friday 13 Nov 2026 and are not yet included.</dd></div>
+              <div><dt>Independence</dt><dd>An independent participant project. It is not affiliated with, sponsored by, or endorsed by NASA or the NASA Space Apps Challenge; NASA names appear only to describe our participation and to cite NASA data.</dd></div>
             </dl>
           </div>
         </footer>

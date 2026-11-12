@@ -24,8 +24,8 @@ export default function Home() {
     <>
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
-          <p className="kicker"><span className="kicker-no">TM-2026</span> Microgravity combustion evidence explorer</p>
-          <h1 id="hero-title" className="display display-xl">Has this fire-safety work already been&nbsp;done?</h1>
+          <p className="kicker"><span className="kicker-no">TM-2026</span> Microgravity combustion evidence explorer · 2026 NASA Space Apps Challenge</p>
+          <h1 id="hero-title" className="display display-xl">Has this fire&#8209;safety work already been&nbsp;done?</h1>
           <p className="lede">Search NASA microgravity combustion investigations by material, oxygen, pressure, airflow, hardware and
             measurement type. See what is documented, what is <em>Not reported</em>, and where the evidence comes from.</p>
           <form className="instrument" onSubmit={(e) => { e.preventDefault(); router.push(`/explorer?q=${encodeURIComponent(q)}`); }} role="search">

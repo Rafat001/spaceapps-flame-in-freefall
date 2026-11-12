@@ -2,7 +2,7 @@
 
 **Owner:** QA (Mohammed Islam)
 **Written:** Tuesday 10 Nov 2026, ~15:30 EST (America/New_York)
-**Product:** NASA PSI Fire Safety research explorer - "Flame in Freefall" (NASA Space Apps 2026)
+**Product:** "Flame in Freefall" — PSI fire-safety research explorer (2026 NASA Space Apps Challenge; independent participant project)
 **Requirement sources:** `docs/PRD.md` (FR-01..FR-10, sections 6, 9, 11, 13, 14), `docs/FOUNDATION_BRIEF.md`, `docs/ARCHITECTURE.md` (API contract, enums, coverage formula)
 **Status file:** [`QA_STATUS.md`](QA_STATUS.md)
 

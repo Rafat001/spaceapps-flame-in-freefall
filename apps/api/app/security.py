@@ -55,18 +55,24 @@ def redact(text: str) -> str:
 
 
 class RedactingFilter(logging.Filter):
+    """Redacts key-like strings from log records without changing their shape (uvicorn's access formatter unpacks args)."""
+
     def filter(self, record: logging.LogRecord) -> bool:
-        try:
-            msg = record.getMessage()
-        except Exception:  # noqa: BLE001
-            return True
-        clean = redact(msg)
-        if clean != msg or record.args:
-            record.msg, record.args = clean, None
+        if isinstance(record.args, tuple):
+            record.args = tuple(redact(a) if isinstance(a, str) else a for a in record.args)
+        elif isinstance(record.args, dict):
+            record.args = {k: redact(v) if isinstance(v, str) else v for k, v in record.args.items()}
+        if isinstance(record.msg, str):
+            record.msg = redact(record.msg)
         if record.exc_info:
-            # keep the exception type but drop the text, which can carry request data
-            et = record.exc_info[0]
-            record.msg = f"{record.msg} [{et.__name__ if et else 'Exception'} details suppressed]"
+            # keep the exception type and where it was raised, drop the text (it can carry request data)
+            et, _, tb = record.exc_info
+            where = ""
+            while tb is not None and tb.tb_next is not None:
+                tb = tb.tb_next
+            if tb is not None:
+                where = f" at {tb.tb_frame.f_code.co_filename.rsplit('/', 1)[-1]}:{tb.tb_lineno}"
+            record.msg = f"{record.msg} [{et.__name__ if et else 'Exception'}{where}; details suppressed]"
             record.exc_info, record.exc_text = None, None
         return True
 

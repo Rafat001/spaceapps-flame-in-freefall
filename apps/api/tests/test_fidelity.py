@@ -117,3 +117,11 @@ def test_catalog_stats_computed_with_as_of(client):
     assert cat["combustion_science_total"] == 24 and cat["as_of"]
     assert cat["by_project_type"] == {"Ground Investigation": 5, "Microgravity Investigation": 19}
     assert st["accessed_at"].startswith("2026-")
+
+
+def test_lunar_ranking_lists_target_matches_first(client):
+    res = client.get("/api/rank?scenario=lunar_habitat").json()["results"]
+    top = [r["investigation"]["acronym"] for r in res[:3]]
+    assert set(top) == {"ACME CFI-G", "ACME/Flame Design", "FLEX-2"}
+    assert all(r["tier"] == "documented_at_target" for r in res[:3])
+    assert all(r["tier"] == "not_at_target" and r["target_rows"] == 0 for r in res[3:])

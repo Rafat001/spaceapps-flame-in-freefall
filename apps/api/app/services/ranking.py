@@ -29,7 +29,7 @@ CRITERIA_LABELS = {
     "habitat_applicability": "Habitat applicability",
 }
 FUEL_MATCH = {"solid": 1.0, "liquid": 0.4, "gaseous": 0.3, "aerosol": 0.0}
-RANKING_VERSION = "sfsri-v0.2"
+RANKING_VERSION = "sfsri-v0.3"
 
 
 def _tag_cite(inv: Investigation, tag: str) -> dict:
@@ -186,10 +186,16 @@ def rank(session: Session, scenario: str = "lunar_habitat", ids: list[str] | Non
         invs = [i for i in invs if lens in (i.lenses or {})]
     if not include_ground:
         invs = [i for i in invs if not i.is_ground]
-    rows = sorted((score(i, scenario) for i in invs), key=lambda r: (-r["score"], r["investigation"]["id"]))
+    scen = SCENARIOS[scenario]
+    rows = [score(i, scenario) for i in invs]
+    tiered = bool(scen.get("atmosphere"))
+    for r in rows:
+        r["tier"] = ("documented_at_target" if r["target_rows"] else "not_at_target") if tiered else None
+    # D5: when the brief gives an atmosphere target, investigations with rows meeting it on the same row come first,
+    # so the ranking cannot contradict the "Has it been done?" answer; the weighted score orders within each tier.
+    rows.sort(key=lambda r: (0 if r["tier"] in (None, "documented_at_target") else 1, -r["score"], r["investigation"]["id"]))
     for n, r in enumerate(rows, 1):
         r["rank"] = n
-    scen = SCENARIOS[scenario]
     warnings = [RELEVANCE_DISCLAIMER]
     if scen.get("partial_gravity"):
         warnings.append(PARTIAL_GRAVITY_WARNING)
@@ -199,4 +205,6 @@ def rank(session: Session, scenario: str = "lunar_habitat", ids: list[str] | Non
             "ranking_version": RANKING_VERSION, "weights": WEIGHTS, "criteria_labels": CRITERIA_LABELS,
             "score_formula": "score = 100 x sum(weight x match); match in [0,1]",
             "weights_note": "Weights are product hypotheses from the team PRD (section 9), pending domain-expert review.",
+            "tier_note": ("Investigations with PSI table rows that meet the brief's target on the same row are listed first; "
+                          "the weighted score orders investigations within each group.") if tiered else None,
             "warnings": warnings, "results": rows}

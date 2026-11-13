@@ -72,7 +72,7 @@ def meta(s: Session = Depends(get_session)):
             "measurement_types": sorted({t for i in invs for t in i.measurement_types}),
             "hardware": sorted({i.hardware for i in invs if i.hardware}),
             "platforms": sorted({i.platform for i in invs if i.platform}),
-            "lenses": {k: {"label": v["label"], "question": v["question"]} for k, v in LENSES.items()},
+            "lenses": {k: {"label": v["label"]} for k, v in LENSES.items()},
             "lens_source": LENS_SOURCE, "catalog_stats": _seed_stats()["catalog"],
             "scenarios": {k: v["label"] for k, v in SCENARIOS.items()}, "reference_atmospheres": REFERENCE_ATMOSPHERES,
             "counts": {"investigations": len(invs), "test_runs": s.query(TestRun).filter(TestRun.row_kind.in_(COUNTABLE_KINDS)).count(),
@@ -205,6 +205,38 @@ def ask(body: AskIn, request: Request, s: Session = Depends(get_session)):
     llm = build_byok_llm(state.cfg, byok.provider, byok.key, byok.model) if byok else state.llm
     return ask_svc.ask(s, body.question, llm, emb, state.index, k=body.k,
                        investigation_ids=[i.lower() for i in body.investigation_ids] if body.investigation_ids else None)
+
+
+@router.get("/earth")
+def earth(s: Session = Depends(get_session)):
+    from app.services.earth import earth_panel
+
+    return earth_panel(s)
+
+
+@router.get("/explainer")
+def explainer(s: Session = Depends(get_session)):
+    from app.services.earth import explainer as ex
+
+    return {"items": ex(s), "note": "Quotes from the official challenge resources only."}
+
+
+@router.get("/lunar/points")
+def lunar_points(s: Session = Depends(get_session)):
+    """Every countable row with known O2 and pressure, for the O2-vs-pressure chart with the lunar target box."""
+    from app.ingest.table_specs import COUNTABLE_KINDS
+
+    atm = SCENARIOS["lunar_habitat"]["atmosphere"]
+    rows = s.execute(select(TestRun.investigation_id, TestRun.source_row, TestRun.subtable, TestRun.oxygen_pct_min,
+                            TestRun.oxygen_pct_max, TestRun.pressure_kpa_min, TestRun.pressure_kpa_max, TestRun.oxygen_is_stream,
+                            TestRun.row_kind).where(TestRun.row_kind.in_(COUNTABLE_KINDS), TestRun.oxygen_pct_max.is_not(None),
+                                                    TestRun.pressure_kpa_min.is_not(None))).all()
+    acr = dict(s.execute(select(Investigation.id, Investigation.acronym)).all())
+    pts = [{"investigation_id": r[0], "acronym": acr.get(r[0]), "row": r[1], "subtable": r[2], "o2_min": r[3], "o2_max": r[4],
+            "p_min": r[5], "p_max": r[6], "stream": bool(r[7]), "matrix": r[8] == "test_matrix",
+            "in_target": r[4] >= atm["oxygen_pct_min"] and r[5] <= atm["pressure_kpa_max"]} for r in rows]
+    return {"target": atm, "points": pts, "n": len(pts),
+            "note": "Range rows (sessions, test matrix) are drawn at their extremes. Unknown values are not drawn."}
 
 
 class QAIn(BaseModel):

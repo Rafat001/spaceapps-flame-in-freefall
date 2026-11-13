@@ -632,11 +632,25 @@ def cmp_same_daft(ctx, q):
 
 
 # ------------------------------------------------------------------ coverage questions
+def _match_runs(ctx: Ctx, iid: str, matching: list[dict]) -> list:
+    """Rows of a coverage result, keyed by (subtable, CSV record) so investigations with several tables never mix files."""
+    keys = {(m.get("subtable"), m["source"]["row"]) for m in matching}
+    return [x for x in ctx.runs(iid) if (x.subtable, x.source_row) in keys]
+
+
+def _cite_by_table(ctx: Ctx, iid: str, rows: list) -> list[dict]:
+    out = []
+    for sub in sorted({x.subtable or "" for x in rows}):
+        grp = [x for x in rows if (x.subtable or "") == sub]
+        out.append(ctx.row_cite(iid, grp, note=f"{len(grp)} row(s){' in ' + sub if sub else ''}"))
+    return out
+
+
 def _cov(ctx: Ctx, only: list[str] | None = None, **params) -> Result:
     from app.ingest.table_specs import SPECS
     from app.services.coverage import CoverageQuery, coverage
 
-    out = coverage(ctx.s, CoverageQuery(max_runs=60, **params))
+    out = coverage(ctx.s, CoverageQuery(max_runs=2000, **params))
     res = [r for r in out["results"] if r["verdict"] == "documented_match" and (not only or r["investigation"]["id"] in only)]
     if not res:
         return Result("No investigation documents all requested parameters on the same row. " + out["answer_text"],
@@ -644,8 +658,8 @@ def _cov(ctx: Ctx, only: list[str] | None = None, **params) -> Result:
     parts, cites = [], []
     for r in res:
         iid = r["investigation"]["id"]
-        rows = [m["source"]["row"] for m in r["matching_runs"]]
-        runs = [x for x in ctx.runs(iid) if x.source_row in rows]
+        runs = _match_runs(ctx, iid, r["matching_runs"])
+        rows = [x.source_row for x in runs]
         sp = next(iter(SPECS.get(iid.upper(), [{}])))
         bits = []
         mats = counts(runs, sp.get("material") or "")
@@ -671,7 +685,7 @@ def _cov(ctx: Ctx, only: list[str] | None = None, **params) -> Result:
         parts.append(f"{r['investigation']['acronym']}: {len(runs)} matching row(s), {records_text(rows)}"
                      + (f" ({'; '.join(bits)})" if bits else "") + (f". Examples: {'; '.join(extra)}" if extra else "")
                      + ("." if not r["match_notes"] else ". " + " ".join(r["match_notes"])))
-        cites.append(ctx.row_cite(iid, runs))
+        cites += _cite_by_table(ctx, iid, runs)
     fl = [{"code": "curator_alias", "message": "Material matched through a curator alias (e.g. clear rod -> PMMA).", "rule": "Curator rule"}] \
         if params.get("material") and any("alias" in str(x.flags) for x in runs) else []
     return Result("Yes. " + " ".join(parts), cites, [f"coverage query {params}: same-row match on all requested parameters"],
@@ -688,12 +702,13 @@ def num(s):
 def cov_lunar(ctx, q):
     from app.services.coverage import CoverageQuery, coverage
 
-    out = coverage(ctx.s, CoverageQuery(oxygen_min=30, pressure_max=10.2, pressure_unit="psi", max_runs=10))
+    out = coverage(ctx.s, CoverageQuery(oxygen_min=30, pressure_max=10.2, pressure_unit="psi", max_runs=2000))
     cites = []
     for r in out["results"]:
         if r["verdict"] == "documented_match" or r.get("closest_miss"):
-            rows = [m["source"]["row"] for m in r["matching_runs"]] or [r["closest_miss"]["source"]["row"]]
-            cites.append(ctx.row_cite(r["investigation"]["id"], rows))
+            iid = r["investigation"]["id"]
+            runs = _match_runs(ctx, iid, r["matching_runs"]) if r["matching_runs"] else []
+            cites += _cite_by_table(ctx, iid, runs) if runs else [ctx.row_cite(iid, [r["closest_miss"]["source"]["row"]])]
     cites.append(ctx.quote_cite("brief", "with a corresponding pressure of 10.2 psi or less"))
     return Result(out["answer_text"], cites, ["coverage: O2 >= 30 % and pressure <= 10.2 psi (70.3265 kPa) on the same row"],
                   kind="coverage", intent="coverage")
@@ -721,6 +736,71 @@ def cov_bass2(ctx, q):
 def cov_coflow(ctx, q):
     v = float(re.search(r"above (\d+) cm/s", q).group(1))
     return _cov(ctx, fuel_class="gaseous", airflow_min=v, airflow_unit="cm/s")
+
+
+# ------------------------------------------------------------------ threshold coverage (any phrasing with O2 / pressure limits)
+_UNIT = r"(psi|kpa|mmhg|mm hg|torr|atm|bar)"
+
+
+def thresholds(q: str) -> dict | None:
+    """Parse 'at least 30% oxygen', 'O2 >= 30 %', 'at or below 10.2 psi', 'lunar target' into coverage parameters."""
+    ql = q.lower().replace("≥", ">=").replace("≤", "<=")
+    params: dict = {}
+    m = re.search(r"(?:at least|>=|minimum of|above|over|more than|or more than)\s*(\d+(?:\.\d+)?)\s*%\s*(?:oxygen|o2|o₂)", ql) or \
+        re.search(r"(?:oxygen|o2|o₂)[^.\d]{0,30}?(?:at least|>=|above|over|more than)\s*(\d+(?:\.\d+)?)\s*%", ql) or \
+        re.search(r"(\d+(?:\.\d+)?)\s*%\s*(?:oxygen|o2|o₂)?\s*or (?:more|higher|above)", ql)
+    if m:
+        params["oxygen_min"] = float(m.group(1))
+    m = re.search(r"(?:at or below|<=|at most|below|under|less than|no more than|up to)\s*(\d+(?:\.\d+)?)\s*" + _UNIT, ql) or \
+        re.search(r"(\d+(?:\.\d+)?)\s*" + _UNIT + r"\s*or (?:less|lower|below)", ql)
+    if m:
+        unit = {"kpa": "kPa", "mmhg": "mmHg", "mm hg": "mmHg", "torr": "mmHg"}.get(m.group(2), m.group(2))
+        params.update(pressure_max=float(m.group(1)), pressure_unit=unit)
+    if re.search(r"lunar (habitat )?(target|atmosphere)|moon[- ]base (atmosphere|oxygen)|lunar-habitat", ql):
+        params.setdefault("oxygen_min", 30.0)
+        if "pressure_max" not in params:
+            params.update(pressure_max=10.2, pressure_unit="psi")
+    if not params or not re.search(r"how many|which|any|has|have|were|was|does|did|list|count", ql):
+        return None
+    return params
+
+
+def threshold_coverage(ctx: Ctx, q: str) -> Result | None:
+    from app.services.coverage import CoverageQuery, coverage
+
+    params = thresholds(q)
+    if not params:
+        return None
+    ents = [e for e in entities(q) if e in {i.id for i in ctx.invs}]
+    out = coverage(ctx.s, CoverageQuery(max_runs=2000, **params))
+    res = [r for r in out["results"] if not ents or r["investigation"]["id"] in ents]
+    shown = ", ".join(f"{k.replace('_', ' ')} {v:g}" if isinstance(v, float) else f"{k.replace('_', ' ')} {v}" for k, v in params.items())
+    parts, cites = [], []
+    for r in res:
+        iid, acr = r["investigation"]["id"], r["investigation"]["acronym"]
+        n = r["n_runs_full_match"]
+        if n:
+            rows = _match_runs(ctx, iid, r["matching_runs"])
+            by_sub: dict = {}
+            for m in r["matching_runs"]:
+                by_sub[m.get("subtable") or "table"] = by_sub.get(m.get("subtable") or "table", 0) + 1
+            subtxt = ", ".join(f"{v} {k}" for k, v in by_sub.items()) if len(by_sub) > 1 else ""
+            parts.append(f"{acr}: {n} row(s) meet all limits on the same row{' (' + subtxt + ')' if subtxt else ''}"
+                         + ("." if not r["match_notes"] else ". " + " ".join(r["match_notes"])))
+            cites += _cite_by_table(ctx, iid, rows)
+        elif ents:
+            cm = r.get("closest_miss")
+            parts.append(f"{acr}: no row meets all limits on the same row."
+                         + (f" Closest: CSV record {cm['source']['row']} — {cm['why']}." if cm else ""))
+            if cm:
+                cites.append(ctx.row_cite(iid, [cm["source"]["row"]]))
+    if not parts:
+        return Result(f"No PSI table row meets {shown} on the same row. " + out["answer_text"], [],
+                      [f"coverage query {params}"], kind="coverage", intent="coverage")
+    if "pressure_max" in params and params.get("pressure_unit") == "psi" and params["pressure_max"] == 10.2:
+        cites.append(ctx.quote_cite("brief", "with a corresponding pressure of 10.2 psi or less"))
+    return Result(" ".join(parts), cites, [f"coverage query ({shown}): same-row match, countable rows only"],
+                  kind="coverage", intent="coverage")
 
 
 # ------------------------------------------------------------------ generic fallback (one named investigation)
@@ -794,6 +874,11 @@ def answer(session: Session, question: str) -> dict | None:
                 except (LookupError, StopIteration, ValueError, IndexError, KeyError):
                     res = None
                 break
+    if res is None:
+        try:
+            res = threshold_coverage(ctx, q)
+        except (LookupError, StopIteration, ValueError, IndexError, KeyError):
+            res = None
     if res is None:
         try:
             res = generic(ctx, q)

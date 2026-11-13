@@ -31,13 +31,14 @@ function Insights() {
           {data.warnings.map((w: string) => <Notice key={w} kind="warn">{w}</Notice>)}
           {data.scenario_atmosphere && <p className="atmo">Target atmosphere <span className="mono">{data.scenario_atmosphere.display}</span> <EvidenceLabel text="Official challenge brief" /></p>}
           <p className="formula">{data.score_formula}. Weights: {Object.entries(data.weights).map(([k, v]: any) => `${data.criteria_labels[k]} ${Math.round(v * 100)}%`).join(" · ")}. {data.weights_note} Version {data.ranking_version}.</p>
+          {data.tier_note && <p className="small muted">{data.tier_note}</p>}
           <ol className="ranked rank-full">
             {data.results.map((r: any, i: number) => (
               <li key={r.investigation.id} className="ranked-row">
                 <span className="ranked-no">{String(i + 1).padStart(2, "0")}</span>
                 <Link className="ranked-acr" href={`/investigations/${r.investigation.id}`}>{r.investigation.acronym}</Link>
                 <span className="ranked-title">{r.investigation.title}
-                  <span className="ranked-meta">{r.investigation.family} · {r.investigation.fuel_class}</span></span>
+                  <span className="ranked-meta">{r.investigation.family} · {r.investigation.fuel_class}{r.tier === "documented_at_target" ? ` · ${r.target_rows} rows meet the target` : r.tier ? " · no row meets the target" : ""}</span></span>
                 <span className="ranked-score"><b>{r.score}</b><span className="muted"> / 100</span>
                   <span className="meter" aria-hidden="true"><span style={{ width: `${r.score}%` }} /></span></span>
                 <details className="ranked-detail"><summary>Why this score</summary>

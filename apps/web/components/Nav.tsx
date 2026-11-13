@@ -3,8 +3,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  ["/explorer", "Catalog"], ["/coverage", "Coverage"], ["/compare", "Compare"],
-  ["/insights", "Ranking"], ["/assistant", "Ask"], ["/settings", "Settings"],
+  ["/lunar", "Lunar"], ["/explorer", "Catalog"], ["/coverage", "Coverage"], ["/compare", "Compare"],
+  ["/insights", "Ranking"], ["/assistant", "Ask"], ["/earth", "Earth"], ["/settings", "Settings"],
 ] as const;
 
 export default function Nav() {
@@ -17,7 +17,7 @@ export default function Nav() {
           return (
             <li key={href}>
               <Link href={href} aria-current={active ? "page" : undefined}>
-                <span className="nav-no" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>{label}
+                <span className="nav-no" aria-hidden="true">{String(i).padStart(2, "0")}</span>{label}
               </Link>
             </li>
           );

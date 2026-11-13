@@ -6,7 +6,7 @@ import { api, qs } from "@/lib/api";
 import { humanize, readCompare, toggleCompare } from "@/lib/format";
 import { CondCell, ErrorBox, Loading, Notice, PageHead } from "@/components/ui";
 
-const FIELDS = ["q", "family", "fuel_class", "topic", "measurement_type", "material", "hardware", "oxygen_min", "oxygen_max",
+const FIELDS = ["q", "family", "fuel_class", "topic", "measurement_type", "material", "hardware", "platform", "lens", "oxygen_min", "oxygen_max",
   "pressure_min", "pressure_max", "pressure_unit", "airflow_min", "airflow_max", "airflow_unit", "sort", "scenario"] as const;
 
 function Explorer() {
@@ -57,6 +57,11 @@ function Explorer() {
             {sel("fuel_class", meta?.fuel_classes, "Fuel class")}
             {sel("topic", meta?.topics, "Topic (rule-based tag)")}
             {sel("measurement_type", meta?.measurement_types, "Measurement type")}
+            {sel("platform", meta?.platforms, "Platform (ground = lab / modeling)")}
+            <label htmlFor="lens">Informs (lens)</label>
+            <select id="lens" value={f.lens || ""} onChange={(e) => set("lens", e.target.value)}>
+              <option value="">Any</option>{meta && Object.entries(meta.lenses).map(([k, v]: any) => <option key={k} value={k}>{v.label}</option>)}
+            </select>
           </fieldset>
           <fieldset>
             <legend>Oxygen, % by volume (known values only)</legend>
@@ -71,7 +76,7 @@ function Explorer() {
               <input aria-label="Pressure minimum" type="number" step="any" min={0} placeholder="min" value={f.pressure_min || ""} onChange={(e) => set("pressure_min", e.target.value)} />
               <input aria-label="Pressure maximum" type="number" step="any" min={0} placeholder="max" value={f.pressure_max || ""} onChange={(e) => set("pressure_max", e.target.value)} />
               <select aria-label="Pressure unit" value={f.pressure_unit || "kPa"} onChange={(e) => set("pressure_unit", e.target.value)}>
-                {["kPa", "psi", "atm", "bar"].map((u) => <option key={u}>{u}</option>)}</select>
+                {["kPa", "psi", "atm", "bar", "mmHg"].map((u) => <option key={u}>{u}</option>)}</select>
             </div>
           </fieldset>
           <fieldset>
@@ -115,7 +120,9 @@ function Explorer() {
                         <span className="entry-acc">{c.accession}</span></h2>
                       <div>
                         <p className="entry-title">{c.title}</p>
-                        <ul className="tags"><li>{c.family}</li><li>{c.fuel_class}</li><li>{c.gravity_regime}</li><li>{c.n_test_runs} table rows</li></ul>
+                        <ul className="tags"><li>{c.family}</li><li>{c.fuel_class}</li><li>{c.platform}</li>
+                          {c.is_ground && <li className="tag-ground">Ground / modeling</li>}
+                          <li>{c.n_test_runs} test rows</li>{c.n_flags > 0 && <li className="tag-flag">{c.n_flags} data flags</li>}</ul>
                         <p className="entry-obj">{c.objective_short}</p>
                         <dl className="cond-strip">
                           <div><dt>O2</dt><dd><CondCell c={c.conditions.oxygen} /></dd></div>

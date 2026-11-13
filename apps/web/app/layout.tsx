@@ -13,7 +13,7 @@ const sans = Overpass({ subsets: ["latin"], variable: "--font-sans", weight: ["3
 const mono = Fira_Code({ subsets: ["latin"], variable: "--font-mono", weight: ["400", "500"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Flame in Freefall — microgravity combustion evidence explorer",
+  title: "Flame in Freefall: SI-Powered Fire Safety Insights — microgravity combustion evidence explorer",
   description: "Find, compare and question microgravity combustion investigations from NASA Physical Sciences Informatics (PSI) for fire-safety research. An independent team project for the 2026 NASA Space Apps Challenge; not endorsed by NASA.",
 };
 

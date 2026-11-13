@@ -53,8 +53,10 @@ export default function Coverage() {
           <div className="console-grid">
             {num("oxygen_min", "O2 min (% by volume)")}{num("oxygen_max", "O2 max (% by volume)")}<div />
             {num("pressure_min", "Pressure min")}{num("pressure_max", "Pressure max")}
-            <div><label htmlFor="pressure_unit">Pressure unit</label><select id="pressure_unit" value={f.pressure_unit} onChange={(e) => set("pressure_unit", e.target.value)}>{["kPa", "psi", "atm", "bar"].map((u) => <option key={u}>{u}</option>)}</select></div>
+            <div><label htmlFor="pressure_unit">Pressure unit</label><select id="pressure_unit" value={f.pressure_unit} onChange={(e) => set("pressure_unit", e.target.value)}>{["kPa", "psi", "atm", "bar", "mmHg"].map((u) => <option key={u}>{u}</option>)}</select></div>
             {num("airflow_min", "Airflow min")}{num("airflow_max", "Airflow max")}
+            <div><label htmlFor="diluent">Diluent / suppressant present</label><select id="diluent" value={f.diluent || ""} onChange={(e) => set("diluent", e.target.value)}>
+              <option value="">Any</option><option value="He">Helium (He)</option><option value="CO2">Carbon dioxide (CO2)</option><option value="N2">Nitrogen (N2)</option></select></div>
             <div><label htmlFor="airflow_unit">Airflow unit</label><select id="airflow_unit" value={f.airflow_unit} onChange={(e) => set("airflow_unit", e.target.value)}>{["m/s", "cm/s", "mm/s"].map((u) => <option key={u}>{u}</option>)}</select></div>
           </div>
         </fieldset>
@@ -64,6 +66,7 @@ export default function Coverage() {
             <div><label htmlFor="gravity_regime">Gravity regime</label><select id="gravity_regime" value={f.gravity_regime || ""} onChange={(e) => set("gravity_regime", e.target.value)}>
               <option value="">Any</option><option value="microgravity">Microgravity</option><option value="lunar">Lunar (partial gravity)</option><option value="martian">Martian (partial gravity)</option></select></div>
             {sel("measurement_type", meta?.measurement_types, "Measurement type")}
+            {sel("platform", meta?.platforms, "Platform")}
             <div><label htmlFor="hardware">Hardware contains</label><input id="hardware" value={f.hardware || ""} onChange={(e) => set("hardware", e.target.value)} placeholder="MSG, CIR, MDCA…" /></div>
             {sel("application_scenario", undefined, "Application scenario (adds relevance score)", meta?.scenarios)}
           </div>
@@ -79,6 +82,7 @@ export default function Coverage() {
       {out && (
         <section aria-live="polite" aria-label="Coverage result">
           <p className={`summary-line ${out.results.some((r: any) => r.verdict === "documented_match") ? "summary-match" : "summary-gap"}`}>{out.summary}</p>
+          {out.answer_text && <p className="answer">{out.answer_text}</p>}
           {out.caveats.length > 0 && <ul className="caveat-list">{out.caveats.map((c: string) => <li key={c}>{c}</li>)}</ul>}
           <ol className="entries">
             {out.results.filter((r: any) => r.verdict !== "no_documented_overlap").map((r: any) => (
@@ -93,6 +97,8 @@ export default function Coverage() {
                     <ul className="params">
                       {Object.entries(r.parameters).map(([k, v]: any) => <li key={k}><span>{humanize(k)}</span> <span className={`st-${v}`}>{humanize(v)}</span></li>)}
                     </ul>
+                    {r.match_notes?.length > 0 && <p className="small gap-top">{r.match_notes.join(" ")}</p>}
+                    {r.closest_miss && <p className="small gap-top">Closest miss: CSV record {r.closest_miss.source.row} — {r.closest_miss.why}</p>}
                     {r.unknown_parameters.length > 0 && <p className="small st-unknown gap-top">Not reported for: {r.unknown_parameters.map(humanize).join(", ")}</p>}
                     {r.matching_runs.length > 0 && (
                       <details><summary>{r.n_runs_full_match > 0 ? `${r.n_runs_full_match} PSI table row(s) meet all row-level parameters` : "Closest PSI table rows"}</summary>

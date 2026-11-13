@@ -62,7 +62,7 @@ export default function Settings() {
   const locked = !s.admin?.enabled;
   return (
     <>
-      <PageHead no="06" kicker="Settings" title="AI provider settings">
+      <PageHead no="07" kicker="Settings" title="AI provider settings">
         <p>Catalog, filters, coverage, compare and ranking never need an LLM or API key. The assistant&apos;s direct answers are computed from the data;
         an LLM only adds a summary. Server defaults come from environment variables.</p>
       </PageHead>

@@ -464,3 +464,39 @@ h2 .label, h3 .label { margin-left: 8px; }
 .source blockquote { font-family: var(--f-sans); font-style: normal; font-size: .92rem; line-height: 1.6; }
 .cond-strip .block, td .cond .block { font-family: var(--f-sans); font-size: .76rem; line-height: 1.4; margin-top: 2px; }
 .console > button.secondary { margin-top: 14px; }
+
+/* ---- v2 additions: lunar chart, interpretation, flags, images, files, direct answers ---- */
+.tag-ground { color: var(--signal); }
+.tag-flag { color: var(--accent); }
+.interp { margin: 8px 0 0; padding-left: 20px; }
+.interp li { margin-bottom: 6px; line-height: 1.5; }
+.flags { list-style: none; padding: 0; margin: 8px 0 20px; }
+.flags li { border-left: 2px solid var(--rule-strong); padding: 4px 0 4px 12px; margin-bottom: 8px; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin: 12px 0 24px; }
+.gallery figure { margin: 0; border: 1px solid var(--rule); padding: 8px; }
+.gallery img { width: 100%; height: 180px; object-fit: cover; display: block; background: var(--electric-blue); }
+.gallery figcaption { font-size: 0.85rem; color: var(--ink-2); margin-top: 6px; }
+.tree { max-height: 320px; overflow: auto; padding-left: 18px; }
+.vars { margin-bottom: 16px; }
+.chart { margin: 24px 0; border: 1px solid var(--rule); padding: 12px; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart-grid { stroke: var(--rule); stroke-width: 1; }
+.chart-tick { fill: var(--ash); font: 11px var(--f-mono); }
+.chart-axis { fill: var(--ink-2); font: 12px var(--f-sans); }
+.chart-box { fill: rgba(234, 254, 7, 0.08); stroke: var(--neon-yellow); stroke-dasharray: 4 3; }
+.chart-box-label { fill: var(--neon-yellow); font: 12px var(--f-sans); }
+.pt { fill: var(--ash); opacity: 0.45; }
+.pt-hit { fill: var(--neon-yellow); opacity: 1; }
+.pt-stream { fill: var(--blue-yonder); opacity: 1; stroke: var(--white); stroke-width: 0.6; }
+.pt-matrix { fill: none; stroke: var(--neon-yellow); stroke-width: 1.4; opacity: 1; }
+.chart figcaption { font-size: 0.85rem; color: var(--ink-2); margin-top: 8px; }
+.key { display: inline-block; margin: 0 8px 0 4px; }
+.key::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+.key-hit::before { background: var(--neon-yellow); }
+.key-stream::before { background: var(--blue-yonder); border: 1px solid var(--white); }
+.key-matrix::before { border: 1.5px solid var(--neon-yellow); }
+.direct { border: 1px solid var(--signal); padding: 14px 18px; margin: 12px 0 18px; }
+.direct-kind { font: 12px var(--f-mono); color: var(--signal); text-transform: uppercase; letter-spacing: 0.06em; }
+.lead-card { border: 1px solid var(--neon-yellow); padding: 18px 22px; margin: 24px 0; }
+.lead-card .answer { margin: 8px 0 12px; }
+.computation { color: var(--ash); font-size: 0.85rem; }

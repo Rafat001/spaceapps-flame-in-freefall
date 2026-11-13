@@ -10,7 +10,20 @@ measurement type), and lets researchers inspect, compare, rank by research relev
 > spacecraft safety authority. PSI has **no partial-gravity combustion data yet**; microgravity results do not
 > directly establish lunar or Martian performance.
 
-Official challenge resources are published **Friday 13 Nov 2026** and are **not** included yet (see `data/sources/official/README.md`).
+## Scope rule (what the app may know)
+
+The app answers only from the challenge **Resources** tab and the challenge **Details/brief** page, plus references those
+resources name or link to (PSI records and their publications/DOIs, documents cited in the fact sheets or the Researcher's
+Guide, pages linked from the incident and spinoff pages). The guidance video transcript is included and labelled as the
+user-supplied challenge guide (YouTube auto-captions, cited by `[mm:ss]`). Outside facts are not used. For referenced papers only
+public metadata, abstracts or open-access text are used (no paywall bypass); otherwise the app links out. When the corpus
+cannot answer, the assistant abstains. Every indexed item carries a `provenance` field (`resource`, or `reference` with its
+parent resource), enforced by `apps/api/tests/test_provenance.py`. Saved copies and SHA-256 checksums:
+`data/sources/official/MANIFEST.md`.
+
+Corpus: 24 PSI Combustion Science records (19 microgravity + 5 ground/modeling) and all their experimental tables; 8 NASA fact
+sheets and the Researcher's Guide chunked per page; the brief; Apollo 1, Apollo 13 and Mir pages; 3 spinoff pages; NASA
+Combustion Science page; guidance-video transcript.
 
 ## Quick start (local, no Docker)
 
@@ -40,7 +53,19 @@ make ingest
 No `make`? Use the scripts: `./scripts/setup.sh` (add `--local-ai` for sentence-transformers), `./scripts/dev.sh`, `./scripts/test.sh`.
 
 Without `setup-local-ai` the API automatically uses offline **hash embeddings** (no download) and tells you so in
-**AI settings**; without an LLM the assistant runs in **retrieval-only mode** (sources + setup message).
+**AI settings**; without an LLM the assistant still gives **computed direct answers** (structured QA) and a templated
+interpretation, plus retrieved sources.
+
+## Bring your own key (optional AI summary)
+
+On **Settings** a user can paste an OpenAI, Anthropic or **xAI (Grok)** key. Rules (decision D3):
+- kept only in `sessionStorage` in that browser tab (cleared when the tab closes);
+- sent over HTTPS in the `X-LLM-Key` header (plus `X-LLM-Provider`, optional `X-LLM-Model`) **only** with assistant
+  requests (`POST /api/ask`); the API refuses the header on every other endpoint;
+- used for that one request on a per-request provider object; never stored, logged or returned; log records and errors are
+  redacted; provider base URLs are fixed server-side, so a key cannot be redirected to another host.
+The templated, no-key answer is always the default. `PUT /api/settings/ai` and `POST /api/ingest/rebuild` need
+`X-Admin-Token` = `ADMIN_TOKEN`; with no `ADMIN_TOKEN` they are disabled in production (`APP_ENV=production` or on Render).
 
 ## Docker
 
@@ -53,11 +78,11 @@ LOCAL_AI=1 AI_EMBEDDING_PROVIDER=local docker compose up --build   # bake senten
 
 ## Local (free) vs paid AI
 
-Switch in `.env` (or at runtime on the **AI settings** page / `PUT /api/settings/ai`; keys are env-only):
+Switch in `.env` (or at runtime on the **AI settings** page / `PUT /api/settings/ai` with the admin token). Server keys are env-only; users can bring their own key per tab (above):
 
 | Purpose | Free / local | Paid |
 | --- | --- | --- |
-| LLM for `/api/ask` | `AI_LLM_PROVIDER=local` → Ollama (`OLLAMA_MODEL=llama3.2`, `OLLAMA_BASE_URL`) | `AI_LLM_PROVIDER=openai` + `OPENAI_API_KEY` (`OPENAI_MODEL`) or `anthropic` + `ANTHROPIC_API_KEY` (`ANTHROPIC_MODEL`) |
+| LLM for `/api/ask` | `AI_LLM_PROVIDER=local` → Ollama (`OLLAMA_MODEL=llama3.2`, `OLLAMA_BASE_URL`) | `openai` + `OPENAI_API_KEY` (`OPENAI_MODEL`), `anthropic` + `ANTHROPIC_API_KEY` (`ANTHROPIC_MODEL`), or `xai` + `XAI_API_KEY` (`XAI_MODEL`, default `grok-4.7`; OpenAI-compatible API at `https://api.x.ai/v1`) |
 | Embeddings | `AI_EMBEDDING_PROVIDER=local` → sentence-transformers `all-MiniLM-L6-v2`; or `hash` (offline fallback) | `AI_EMBEDDING_PROVIDER=openai` (`text-embedding-3-small`) |
 | No AI at all | `AI_LLM_PROVIDER=none` | — |
 
@@ -68,13 +93,15 @@ rebuild vectors (`make ingest` or the button in AI settings) — the API detects
 
 | Screen | API |
 | --- | --- |
-| **Home** — scenario selector, search, top research-relevant investigations, reference atmospheres from the brief | `GET /api/meta`, `GET /api/rank` |
+| **Lunar (lead demo)** — rows meeting O2 ≥ 30 % and ≤ 10.2 psi on the same row, burner-stream toggle, closest misses, O2-vs-pressure chart, ranking agreement, partial-gravity gap | `POST /api/coverage`, `GET /api/lunar/points`, `GET /api/rank`, `GET /api/stats` |
+| **Home** — lead lunar answer, catalog stats with as-of date, search, top research-relevant investigations | `GET /api/meta`, `GET /api/rank` |
+| **Earth** — Documented vs Inferred links from spinoffs / Researcher's Guide / video to PSI investigations; explainer quotes | `GET /api/earth`, `GET /api/explainer` |
 | **Explorer** — filters (family, fuel class, topic, measurement type, material, O2 %, pressure kPa/psi/atm/bar, airflow m/s/cm/s), sort, compare picks, CSV export | `GET /api/investigations`, `GET /api/export.csv` |
-| **Investigation detail** — objectives, setup, hypothesis, conditions per PSI table row with source text, sensors, topics with triggering sentences, brief mentions, documents | `GET /api/investigations/{id}` |
+| **Investigation detail** — template interpretation, relationships (ground studies → flight data), lenses with quotes, hotlinked PSI images, varied vs constant variables, data-quality flags, conditions per row with source text, file tree, version | `GET /api/investigations/{id}` |
 | **Has it been done?** — parameter coverage form: documented match / partial overlap / no documented overlap, per-parameter status (match, match in other runs, mismatch, unknown), matching rows | `POST /api/coverage` |
 | **Compare** — 2–3 investigations side by side with labels and Not reported cells | `POST /api/compare` |
 | **Relevance ranking** — PRD §9 weighted score with per-criterion citations and flags | `GET /api/rank?scenario=lunar_habitat` |
-| **Ask the evidence** — hybrid-RAG Q&A with citations / abstention | `POST /api/ask` |
+| **Ask the evidence** — direct computed answers (counts, ranges, maxima, row lookups, official quotes) with CSV-row / page / `[mm:ss]` citations, abstention, hybrid-RAG passages, optional AI summary | `POST /api/ask`, `POST /api/qa` |
 | **AI settings** — provider status and switch, index status, rebuild | `GET/PUT /api/settings/ai`, `POST /api/ingest/rebuild` |
 
 ### Architecture
@@ -86,7 +113,7 @@ apps/web  (Next.js App Router, TypeScript)  ──HTTP──>  apps/api (FastAPI
                                                      ├─ data/index (FAISS / NumPy)          ← vector
                                                      ├─ app/ai/providers: embeddings (local|openai|hash), llm (local|openai|anthropic|none)
                                                      └─ services: catalog, coverage, ranking, compare, ask (hybrid RAG)
-ingestion: data/sources (raw PSI JSON + CSV, brief) → app.ingest.build_seed → data/seed/*.v1.json → app.ingest → DB + indexes
+ingestion: data/sources (PSI JSON + CSV, official PDFs/HTML/transcript) → app.ingest.build_seed → data/seed/*.v2.json → app.ingest → DB + indexes
 ```
 
 **Hybrid retrieval** (`app/retrieval/hybrid.py`): optional structured pre-filter by investigation → FTS5 BM25 + vector
@@ -99,32 +126,40 @@ untrusted data; validates `[S#]` citations and strips invented ones; adds partia
 verbatim source text, context and flags. A filter matches only known values whose range overlaps the request; all
 numeric constraints must hold on the **same** row. Unknown never matches.
 
-**Ranking** (`app/services/ranking.py`, version `sfsri-v0.1`): `score = 100 × Σ weight × match`, weights 25/25/20/15/15
+**Structured QA** (`app/qa`): pattern routing to computed intents; numbers come from stored rows at answer time; quotes
+are located in the indexed corpus (fails loudly if absent). Golden set: `apps/api/tests/fixtures/golden_questions.json`
+(`tests/test_golden.py`; live check `python scripts/verify_golden.py --api https://…`).
+
+**Data quality**: suspicious cells are shown verbatim with a flag (spreadsheet auto-fill, '3400%' percent artifacts,
+0 mmHg pressure, possible dimension swaps, duplicate ids/rows, garbled headers, cp1252 decoding). Nothing is silently corrected.
+
+**Ranking** (`app/services/ranking.py`, version `sfsri-v0.3`): `score = 100 × Σ weight × match`, weights 25/25/20/15/15
 (material, oxygen/atmosphere, prevention/flame behavior, detection/suppression, habitat applicability). Lunar habitat /
 rover targets (O2 ≥ 30 %, ≤ 10.2 psi) come from the official brief; Mars and spacecraft targets are *Not established*.
-Weights and match values are product hypotheses for the domain lead to review.
+The oxygen/atmosphere criterion uses the same same-row match as the coverage check (rows must meet both targets on one row;
+burner oxidizer-stream O2 counts but is labelled), and investigations with rows meeting the target are listed first. Weights and match values are product hypotheses for the domain lead to review.
 
 ### Evidence labels
 `Reported by authors (PSI record)` · `Reported by authors (PSI experimental table)` · `Measured (as listed in PSI experimental table)` ·
 `Official challenge brief` · `Curator classification (rule-based keyword match)` · `AI interpretation` · `Not established` · `Not reported`.
 
-## Seed catalog (16 PSI investigations)
+## Catalog (24 PSI Combustion Science investigations)
 
-BASS (PSI-26), BASS-II (PSI-25), SAFFIRE-I/II/III (PSI-98/99/100), SAME (PSI-102), SAME-R (PSI-101), DAFT/DAFT-2 (PSI-47),
-FLEX (PSI-69), FLEX-2 (PSI-68), CFI (PSI-39), ACME CFI-G (PSI-159), ACME BRE (PSI-20), ACME E-FIELD Flames (PSI-22),
-SPICE (PSI-107), SLICE (PSI-106) — 1624 rows from PSI experimental tables. LUCI and FM2 are listed only as a future
-partial-gravity gap (no records invented). See `data/README.md` for provenance and parsing rules.
+Microgravity: BASS (PSI-26), BASS-II (PSI-25), SAFFIRE-I/II/III (PSI-98/99/100), SAME (PSI-102), SAME-R (PSI-101),
+DAFT/DAFT-2 (PSI-47), FLEX (PSI-69), FLEX-2 (PSI-68), CFI (PSI-39), ACME CFI-G (PSI-159), ACME Flame Design (PSI-10),
+ACME BRE (PSI-20), ACME CLD Flame (PSI-21), ACME E-FIELD Flames (PSI-22), ACME s-Flame (PSI-23), SPICE (PSI-107), SLICE (PSI-106).
+Ground / modeling, linked to the flight data they reuse: PSI-60, PSI-62, PSI-115, PSI-117, PSI-142.
+Counts (test rows, sessions, test-matrix rows) are computed from the CSVs; notes, pre-test rows and continuation rows are kept but
+not counted. LUCI and FM2 appear only as the partial-gravity gap named in the brief.
 
 ## Current limitations
 
-- Only PSI metadata + experimental tables are ingested; raw data files, PDFs and publications are not (no page numbers yet).
-- Sensors and topics are keyword-based tags; materials/fuel class need domain-lead validation (PRD §4 step 6).
-- Some tables list no oxygen/pressure/airflow (e.g. BASS, SLICE, E-FIELD) → shown as Not reported, so coverage is conservative.
-- Range-valued rows (FLEX-2 test matrix, BRE per-day sets) match by range overlap.
-- Ranking weights are hypotheses; e.g. droplet studies (FLEX) can rank high for lunar habitat because they document
-  elevated O2 at reduced pressure. Review with the domain lead.
-- Runtime AI-setting changes are in-memory; no auth / rate limiting (local demo only).
-- The challenge Details text was captured from the team's paste, not a direct fetch.
+- Raw data archives and videos are not ingested (file lists are metadata only).
+- Structured QA routes by patterns plus a generic one-investigation resolver; unusual phrasings fall back to retrieval.
+- Sensors, topics and lenses are rule-based tags with quoted evidence; materials/fuel classes need domain-lead validation.
+- Some tables list no oxygen/pressure/airflow (e.g. BASS, SLICE, E-FIELD) → Not reported, so coverage is conservative.
+- Range-valued rows (FLEX-2 test matrix, per-day session sets) match by range overlap and are labelled.
+- Ranking weights are hypotheses for the domain lead.
 
 ## Brand, attribution and independence
 

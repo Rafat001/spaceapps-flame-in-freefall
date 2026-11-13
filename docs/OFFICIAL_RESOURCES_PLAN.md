@@ -10,6 +10,17 @@ Raw captures are in `/workspace/official-resources/` on the build box (see its `
 
 ---
 
+## Scope rule (team decision, 2026-11-13)
+
+> "we don't want to include anything thats outside of resource. our only scope is the resource. and every reference mentioned in those resources" (team lead, verbatim)
+
+- **In scope:** the challenge Resources tab, the challenge Details/brief page, and references those resources name or link to (PSI records, tables and their listed publications/DOIs; documents cited in the fact sheets or the Researcher's Guide; pages linked from the incident and spinoff pages).
+- **Video:** the guidance video transcript stays, labelled as the user-supplied challenge guide (YouTube auto-captions, cited by `[mm:ss]`).
+- **"Not in PSI" items** are listed only where a resource names them, with the citation: Saffire IV–VI (Saffire fact sheet), SoFIE/FLARE/FM2 (NASA Combustion Science page), LUCI/FM2 (brief), LSP/TGDF/ELF (Researcher's Guide p.13).
+- **Referenced papers:** public metadata, abstract or open-access text only. No paywall bypass; otherwise link out.
+- **Provenance:** every chunk and fact carries `provenance` (`resource`, or `reference` with its parent resource). Enforced by `apps/api/tests/test_provenance.py`.
+- **Abstain** when the corpus cannot answer (golden abstain items G053–G059, G067, G080).
+
 ## 0. Summary
 
 - **What the Resources tab lists.** It has 11 links, all NASA. Only one of them is a dataset: the PSI repository, Combustion Science. The other 10 are context: a NASA program page with 8 fact-sheet PDFs, a 56-page Researcher's Guide, a 3.6-minute video, 3 incident histories, and 3 spinoff pages. No CSV is attached to the challenge itself.

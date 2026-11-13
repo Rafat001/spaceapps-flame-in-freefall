@@ -3,7 +3,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from sqlalchemy import and_, select
+from sqlalchemy import and_, or_, select
+
+from app.ingest.table_specs import COUNTABLE_KINDS
 from sqlalchemy.orm import Session, selectinload
 
 from app.models import Investigation, TestRun
@@ -42,9 +44,10 @@ def investigations_with_runs(session: Session, oxygen: NumericRange, pressure: N
     if airflow.active:
         clauses.append(run_condition_clause(TestRun.airflow_m_s_min, TestRun.airflow_m_s_max, airflow))
     if material:
-        clauses.append(TestRun.material.ilike(f"%{material}%"))
+        clauses.append(or_(TestRun.material.ilike(f"%{material}%"), TestRun.material_normalized.ilike(f"%{material}%")))
     if not clauses:
         return None
+    clauses.append(TestRun.row_kind.in_(COUNTABLE_KINDS))
     if same_run:
         return set(session.scalars(select(TestRun.investigation_id).where(and_(*clauses)).distinct()))
     ids: set[str] | None = None
@@ -56,7 +59,8 @@ def investigations_with_runs(session: Session, oxygen: NumericRange, pressure: N
 
 def search(session: Session, *, q: str | None = None, family: str | None = None, fuel_class: str | None = None,
            hardware: str | None = None, gravity_regime: str | None = None, topic: str | None = None,
-           measurement_type: str | None = None, material: str | None = None,
+           measurement_type: str | None = None, material: str | None = None, platform: str | None = None,
+           lens: str | None = None,
            oxygen: NumericRange = NumericRange(), pressure: NumericRange = NumericRange(),
            airflow: NumericRange = NumericRange()) -> tuple[list[Investigation], dict[str, float]]:
     stmt = select(Investigation).options(selectinload(Investigation.test_runs), selectinload(Investigation.documents))
@@ -68,7 +72,11 @@ def search(session: Session, *, q: str | None = None, family: str | None = None,
         stmt = stmt.where(Investigation.hardware.ilike(f"%{hardware}%"))
     if gravity_regime:
         stmt = stmt.where(Investigation.gravity_regime == gravity_regime)
+    if platform:
+        stmt = stmt.where(Investigation.platform == platform)
     invs = list(session.scalars(stmt).all())
+    if lens:
+        invs = [i for i in invs if lens in (i.lenses or {})]
     if topic:
         invs = [i for i in invs if topic in (i.topics or {})]
     if measurement_type:
@@ -79,8 +87,11 @@ def search(session: Session, *, q: str | None = None, family: str | None = None,
     text_scores: dict[str, float] = {}
     if q and q.strip():
         ql = q.strip().lower()
-        for cid, s in lexical.search(session, q, k=200):
-            iid = cid.rsplit("-c", 1)[0] if "-c" in cid else None
+        hits = lexical.search(session, q, k=400)
+        from app.models import Chunk
+        cmap = dict(session.execute(select(Chunk.id, Chunk.investigation_id).where(Chunk.id.in_([c for c, _ in hits]))).all())
+        for cid, s in hits:
+            iid = cmap.get(cid)
             if iid:
                 text_scores[iid] = text_scores.get(iid, 0.0) + max(s, 0.0)
         for i in invs:

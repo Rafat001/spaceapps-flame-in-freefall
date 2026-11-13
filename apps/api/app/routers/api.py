@@ -22,7 +22,7 @@ from app.units import to_kpa, to_m_s
 
 router = APIRouter(prefix="/api")
 
-PressureUnit = Literal["kPa", "psi", "atm", "bar"]
+PressureUnit = Literal["kPa", "psi", "atm", "bar", "mmHg"]
 FlowUnit = Literal["m/s", "cm/s", "mm/s"]
 
 
@@ -30,20 +30,52 @@ FlowUnit = Literal["m/s", "cm/s", "mm/s"]
 def health(s: Session = Depends(get_session)):
     n = s.scalar(select(func.count()).select_from(Investigation)) or 0
     return {"ok": True, "investigations": n, "ai": state.status(),
-            "notices": [NOT_CERTIFICATION, PARTIAL_GRAVITY_WARNING,
-                        "Official Space Apps resources arrive Friday 13 Nov 2026; they are not yet ingested."]}
+            "notices": [NOT_CERTIFICATION, PARTIAL_GRAVITY_WARNING]}
+
+
+def _seed_stats() -> dict:
+    import json
+
+    from app.config import settings
+
+    p = settings.data_dir / "seed" / "investigations.v2.json"
+    d = json.loads(p.read_text())
+    return {"catalog": d.get("catalog_stats"), "seed_version": d.get("seed_version"),
+            "accessed_at": d.get("psi_accessed_at"), "partial_gravity_gap": d.get("partial_gravity_gap")}
+
+
+@router.get("/stats")
+def stats(s: Session = Depends(get_session)):
+    """Catalog statistics computed from the saved PSI records (with as-of dates); nothing hard-coded."""
+    from app.ingest.table_specs import COUNTABLE_KINDS
+
+    seed = _seed_stats()
+    invs = s.scalars(select(Investigation)).all()
+    by_kind = dict(s.execute(select(TestRun.row_kind, func.count()).group_by(TestRun.row_kind)).all())
+    by_src = dict(s.execute(select(Chunk.source_type, func.count()).group_by(Chunk.source_type)).all())
+    return {**seed, "investigations": len(invs), "ground": sum(1 for i in invs if i.is_ground),
+            "microgravity": sum(1 for i in invs if not i.is_ground),
+            "countable_rows": sum(v for k, v in by_kind.items() if k in COUNTABLE_KINDS), "rows_by_kind": by_kind,
+            "chunks_by_source_type": by_src, "chunks": sum(by_src.values())}
 
 
 @router.get("/meta")
 def meta(s: Session = Depends(get_session)):
+    from app.ingest.table_specs import COUNTABLE_KINDS
+    from app.services.lenses import LENS_SOURCE, LENSES
+
     invs = s.scalars(select(Investigation)).all()
     return {"families": sorted({i.family for i in invs}), "fuel_classes": sorted({i.fuel_class for i in invs}),
             "gravity_regimes": sorted({i.gravity_regime for i in invs}),
             "topics": sorted({t for i in invs for t in i.topics}),
             "measurement_types": sorted({t for i in invs for t in i.measurement_types}),
             "hardware": sorted({i.hardware for i in invs if i.hardware}),
+            "platforms": sorted({i.platform for i in invs if i.platform}),
+            "lenses": {k: {"label": v["label"], "question": v["question"]} for k, v in LENSES.items()},
+            "lens_source": LENS_SOURCE, "catalog_stats": _seed_stats()["catalog"],
             "scenarios": {k: v["label"] for k, v in SCENARIOS.items()}, "reference_atmospheres": REFERENCE_ATMOSPHERES,
-            "counts": {"investigations": len(invs), "test_runs": s.query(TestRun).count(),
+            "counts": {"investigations": len(invs), "test_runs": s.query(TestRun).filter(TestRun.row_kind.in_(COUNTABLE_KINDS)).count(),
+                       "table_rows": s.query(TestRun).count(),
                        "measurements": s.query(Measurement).count(), "chunks": s.query(Chunk).count()}}
 
 
@@ -51,7 +83,7 @@ def meta(s: Session = Depends(get_session)):
 def list_investigations(
     q: str | None = None, family: str | None = None, fuel_class: str | None = None, hardware: str | None = None,
     gravity_regime: str | None = None, topic: str | None = None, measurement_type: str | None = None,
-    material: str | None = None,
+    material: str | None = None, platform: str | None = None, lens: str | None = None,
     oxygen_min: float | None = Query(None, ge=0, le=100), oxygen_max: float | None = Query(None, ge=0, le=100),
     pressure_min: float | None = Query(None, ge=0), pressure_max: float | None = Query(None, ge=0),
     pressure_unit: PressureUnit = "kPa",
@@ -62,7 +94,7 @@ def list_investigations(
 ):
     invs, text_scores = catalog.search(
         s, q=q, family=family, fuel_class=fuel_class, hardware=hardware, gravity_regime=gravity_regime, topic=topic,
-        measurement_type=measurement_type, material=material,
+        measurement_type=measurement_type, material=material, platform=platform, lens=lens,
         oxygen=catalog.NumericRange(oxygen_min, oxygen_max),
         pressure=catalog.NumericRange(to_kpa(pressure_min, pressure_unit), to_kpa(pressure_max, pressure_unit)),
         airflow=catalog.NumericRange(to_m_s(airflow_min, airflow_unit), to_m_s(airflow_max, airflow_unit)))
@@ -84,7 +116,7 @@ def list_investigations(
     return {"total": total, "page": page, "page_size": page_size, "items": cards[start:start + page_size],
             "applied_filters": {k: v for k, v in dict(q=q, family=family, fuel_class=fuel_class, hardware=hardware,
                                 gravity_regime=gravity_regime, topic=topic, measurement_type=measurement_type,
-                                material=material, oxygen_min=oxygen_min, oxygen_max=oxygen_max, pressure_min=pressure_min,
+                                material=material, platform=platform, lens=lens, oxygen_min=oxygen_min, oxygen_max=oxygen_max, pressure_min=pressure_min,
                                 pressure_max=pressure_max, pressure_unit=pressure_unit if (pressure_min or pressure_max) else None,
                                 airflow_min=airflow_min, airflow_max=airflow_max,
                                 airflow_unit=airflow_unit if (airflow_min or airflow_max) else None).items() if v is not None},
@@ -112,9 +144,10 @@ def compare(body: CompareIn, s: Session = Depends(get_session)):
 
 
 @router.get("/rank")
-def rank(scenario: str = "lunar_habitat", s: Session = Depends(get_session)):
+def rank(scenario: str = "lunar_habitat", lens: str | None = None, include_ground: bool = True,
+         s: Session = Depends(get_session)):
     try:
-        return ranking.rank(s, scenario)
+        return ranking.rank(s, scenario, lens=lens, include_ground=include_ground)
     except KeyError:
         raise HTTPException(400, f"Unknown scenario. Options: {sorted(SCENARIOS)}") from None
 
@@ -135,7 +168,10 @@ class CoverageIn(BaseModel):
     measurement_type: str | None = None
     family: str | None = None
     application_scenario: str | None = None
-    max_runs: int = Field(10, ge=1, le=50)
+    diluent: Literal["He", "CO2", "N2"] | None = None
+    platform: str | None = Field(None, max_length=60)
+    include_oxidizer_stream: bool = True
+    max_runs: int = Field(10, ge=1, le=60)
 
 
 @router.post("/coverage")
@@ -208,7 +244,7 @@ def export_csv(ids: str = Query(..., description="comma-separated investigation 
         c = inv_card(inv)["conditions"]
         w.writerow([inv.accession, inv.acronym, inv.title, inv.family, inv.fuel_class, inv.hardware or "Not reported",
                     inv.gravity_regime, c["oxygen"]["display"], c["pressure"]["display"], c["airflow"]["display"],
-                    len(inv.test_runs), inv.source_url, inv.doi or "",
+                    inv_card(inv)["n_test_runs"], inv.source_url, inv.doi or "",
                     "Ranges aggregate PSI table rows; research discovery only, not a safety certification."])
     return StreamingResponse(iter([buf.getvalue()]), media_type="text/csv",
                              headers={"Content-Disposition": "attachment; filename=flame-in-freefall-export.csv"})

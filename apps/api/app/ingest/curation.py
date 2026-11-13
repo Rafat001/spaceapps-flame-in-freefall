@@ -8,7 +8,8 @@ come from PSI experimental tables (see table_specs.py) and are stored with their
 CHALLENGE_URL = "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/?tab=details"
 CHALLENGE_LOCAL = "data/sources/spaceapps_challenge_details.md"
 
-# Seed set: 16 PSI combustion investigations named (directly or by family) in the official brief.
+# Seed set: all 24 PSI investigations in Research Area = Combustion Science (19 microgravity + 5 ground),
+# as listed by the PSI search API (data/sources/psi/search_research_area_combustion_science.json).
 SEED_ACCESSIONS = [
     "PSI-26", "PSI-25",            # BASS, BASS-II
     "PSI-98", "PSI-99", "PSI-100",  # Saffire I-III
@@ -17,7 +18,10 @@ SEED_ACCESSIONS = [
     "PSI-69", "PSI-68", "PSI-39",  # FLEX, FLEX-2, CFI
     "PSI-159", "PSI-20", "PSI-22", # ACME CFI-G, BRE, E-FIELD Flames
     "PSI-107", "PSI-106",          # SPICE, SLICE
+    "PSI-10", "PSI-21", "PSI-23",  # ACME Flame Design, CLD Flame, s-Flame (completes the six ACME experiments)
+    "PSI-60", "PSI-62", "PSI-115", "PSI-117", "PSI-142",  # ground (modeling / lab) investigations
 ]
+GROUND_ACCESSIONS = ["PSI-60", "PSI-62", "PSI-115", "PSI-117", "PSI-142"]
 
 _BRIEF_SOLIDS = ("Flammability studies focus on solid materials such as fabrics and plastics, as studied in the "
                  "Burning and Suppression of Solids (BASS and BASS-II) and Spacecraft Fire Safety Demonstration "
@@ -69,6 +73,36 @@ CURATION: dict[str, dict] = {
     "PSI-106": {"family": "MSG flow duct", "fuel_class": "gaseous", "basis": _BRIEF_MSG, "brief_facts": [_BRIEF_MSG],
                 "fuel_class_note": "Fuel class from the PSI experimental table (CH4 / C2H4 / C2H6 fuel bottles)."},
 }
+
+_GROUND_NOTE = ("Ground (modeling / lab) investigation. Fuel class follows the flight investigation whose data it reuses "
+                "(PSI 'related investigations' field); it is not a flight test.")
+for _acc, _fam_src, _fc in (("PSI-60", "SPICE", "gaseous"), ("PSI-62", "BASS", "solid"), ("PSI-115", "SAME", "solid"),
+                            ("PSI-117", "FLEX", "liquid"), ("PSI-142", "FLEX", "liquid")):
+    CURATION[_acc] = {"family": "Ground / modeling study", "fuel_class": _fc, "ground": True, "reuses": _fam_src,
+                      "basis": None, "fuel_class_note": _GROUND_NOTE, "brief_facts": []}
+CURATION["PSI-10"] = {"family": "ACME", "fuel_class": "gaseous", "basis": _BRIEF_ACME, "brief_facts": [_BRIEF_ACME]}
+CURATION["PSI-21"] = {"family": "ACME", "fuel_class": "gaseous", "basis": _BRIEF_ACME, "brief_facts": [_BRIEF_ACME]}
+CURATION["PSI-23"] = {"family": "ACME", "fuel_class": "gaseous", "basis": _BRIEF_ACME, "brief_facts": [_BRIEF_ACME]}
+
+# Material aliases (curator rules, pending domain-lead confirmation, D6). Applied to material_normalized only;
+# the verbatim material text is never changed.
+MATERIAL_ALIASES = [
+    {"pattern": r"\b(clear|black) rod\b", "normalized": "PMMA", "accessions": ["PSI-25"],
+     "note": "Curator alias: BASS-II 'clear rod' / 'black rod' read as PMMA (acrylic) rods. Pending domain-lead confirmation."},
+    {"pattern": r"\bpmma\b|acrylic", "normalized": "PMMA", "accessions": None, "note": None},
+    {"pattern": r"sibal|cotton[- ]fiberglass", "normalized": "SIBAL (cotton-fiberglass fabric)", "accessions": None, "note": None},
+]
+
+# Curated row-level data-quality flags that a generic rule cannot detect. Each names the source evidence.
+ROW_FLAG_RULES = [
+    {"accession": "PSI-98", "rows": [2, 3], "code": "possible_dimension_swap", "column": "Sample Length (cm)",
+     "message": ("SAFFIRE-I lists Length 40.6 cm / Width 94 cm, while SAFFIRE-III lists Length 94 cm / Width 40.6 cm for "
+                 "the same SIBAL sample size. Possible swap; shown verbatim.")},
+    {"accession": "PSI-99", "rows": [5, 6, 7], "code": "ambiguous_value", "column": "Samle Thickness ",
+     "message": "Thickness cell reads '037 mm' (possibly 0.37, but the source is ambiguous). Shown verbatim, not parsed."},
+    {"accession": "PSI-69", "rows": [115], "code": "implausible_value", "column": "Ambient pressure; mmHg",
+     "message": "Ambient pressure is listed as 0 mmHg, which is physically implausible for a burning droplet. Excluded from numeric filters."},
+]
 
 # Investigations the brief names but that are NOT yet in PSI (do not create fake records).
 FUTURE_PARTIAL_GRAVITY = {

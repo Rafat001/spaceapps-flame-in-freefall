@@ -29,7 +29,7 @@ CRITERIA_LABELS = {
     "habitat_applicability": "Habitat applicability",
 }
 FUEL_MATCH = {"solid": 1.0, "liquid": 0.4, "gaseous": 0.3, "aerosol": 0.0}
-RANKING_VERSION = "sfsri-v0.1"
+RANKING_VERSION = "sfsri-v0.2"
 
 
 def _tag_cite(inv: Investigation, tag: str) -> dict:
@@ -41,6 +41,9 @@ def _tag_cite(inv: Investigation, tag: str) -> dict:
 def _material(inv: Investigation) -> tuple[float, list[dict], list[str]]:
     flags: list[str] = []
     cite = [{"type": "challenge_brief", "label": label("challenge_brief"), "excerpt": inv.fuel_class_basis, "url": CHALLENGE_URL}]
+    if inv.is_ground:
+        cite = [{"type": "psi_metadata", "label": label("psi_metadata"), "excerpt": inv.fuel_class_basis, "url": inv.source_url}]
+        flags.append("Ground (modeling / lab) study: fuel class inherited from the flight data it reuses.")
     m = FUEL_MATCH.get(inv.fuel_class, 0.0)
     if inv.solid_emulation:
         m = max(m, 0.7)
@@ -51,7 +54,9 @@ def _material(inv: Investigation) -> tuple[float, list[dict], list[str]]:
 
 
 def _oxygen(inv: Investigation, scen: dict) -> tuple[float, list[dict], list[str]]:
-    runs = inv.test_runs
+    from app.services.coverage import countable
+
+    runs = countable(inv.test_runs)
     o2 = [r for r in runs if r.oxygen_pct_min is not None]
     pr = [r for r in runs if r.pressure_kpa_min is not None]
     flags: list[str] = []
@@ -67,27 +72,37 @@ def _oxygen(inv: Investigation, scen: dict) -> tuple[float, list[dict], list[str
         m = 0.6 * (1.0 if o_var else 0.5 if o2 else 0.0) + 0.4 * (1.0 if p_var else 0.5 if pr else 0.0)
         flags.append("Scenario has no atmosphere target in the official brief; scored on documented O2/pressure variation.")
         return round(m, 3), [table_cite], flags
+    from app.services.coverage import target_rows
+
     o_min, p_max = atm["oxygen_pct_min"], atm["pressure_kpa_max"]
-    amb = [r for r in o2 if not (r.oxygen_context or "").lower().startswith("oxidizer stream")]
-    stream = [r for r in o2 if (r.oxygen_context or "").lower().startswith("oxidizer stream")]
-    o_hit_amb = [r for r in amb if r.oxygen_pct_max >= o_min]
-    o_hit_stream = [r for r in stream if r.oxygen_pct_max >= o_min]
-    p_hit = [r for r in pr if r.pressure_kpa_min <= p_max]
-    both = [r for r in o_hit_amb if r.pressure_kpa_min is not None and r.pressure_kpa_min <= p_max]
-    oc = 1.0 if o_hit_amb else 0.7 if o_hit_stream else (0.4 if o2 else 0.0)
-    pc = 1.0 if p_hit else (0.4 if pr else 0.0)
-    if o_hit_stream and not o_hit_amb:
-        flags.append("High O2 only in the burner oxidizer stream (inverse flames), not in the ambient atmosphere.")
+    t = target_rows(runs, o_min, p_max, include_stream=True)
+    both, stream, matrix = t["both"], t["stream"], t["matrix"]
+    if both:
+        m = 1.0
+        if stream and len(stream) == len(both):
+            flags.append("Lunar-target rows use burner oxidizer-stream O2 (inverse flames), counted per team decision D5; "
+                         "this is not the ambient atmosphere.")
+        elif stream:
+            flags.append(f"{len(stream)} of {len(both)} matching rows are burner oxidizer-stream O2 (inverse flames).")
+        if matrix:
+            flags.append("Match comes from a planned test matrix (ranges), not individual runs.")
+    else:
+        # no single row meets both: partial credit only, capped at 0.5 (fixes FLEX getting full credit from separate rows)
+        m = 0.3 * (1.0 if t["o_only"] else 0.0) + 0.2 * (1.0 if t["p_only"] else 0.0)
+        if t["o_only"] and t["p_only"]:
+            flags.append("Oxygen and pressure targets are each met on different rows, never on the same row.")
     if not pr:
         flags.append("Pressure: Not reported in the PSI experimental table.")
     if not o2:
         flags.append("Oxygen: Not reported in the PSI experimental table.")
-    m = 1.0 if both else 0.6 * oc + 0.4 * pc
     cites = [table_cite, {"type": "challenge_brief", "label": label("challenge_brief"), "excerpt": atm["source_text"],
                           "url": CHALLENGE_URL}]
-    detail = (f"{len(o_hit_amb)} ambient rows with O2 >= {o_min:g} %, {len(o_hit_stream)} oxidizer-stream rows, "
-              f"{len(p_hit)} rows with pressure <= {p_max:g} kPa, {len(both)} rows meeting both.")
-    cites[0] = {**table_cite, "excerpt": detail}
+    cm = t["closest_miss"]
+    detail = (f"{len(both)} rows meet O2 >= {o_min:g} % AND pressure <= {p_max:.2f} kPa on the same row "
+              f"({len(both) - len(stream)} ambient, {len(stream)} burner oxidizer stream); "
+              f"{len(t['o_only'])} other rows meet only the O2 target, {len(t['p_only'])} only the pressure target."
+              + (f" Closest miss: CSV record {cm.source_row} ({cm.oxygen_source_text} O2 at {cm.pressure_source_text})." if (cm and not both) else ""))
+    cites[0] = {**table_cite, "excerpt": detail, "rows": [r.source_row for r in both[:50]]}
     return round(m, 3), cites, flags
 
 
@@ -149,18 +164,28 @@ def score(inv: Investigation, scenario: str) -> dict:
         flags += fl
         breakdown.append({"criterion": k, "label": CRITERIA_LABELS[k], "weight": WEIGHTS[k], "match": m,
                           "contribution": round(contrib, 1), "citations": cites, "flags": fl})
+    lunar_rows = None
+    if scen.get("atmosphere"):
+        from app.services.coverage import target_rows
+        lunar_rows = len(target_rows(inv.test_runs, scen["atmosphere"]["oxygen_pct_min"], scen["atmosphere"]["pressure_kpa_max"])["both"])
     return {"investigation": {"id": inv.id, "acronym": inv.acronym, "title": inv.title, "family": inv.family,
-                              "fuel_class": inv.fuel_class, "source_url": inv.source_url},
-            "score": round(total, 1), "breakdown": breakdown, "flags": flags}
+                              "fuel_class": inv.fuel_class, "source_url": inv.source_url, "is_ground": inv.is_ground,
+                              "platform": inv.platform, "lenses": sorted((inv.lenses or {}).keys())},
+            "score": round(total, 1), "breakdown": breakdown, "flags": flags, "target_rows": lunar_rows}
 
 
-def rank(session: Session, scenario: str = "lunar_habitat", ids: list[str] | None = None) -> dict:
+def rank(session: Session, scenario: str = "lunar_habitat", ids: list[str] | None = None, lens: str | None = None,
+         include_ground: bool = True) -> dict:
     if scenario not in SCENARIOS:
         raise KeyError(scenario)
     stmt = select(Investigation).options(selectinload(Investigation.test_runs))
     if ids:
         stmt = stmt.where(Investigation.id.in_(ids))
     invs = session.scalars(stmt).all()
+    if lens:
+        invs = [i for i in invs if lens in (i.lenses or {})]
+    if not include_ground:
+        invs = [i for i in invs if not i.is_ground]
     rows = sorted((score(i, scenario) for i in invs), key=lambda r: (-r["score"], r["investigation"]["id"]))
     for n, r in enumerate(rows, 1):
         r["rank"] = n

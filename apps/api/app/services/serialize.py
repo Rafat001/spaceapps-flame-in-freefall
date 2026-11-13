@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from app.ingest.table_specs import COUNTABLE_KINDS
 from app.labels import NOT_REPORTED, label
 from app.models import Investigation, TestRun
 from app.units import sig
@@ -26,8 +27,15 @@ def run_out(r: TestRun) -> dict:
         "airflow": cond(r.airflow_m_s_min, r.airflow_m_s_max, r.airflow_source_text, r.airflow_meta, "m/s", r.airflow_context),
         "measurements": [{"variable": m.variable, "value_text": m.value_text, "unit": m.unit, "source_column": m.source_column,
                           "label": label("measured_psi_table")} for m in r.measurements],
-        "source": {"document_id": r.source_document_id, "row": r.source_row, "label": label(r.verification_status)},
+        "source": {"document_id": r.source_document_id, "row": r.source_row, "file": r.source_file,
+                   "label": label(r.verification_status)},
+        "subtable": r.subtable, "material_normalized": r.material_normalized, "flags": r.flags or [],
+        "oxygen_is_stream": r.oxygen_is_stream, "diluents": r.diluents or {}, "raw": r.raw, "parent_row": r.parent_row,
     }
+
+
+def _count(inv: Investigation) -> int:
+    return sum(1 for r in inv.test_runs if r.row_kind in COUNTABLE_KINDS)
 
 
 def _agg(runs: list[TestRun], lo: str, hi: str, unit: str, ctx_attr: str | None = None) -> dict:
@@ -44,7 +52,7 @@ def _agg(runs: list[TestRun], lo: str, hi: str, unit: str, ctx_attr: str | None 
 
 
 def conditions_summary(inv: Investigation) -> dict:
-    runs = inv.test_runs
+    runs = [r for r in inv.test_runs if r.row_kind in COUNTABLE_KINDS]
     return {
         "oxygen": _agg(runs, "oxygen_pct_min", "oxygen_pct_max", "% O2 (by volume)", "oxygen_context"),
         "pressure": _agg(runs, "pressure_kpa_min", "pressure_kpa_max", "kPa"),
@@ -63,7 +71,7 @@ def completeness(inv: Investigation) -> float:
 def materials(inv: Investigation, limit: int = 12) -> list[str]:
     seen: list[str] = []
     for r in inv.test_runs:
-        if r.row_kind == "pretest_data":
+        if r.row_kind not in COUNTABLE_KINDS:
             continue
         m = (r.material or "").strip()
         if m and m not in seen:
@@ -78,12 +86,18 @@ def inv_card(inv: Investigation) -> dict:
         "fuel_class": inv.fuel_class, "hardware": inv.hardware or NOT_REPORTED, "gravity_regime": inv.gravity_regime,
         "flight_platform": inv.flight_platform or NOT_REPORTED,
         "topics": sorted(inv.topics.keys()), "measurement_types": sorted(inv.measurement_types.keys()),
-        "conditions": conditions_summary(inv), "n_test_runs": len(inv.test_runs),
+        "conditions": conditions_summary(inv), "n_test_runs": _count(inv), "n_table_rows": len(inv.test_runs),
         "data_completeness": completeness(inv), "source_url": inv.source_url, "doi": inv.doi,
+        "platform": inv.platform or NOT_REPORTED, "is_ground": inv.is_ground, "project_type": inv.project_type,
+        "lenses": sorted((inv.lenses or {}).keys()), "total_file_size_bytes": (inv.files or {}).get("total_file_size_bytes"),
+        "n_flags": sum(len(r.flags or []) for r in inv.test_runs) + len(inv.table_flags or []),
     }
 
 
-def inv_detail(inv: Investigation, max_runs: int = 200) -> dict:
+def inv_detail(inv: Investigation, max_runs: int = 500) -> dict:
+    from app.services.interpret import interpret_investigation
+    from app.services.variables import summarize
+
     d = inv_card(inv)
     d.update({
         "objective": inv.objective or NOT_REPORTED, "approach": inv.approach or NOT_REPORTED,
@@ -102,9 +116,18 @@ def inv_detail(inv: Investigation, max_runs: int = 200) -> dict:
                        "local_path": x.local_path} for x in inv.documents],
         "test_runs": [run_out(r) for r in inv.test_runs[:max_runs]],
         "test_runs_truncated": len(inv.test_runs) > max_runs,
+        "row_kinds": {k: sum(1 for r in inv.test_runs if r.row_kind == k) for k in sorted({r.row_kind for r in inv.test_runs})},
         "missing_fields": [k for k, v in conditions_summary(inv).items() if not v["known"]],
-        "caveats": ["Numeric conditions are per PSI table row and keep the source text; verify against PSI before use.",
-                    "Gravity regime: microgravity only. Not evidence of lunar/Martian (partial-gravity) behaviour."],
+        "version": inv.version, "relationships": inv.relationships, "files": inv.files, "images": inv.images,
+        "table_flags": inv.table_flags, "platform_note": inv.platform_note,
+        "lenses_evidence": inv.lenses or {},
+        "flags": [{"row": r.source_row, "run_label": r.run_label, "file": r.source_file, **f} for r in inv.test_runs for f in (r.flags or [])],
+        "variables": summarize(inv.test_runs),
+        "interpretation": interpret_investigation(inv),
+        "caveats": ["Numeric conditions are per PSI table row and keep the source text; verify against PSI before use."]
+                   + (["Ground (modeling / lab) investigation: 1-g laboratory or computational work that reuses PSI flight "
+                       "data. It is not a flight test."] if inv.is_ground else
+                      ["Gravity regime: microgravity only. Not evidence of lunar/Martian (partial-gravity) behaviour."]),
     })
     if inv.partial_gravity_mimic:
         d["caveats"].append("Official brief: E-FIELD Flames mimicked partial gravity via electric-field effects on flame "

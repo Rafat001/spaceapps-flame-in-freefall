@@ -10,17 +10,18 @@ _SUIT = ("To enable flexibility, spacesuits are filled with 100% oxygen to only 
 SCENARIOS = {
     "lunar_habitat": {
         "label": "Lunar habitat (Moon Base)",
-        "atmosphere": {"oxygen_pct_min": 30.0, "pressure_kpa_max": round(10.2 * PSI_KPA, 1),
+        "atmosphere": {"oxygen_pct_min": 30.0, "pressure_kpa_max": 10.2 * PSI_KPA,
                        "source_text": _LUNAR, "verification_status": "challenge_brief", "citation_url": CHALLENGE_URL,
-                       "display": "O2 >= 30 % by volume; pressure <= 10.2 psi (about 70 kPa) — expected, per official brief"},
+                       "display": "O2 >= 30 % by volume; pressure <= 10.2 psi (70.33 kPa) — expected, per official brief",
+                       "pressure_psi_max": 10.2},
         "partial_gravity": True,
     },
     "pressurized_rover": {
         "label": "Pressurized lunar rover",
-        "atmosphere": {"oxygen_pct_min": 30.0, "pressure_kpa_max": round(10.2 * PSI_KPA, 1),
+        "atmosphere": {"oxygen_pct_min": 30.0, "pressure_kpa_max": 10.2 * PSI_KPA,
                        "source_text": "The brief groups the planned Moon Base and pressurized rover(s) together. " + _LUNAR,
                        "verification_status": "challenge_brief", "citation_url": CHALLENGE_URL,
-                       "display": "Same expectation as Moon Base per official brief"},
+                       "display": "Same expectation as Moon Base per official brief", "pressure_psi_max": 10.2},
         "partial_gravity": True,
     },
     "spacecraft": {

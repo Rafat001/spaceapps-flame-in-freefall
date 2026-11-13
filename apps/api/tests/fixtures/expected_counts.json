@@ -1,0 +1,26 @@
+{
+  "_doc": "Countable rows (test, session, test_matrix) per investigation and table, counted by hand from the PSI experimental-table CSVs in data/sources/psi/experimental_tables (accessed 2026-11-13). Non-test rows (notes, pretest data, continuation rows, data index) are listed separately and never counted as tests.",
+  "countable": {
+    "psi-69": 274, "psi-39": 87, "psi-159": 333, "psi-10": 327, "psi-107": 469, "psi-26": 122, "psi-25": 129,
+    "psi-101": 109, "psi-99": 9, "psi-22": 21, "psi-98": 2, "psi-100": 2, "psi-102": 8, "psi-68": 8, "psi-20": 18,
+    "psi-21": 32, "psi-23": 18, "psi-106": 12, "psi-47": 2,
+    "psi-60": 0, "psi-62": 0, "psi-115": 0, "psi-117": 0, "psi-142": 0
+  },
+  "by_subtable": {
+    "psi-159": {"normal flames": 179, "inverse flames": 154},
+    "psi-10": {"normal flames": 207, "inverse flames": 120}
+  },
+  "non_test_rows": {
+    "psi-99": {"note": 4, "pretest_data": 2},
+    "psi-98": {"pretest_data": 2},
+    "psi-22": {"continuation": 11},
+    "psi-142": {"data_index": 8}
+  },
+  "lunar_target": {
+    "_doc": "Rows with O2 >= 30 % AND pressure <= 10.2 psi (70.3265 kPa) on the same row.",
+    "psi-159": {"total": 48, "normal flames": 20, "inverse flames": 28},
+    "psi-10": {"total": 18, "inverse flames": 18},
+    "psi-68": {"total": 8},
+    "closest_miss": {"psi-69": {"row": 38, "pressure_source_text": "534.3"}}
+  }
+}

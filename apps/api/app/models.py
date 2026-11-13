@@ -48,6 +48,16 @@ class Investigation(Base):
     measurement_types: Mapped[dict] = mapped_column(JSON, default=dict)
     brief_facts: Mapped[list] = mapped_column(JSON, default=list)
     data_availability: Mapped[dict] = mapped_column(JSON, default=dict)
+    platform: Mapped[str | None] = mapped_column(String, index=True)  # ISS | Cygnus spacecraft | Ground lab / model
+    platform_note: Mapped[str | None] = mapped_column(Text)
+    is_ground: Mapped[bool] = mapped_column(Boolean, default=False)
+    version: Mapped[dict] = mapped_column(JSON, default=dict)
+    relationships: Mapped[list] = mapped_column(JSON, default=list)
+    files: Mapped[dict] = mapped_column(JSON, default=dict)
+    images: Mapped[list] = mapped_column(JSON, default=list)
+    table_flags: Mapped[list] = mapped_column(JSON, default=list)
+    lenses: Mapped[dict] = mapped_column(JSON, default=dict)
+    provenance: Mapped[dict] = mapped_column(JSON, default=dict)
 
     documents: Mapped[list["Document"]] = relationship(back_populates="investigation", cascade="all, delete-orphan")
     test_runs: Mapped[list["TestRun"]] = relationship(back_populates="investigation", cascade="all, delete-orphan")
@@ -65,6 +75,7 @@ class Document(Base):
     publication_date: Mapped[str | None] = mapped_column(String)
     local_path: Mapped[str | None] = mapped_column(String)
     checksum: Mapped[str | None] = mapped_column(String)
+    provenance: Mapped[dict | None] = mapped_column(JSON)
     investigation: Mapped[Investigation | None] = relationship(back_populates="documents")
     chunks: Mapped[list["Chunk"]] = relationship(back_populates="document", cascade="all, delete-orphan")
 
@@ -80,6 +91,9 @@ class Chunk(Base):
     source_url: Mapped[str | None] = mapped_column(String)
     verification_status: Mapped[str] = mapped_column(String)  # psi_metadata | psi_experimental_table | challenge_brief
     embedding_id: Mapped[int | None] = mapped_column(Integer)
+    source_type: Mapped[str | None] = mapped_column(String, index=True)
+    locator: Mapped[str | None] = mapped_column(String)  # "p. 26" | "CSV record 12" | "[05:54]" | "¶3"
+    provenance: Mapped[dict | None] = mapped_column(JSON)  # {kind: resource|reference, resource, resource_url, reference_of?}
     document: Mapped[Document] = relationship(back_populates="chunks")
 
 
@@ -89,7 +103,14 @@ class TestRun(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     investigation_id: Mapped[str] = mapped_column(ForeignKey("investigations.id"), index=True)
     run_label: Mapped[str] = mapped_column(String)
-    row_kind: Mapped[str] = mapped_column(String, default="test")  # test | session | test_matrix
+    row_kind: Mapped[str] = mapped_column(String, default="test")  # test|session|test_matrix|note|continuation|pretest_data|data_index
+    subtable: Mapped[str | None] = mapped_column(String)
+    source_file: Mapped[str | None] = mapped_column(String)
+    parent_row: Mapped[int | None] = mapped_column(Integer)
+    material_normalized: Mapped[str | None] = mapped_column(String)
+    flags: Mapped[list] = mapped_column(JSON, default=list)
+    diluents: Mapped[dict] = mapped_column(JSON, default=dict)
+    oxygen_is_stream: Mapped[bool] = mapped_column(Boolean, default=False)
     material: Mapped[str | None] = mapped_column(Text)
     sample_geometry: Mapped[str | None] = mapped_column(Text)
     flow_direction: Mapped[str | None] = mapped_column(String)

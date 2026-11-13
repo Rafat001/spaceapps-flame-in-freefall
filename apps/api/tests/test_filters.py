@@ -52,7 +52,7 @@ def test_same_run_semantics(session):
 
 def test_text_and_categorical_filters(client):
     assert "psi-26" in _ids(client, q="BASS")
-    assert _ids(client, fuel_class="liquid") == {"psi-69", "psi-68", "psi-39"}
+    assert _ids(client, fuel_class="liquid") == {"psi-69", "psi-68", "psi-39", "psi-117", "psi-142"}
     assert _ids(client, family="Saffire") == {"psi-98", "psi-99", "psi-100"}
 
 

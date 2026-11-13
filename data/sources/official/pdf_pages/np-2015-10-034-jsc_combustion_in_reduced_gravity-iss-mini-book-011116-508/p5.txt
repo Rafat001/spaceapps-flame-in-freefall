@@ -1,0 +1,28 @@
+Unique Features of the ISS
+Research Environment
+1. M
+ icrogravity, or weightlessness, alters many observable phenomena
+within the physical and life sciences. Systems and processes affected by
+microgravity include surface wetting and interfacial tension, multiphase
+flow and heat transfer, multiphase system dynamics, solidification, and
+fire phenomena and combustion. Microgravity induces a vast array of
+changes in organisms ranging from bacteria to humans, including global
+alterations in gene expression and 3-D aggregation of cells into tissue-like
+architecture.
+2. E
+ xtreme conditions in the ISS environment include exposure to extreme
+heat and cold cycling, ultra-vacuum, atomic oxygen, and high-energy
+radiation. Testing and qualification of materials exposed to these extreme
+conditions have provided data to enable the manufacturing of longlife, reliable components used on Earth as well as in the world’s most
+sophisticated satellite and spacecraft components.
+3. L
+ ow-Earth orbit at 51 degrees inclination and at a 90-minute orbit
+affords ISS a unique vantage point with an altitude of approximately 240
+miles (400 kilometers) and an orbital path over 90 percent of the Earth’s
+population. This can provide improved spatial resolution and variable
+lighting conditions compared to the sun-synchronous orbits of typical
+Earth remote-sensing satellites.
+
+5
+
+

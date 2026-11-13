@@ -1,0 +1,49 @@
+Burning and Suppression of Solids (BASS)
+The Burning and Suppression of Solids (BASS) investigation examines
+the burning and extinction characteristics of a wide variety of fuel
+samples in microgravity. The BASS experiment will guide strategies for
+extinguishing accidental ﬁres in microgravity. BASS results contribute to
+the combustion computational models used in the design of ﬁre
+detection and suppression systems in microgravity and on Earth
+Research Summary
+•
+
+Burning and Suppression of Solids (BASS) tests the hypothesis that materials in
+microgravity, with adequate ventilation, burn as well if not better than the same material in
+normal gravity with other conditions being identical (pressure, oxygen concentration,
+temperature, etc.).
+
+•
+
+There are important differences in the suppression of ﬁres in space compared to on Earth.
+On Earth it is understood that the best results are generally obtained when the extinguisher
+“attacks” the base of the ﬂame, which is both the stabilization point and the point where
+fresh air ﬁrst enters the ﬂame.
+
+•
+
+For a ﬁre burning in microgravity, the best point of application of suppressant may not be
+immediately apparent, especially for a partially obstructed ﬂame or a wake-stabilized
+ﬂame. Depending on the geometry of the ﬂame and the characteristics of the extinguisher
+(distance from ﬂame, dispersion angle) it is possible that the suppressant stream will be
+ineffective or might actually make the ﬂame worse through the entrainment of oxygen.
+Using nitrogen as a ﬂame suppressant in microgravity provides a direct link to current and
+planned extinguishment techniques.
+
+Detailed Research Description
+Burning and Suppression of Solids (BASS) utilizes slightly modiﬁed Smoke Point In Co-ﬂow
+Experiment (SPICE) hardware within the Microgravity Science Glovebox (MSG) for observations of
+burning solid materials on board the ISS.
+BASS consists of 41 fuel samples. There are three categories of samples: ﬂat, solid spheres, and
+candles within tubes. Thin ﬂat samples (12 cm long by 1 and 2 cm wide) yield concurrent-ﬂow
+spread rate and limiting ﬂame length. The cotton-ﬁberglass fabric blend Solid Inﬂammability
+Boundary at Low-Speeds (SIBAL) fuel is our principal thin material, and it was specially developed
+just for this purpose. Other thin materials are burned including Nomex and Ultem. Thick ﬂat
+samples (5 cm long by 1 cm wide by 1 and 2 mm thick) of Polymethylmethacrylate (PMMA) and
+wax-saturated ﬁberglass fabric yield thickness effects on ﬂame spread and extinguishment. Solid
+spheres of PMMA (1 and 2 cm in diameter) have the advantage of an axisymmetric geometry and
+permit multiple tests as the ﬂame is extinguished and reignited. Ignition of either the front or back
+portion of the spheres is achieved. Finally, candles within a thin ceramic tube (6 mm in diameter by
+25 mm long) are examined. Two types of wax are used, common paraffin and “Japan wax”, which
+
+

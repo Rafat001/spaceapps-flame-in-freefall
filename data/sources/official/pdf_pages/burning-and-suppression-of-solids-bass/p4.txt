@@ -1,0 +1,72 @@
+Solid--Fuel Flame Extinction and Stabilization in Response to a Step Change in
+Gravity. Combustion and Flame. Vol. 147. pp. 262--277 (2006).
+•
+
+Ferkul PV, T’ien JS. A Model of Low--Speed Concurrent Flow Flame Spread over a Thin
+Fuel.
+Combustion Science and Technology. Vol. 99. pp. 345--370 (1994).
+
+•
+
+Ferkul P, Kleinhenz J, Shih H--Y, Pettegrew R, Sacksteder K, T’ien J. Solid Combustion
+Experiments Using a Continuous Fuel Dispenser for Use in Microgravity. Microgravity
+Science and Technology. Vol. XV/2 (2004).
+
+•
+
+Foutch DW. Size and Shape of Solid Fuel Diffusion Flames in Very Low Speed Flows. NASA
+CR-179576 (1987).
+
+•
+
+Friedman R. Fire Safety in the Low--Gravity Spacecraft Environment. NASA TM--209285
+(1999).
+
+•
+
+Goldmeer JS. Extinguishment of a Diffusion Flame Over a PMMA Cylinder by
+Depressurization in
+Reduced--Gravity. NASA CR--198550 (CWRU PhD Dissertation) (1996).
+
+•
+
+Hsu S--Y. Flame Spread and Extinction over Solids in
+Buoyant and Forced Concurrent Flows:
+Model Computations and Comparisons with Experiments. Ph.D. Dissertation, CWRU
+(2009).
+
+•
+
+Ivanov AV, Balashov YV, Andreeva TV, Melikhov AS. Experimental Veriﬁcation of Material
+Flammability in Space. NASA CR--209405 (1999).
+
+•
+
+Jiang C--B. A Model of Flame Spread Over a Thin Solid in Concurrent Flow with Flame
+Radiation.
+Ph.D. Dissertation. CWRU (1995).
+
+•
+
+Kimzey JH. Skylab Experiment M479 Zero Gravity Flammability. Skylab Results, Proceedings
+of the Third Space Processing Symposium. Vol. 1. pp. 115--130 (1974) and NASA TMX-70252 (1974).
+
+•
+
+Olson SL, Ferkul PV, T’ien JS. Near--Limit Flame Spread Over a Thin Solid Fuel in
+Microgravity.
+Twenty--Second Symposium (International)
+on Combustion. The Combustion Institute. pp. 1213--1222 (1998).
+
+•
+
+Olson SL, T’ien JS. Buoyant Low Stretch Diffusion Flames Beneath Cylindrical PMMA
+Samples.
+Combustion and Flame. Vol. 121. pp. 439--452 (2000).
+
+•
+
+Shih H--Y, T’ien JS. A Three--Dimensional Model of Steady Flame Spread over a Thin Solid in
+Low-Speed Concurrent Flows. Combustion Theory and Modeling. Vol. 7 (2003).
+
+

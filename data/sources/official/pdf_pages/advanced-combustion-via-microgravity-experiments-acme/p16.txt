@@ -1,0 +1,31 @@
+•
+
+The amount of soot particulate in a ﬂame can be determined via an extinction technique, where
+the camera and the collimated light source are positioned at opposite windows.
+
+•
+
+For ACME, the extinction measurement will be made with a second High-Bit Depth Multispectral
+(HiBMs) camera, without a ﬁlter, in combination with CIR’s illumination package (with its two
+ﬁber-coupled laser diodes). The images are recorded at 1024×1024 and 30 frames per second.
+
+•
+
+Alternatively, the soot volume fraction can be determined directly from the digital color camera,
+where an alternate Thin Filament Pyrometry (TFP) ﬁber array including a platinum wire will be
+used for inﬂight characterization for that measurement.
+
+Thermal Radiation
+•
+
+The ACME chamber insert includes a crew-exchangeable linear array of radiometers of which
+there are two versions supporting the initial set of experiments. Alternate arrays could be
+developed for future experiments.
+
+•
+
+The radiometer array has a ﬁxed position which is parallel to the chamber and burner axis and is
+centered (along the chamber length) relative to the chamber windows and thus most of the
+other instrumentation.
+
+

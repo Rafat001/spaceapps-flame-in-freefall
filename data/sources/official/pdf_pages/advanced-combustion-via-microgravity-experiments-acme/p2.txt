@@ -1,0 +1,19 @@
+Burning Rate Emulator (BRE)
+
+Unlike the other current ACME experiments, the Burning Rate Emulator (BRE) experiment is focused on
+ﬁre prevention, especially in spacecraft. Speciﬁcally, BRE’s objective is to improve our fundamental
+understanding of materials ﬂammability, such as ignition and extinction behavior, and assess the
+relevance of existing ﬂammability test methods for low and partial-gravity environments. The burning of
+solid and liquid fuels will be simulated by using a ﬂat porous burner fed with gaseous fuel. The fuel ﬂow
+rate will be controlled based on the measured heat ﬂux (at the burner) and surface temperature,
+mimicking the dependence of condensed-phase fuel vaporization on thermal feedback. A small number
+of gaseous fuels will be used to simulate the burning of fuels such as paper, plastic, and alcohol by
+matching properties such as the surface temperature and smoke production.
+Coﬂow Laminar Diﬀusion Flame (CLD Flame)
+Research, especially including that already conducted in microgravity, has revealed that our current
+predictive ability is signiﬁcantly lacking for ﬂames at the extremes of fuel dilution, namely for sooty purefuel ﬂames and dilute ﬂames that are near extinction. The general goal of the Coﬂow Laminar Diﬀusion
+Flame (CLD Flame) experiment is to extend the range of ﬂame conditions that can be accurately
+predicted by developing and experimentally verifying chemical kinetic and soot formation submodels.
+The dependence of normal coﬂow ﬂames on injection velocity and fuel dilution will be carefully
+
+

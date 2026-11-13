@@ -1,0 +1,37 @@
+The unique microgravity environment also allows researchers to study the classical
+problem of a spherical flame surrounding a spherical droplet in a quiescent ambient
+(e.g., Dietrich et al., 1996; Nayagam et al., 1998). Virtually every combustion
+textbook contains an analysis of this problem. For droplet combustion, the ordinate
+in Figure 8 is the ambient oxygen mole fraction and the abscissa is the droplet
+diameter, with the boundary defining again the flammability boundary. Note also
+that for droplet combustion, the curve in Figure 8 is actually reversed, with larger
+droplets having lower stretch rates or larger Damkohler numbers. Both spacebased and, to a limited extent, drop-tower testing demonstrated the existence
+of this limit. Identification of this curve is important not only for identifying
+flammability limits for spacecraft fire safety applications but for practical reasons
+as well. Droplet combustion experiments involve liquid fuels, and the curve in
+Figure 8 is determined by the detailed interaction of the heat and mass transport
+and chemical kinetics. The chemical kinetic mechanisms responsible for the curve
+are the building blocks of mechanisms for practical fuels. These droplet combustion
+experiments, therefore, provide benchmark data for the validation of physical and
+chemical kinetic sub-models of practical fuels.
+
+Jet Flames
+Another common class of flames in combustion research is gaseous jet flames (a
+fuel gas issuing from a nozzle into an initially quiescent oxidizing atmosphere). In
+terrestrial laboratories, gas-jet diffusion flames are used to elucidate the chemical
+kinetic mechanisms of simple fuels, to understand flame stability, and to study
+the details of soot production and destruction. For bench-scale laminar gas-jet
+experiments in normal gravity, it is difficult to suppress the effects of buoyancy,
+making the problem significantly less tractable. Microgravity studies in drop towers
+and space-based facilities show striking differences (in comparison to normalgravity studies) in the observed flame heights of jet flames at low and moderate
+jet Reynolds numbers (e.g., Hegde et al., 1994; Urban et al., 1998). The onset of
+smoke production found in low gravity is substantially different than in normal
+gravity and contrary to predictions in prior literature. The experiments also show
+significant differences in the size of the primary soot particles and in the larger
+fractal dimension of the soot agglomerates (e.g., Greenberg et. al., 1997). The data
+from these experiments serve as benchmark data for the development and validation
+of detailed chemical kinetic and soot formation and destruction models.
+
+32
+
+

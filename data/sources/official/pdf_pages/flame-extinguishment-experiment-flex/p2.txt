@@ -1,0 +1,39 @@
+concentrations range from 0.00 mole fraction to the limit where no ﬂame can exist (0.70 expected
+for the least active suppressant).
+Pressure: Ambient pressure does not signiﬁcantly inﬂuence the droplet burning rate but does
+inﬂuence chemistry at sufficiently low values. In addition, one strategy for extinguishing a ﬁre is to
+isolate the habitat where it exists and vent the cabin to space. It is therefore beneﬁcial to have
+veriﬁed suppressant data at low pressures. The pressure for the tests will range from 0.5 to 1.0 atm
+(standard atmosphere). As with the oxygen mole fraction, it is important that the test chamber be
+sufficiently large so that the pressure is essentially constant during an experiment (i.e. the droplet
+burns in a constant pressure ambient).
+Fuel Type: The advantage of the droplet geometry is that the fuel is relatively simple and better
+characterized than typical fuels in ﬁre safety studies (e.g., PMMA or paper). This is also a
+disadvantage since it does not represent a practical fuel. The study will use two typical hydrocarbon
+fuels, an alcohol, methanol (CH3OH) and an alkane, heptane (C7H16). There is a relatively large
+experience base with these fuels. Methanol has a fuel-bound oxygen atom and burns with a very
+dim blue ﬂame (not much soot production) with a small standoff distance, so it has widely different
+radiative characteristics than heptane. Therefore, studying these two fuels gives a wide range of ﬁre
+scenarios to verify model and sub-model performance over.
+Droplet Diameter: The droplet is ignited in the ﬂammable region and then burns in a constant
+oxygen mole fraction ambient until ﬂame extinction. Under the assumption of quasi-steady
+burning, the initial droplet size should not signiﬁcantly inﬂuence the determination of the extinction
+droplet size. Transient inﬂuences, however, will be present, so some variation in initial droplet
+diameter is necessary to determine the deviation from quasi-steady behavior. The initial droplet
+size in the proposed study will vary between 2 and 5 mm.
+Related Documents
+???
+Publications
+???
+Contact Information
+PI Team: Prof. Forman Williams, UCSD (lead)
+Prof. Frederick Dryer, Princeton
+Prof. Mun Choi, University of Connecticut
+Prof. Benjamin Shaw, USC-Davis
+Dr. Vedha Nayagam, NCSER
+Michael Hicks, NASA GRC
+PS: Dr. Daniel Dietrich, NASA GRC
+PM: J. Mark Hickman, NASA GRC
+Engineering Team: ZIN Technologies, Inc.
+
+

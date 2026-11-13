@@ -1,0 +1,23 @@
+Figure 16. (a) Super-Critical Water Oxidation (SCWO) Test Facility designed for use in the Zero Gravity Facility shown loaded
+in the drop bus just prior to dropping; (b) 500 ml SCWO reactor vessel installed in the SCWO Test Facility; (c) schematic
+showing axial location of thermocouples inside the SCWO reactor. (Image credit: NASA, SCWO experiment)
+
+Super-Critical Processes
+Because of its unique and significant advantages, Super-Critical Water Oxidation
+(SCWO) was identified by NASA as a potential technology for use in closed-loop,
+life-support systems addressing waste management and resource reclamation needs.
+Initial efforts in applying SCWO to solid waste management were conducted at
+NASA’s Ames Research Center in the 1990s in ground-based laboratories. These
+early tests were designed to look at oxidation rates and destruction efficiencies for
+cellulosic material as a function of particle size, mixing, temperature and pressure.
+Results from these tests provided empirical correlations for use in reactor design.
+In 2004, an investigation to assess the impact of buoyancy on SCWO processes
+was initiated as part of GRC’s microgravity combustion program. The SCWO
+Test Facility, shown in Figure 16, with a 500-ml reactor along with all necessary
+supporting hardware and diagnostics was designed and built for use in the Zero
+Gravity Facility (ZGF, the 5.2-second drop tower). A limited number of ZGF
+tests were conducted for the oxidation of methanol in water (methanol 10 weight
+percent) using air, injected into the super-critical mixture, as the oxidizer.
+27
+
+

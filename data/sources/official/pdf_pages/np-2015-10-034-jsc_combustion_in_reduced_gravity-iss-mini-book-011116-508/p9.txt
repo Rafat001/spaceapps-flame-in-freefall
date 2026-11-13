@@ -1,0 +1,15 @@
+Figure 1. 1-g and 0-g comparison flames. Left to right, top to bottom: ethane jet flames, ethylene jet flames, candle
+flames, burning heptane droplets and flame spread over a butanol pool. (Image credit: NASA)
+
+experiments using realistic sizes are essential for a comprehensive understanding of
+the combustion phenomena and are possible only in the microgravity environments
+offered by space facilities.
+Besides terrestrial applications of combustion, gravity-related combustion research
+issues are also of crucial importance to NASA’s manned and unmanned missions.
+Fire safety is an important operational element of human space exploration
+missions to minimize the likelihood and impact of accidental fires in spacecraft
+and human habitats. The effects of these environmental changes on combustion
+in reduced gravity are unclear and need to be better understood for all missionrelevant scenarios. Every aspect of fire prevention, detection and suppression is
+9
+
+

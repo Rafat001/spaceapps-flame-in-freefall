@@ -1,0 +1,43 @@
+•
+
+Detailed combustion models can be validated by data obtained in the simpler ﬂow
+environment in microgravity. Once validated, they can be used to build more complex
+combustion models needed to capture the important details of ﬂames burning in normal
+gravity. These models have wide applicability to the general understanding of many
+terrestrial combustion problems.
+
+Space Applications
+A primary goal of BASS-II is improved spacecraft ﬁre safety, improved understanding of combustion
+in space and how to avoid it. If you’re on a mission far from Earth, a ﬁre can be catastrophic. BASS-II
+helps engineers select the safest materials and improve ﬁreﬁghting methods on future space
+missions.
+Earth Applications
+In outer space, fuels burn as oval balls rather than with an upward pointed cone ﬂame as they do on
+Earth. This simpler combustion process enables researchers to evaluate computer models of fuel
+burning. These models can then be used to more accurately study ﬂames on Earth, such as in
+wildﬁres, building ﬁres, energy recapture from waste recycling, and other combustion problems.
+Operational Requirements and Protocols
+BASS-II is conducted inside the sealed MSG work volume. The crewmember is involved throughout
+the experiment to load fuel samples, adjust nitrogen gas (GN2) concentration in the working volume
+vitiation of the working volume, initiate tests, ignite the fuel, monitor and record data, exchange fuel
+samples, and replace the igniter. Forty-one test samples will be burned in a variety of ﬂow
+conditions for a total of 89 test points. Data is downlinked via video during or immediately after
+each ﬂame test. Digital photos are downlinked after selected ﬂame tests for ground conﬁrmation
+before proceeding. BASS-II testing session must be conducted during periods when no major
+reboost or docking procedures are underway on the International Space Station (ISS).
+The crewmember installs the BASS-II hardware in the MSG work volume. The BASS-II hardware
+consists of a small ﬂow duct with an igniter and a small nozzle along with exchangeable fuel
+samples. During BASS-II operations a fan produces a co-ﬂow of air through the duct. An
+anemometer is used to measure the actual ﬂow rate. The crewmember adjusts the airﬂow from 5 to
+50 cm/s. Nitrogen vitiation of the working volume is then initiated using station GN2 at a ﬂow rate of
+up to 500 cc/min for a prescribed time. The ﬂame is ignited and allowed to burn for about a minute.
+A radiometer measures ﬂame output. The crewmember conducts each test. They install the correct
+fuel assembly and set the air ﬂow rate through the duct before igniting the ﬂame. When the ﬂame is
+ignited, the crewmember allows some time for the ﬂame to stabilize then adjusts the ﬂow of
+nitrogen suppressant through the nozzle until the ﬂame goes out. After the test, the crewmember
+turns off the nitrogen ﬂow and prepares for the next test. The science team on the ground monitors
+the video downlink to assist the crewmember in determining any peculiar ﬂame behaviors and
+reviews the sensor data overlaid on the video image. Upon completion of the tests the crewmember
+stows the hardware, and the stored images and data are returned to Earth for analysis.
+
+

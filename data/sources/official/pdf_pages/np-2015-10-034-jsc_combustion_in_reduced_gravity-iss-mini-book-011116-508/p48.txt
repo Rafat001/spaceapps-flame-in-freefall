@@ -1,0 +1,39 @@
+What Should Principal
+Investigators Know About
+Conducting Research on
+the ISS?
+Supporting research in science and technology is an important part of NASA’s
+overall mission. NASA solicits research through the release of NASA Research
+Announcements (NRA), which cover a wide range of scientific disciplines. All NRA
+solicitations are facilitated through the web-based NASA Solicitation and Proposal
+Integrated Review and Evaluation System (NSPIRES) http://nspires.nasaprs.com/
+external/. Registering with NSPIRES allows investigators to stay informed of newly
+released NRAs and enables submission of proposals. NSPIRES supports the entire
+lifecycle of NASA research solicitations and awards, from the release of new research
+calls through the peer review and selection process.
+In planning the scope of their proposal, investigators should be aware of available
+resources and the general direction guiding NASA research selection. NASA places
+high priority on recommendations from the 2011 National Research Council’s
+NRC Decadal Survey, which placed emphasis on hypothesis-driven spaceflight
+research. In addition, principal investigators (PI) should be aware that spaceflight
+experiments may be limited by a combination of power, crew time, or volume
+constraints. Launch and/or landing scrubs are not uncommon, and alternative
+implementation scenarios should be considered in order to reduce the risk from
+these scrubs. Preliminary investigations using ground-based simulators may be
+necessary to optimize procedures before spaceflight. Also, many experiments require
+unique hardware to meet the needs of the spaceflight experiment. To understand
+previous spaceflight studies, prospective PIs should familiarize themselves with the
+NASA ISS Program Science Office database, which discusses research previously
+conducted on the ISS, including that of the International Partners. A detailed
+catalog of previous, current, and proposed experiments, facilities, and results,
+including investigator information, research summaries, operations, hardware
+information, and related publications is available at www.nasa.gov/iss-science
+through the NASA ISS Program Office. Additionally, details pertaining to research
+previously supported by the Space Life and Physical Sciences Research and
+Applications Division of NASA’s Human Exploration and Operations Mission
+Directorate can be located in the Space Life & Physical Sciences Research and
+Applications Division Task Book in a searchable online database format at: https://
+taskbook.nasaprs.com/Publication/welcome.cfm.
+48
+
+

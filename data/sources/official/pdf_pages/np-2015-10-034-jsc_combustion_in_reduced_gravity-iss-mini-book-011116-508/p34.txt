@@ -1,0 +1,38 @@
+extinguishes and the vapor cloud forms because the cool flame only burns a fraction
+of the fuel vaporized from the droplet surface.
+This cool flame supported droplet combustion was not only unexpected, but also
+thought to be impossible by many in the peer community (it took a year for the
+team to convince themselves and then another year to convince the skeptical peer
+community). Cool flames form as an intermediate step between unreacted fuel and
+oxidizer, but should not form after a hot flame extinguishes. The FLEX tests showed
+that the cool flame can burn for a prolonged period of time. The microgravity
+droplet combustion tests offer a unique platform to study these low temperature
+chemical reactions. Cool flame chemistry is very important in internal combustion
+engines and a predictive understanding of their chemistry is critical in developing the
+next generation engines with higher efficiency and lower emissions.
+
+Ancillary Hardware Developments
+Although experiments in microgravity offer enticing rewards to combustion
+researchers, the harsh realities of experiments in reduced-gravity facilities present
+significant hardware and diagnostic challenges to scientists and engineers. Drop
+tower and space-based experiments have severe space, weight, volume, safety and
+power limitations. These limitations have driven technology developments with
+applications far beyond the microgravity combustion science program.
+Some noteworthy accomplishments include the development of a system for
+measuring full-field, quantitative soot volume fraction via laser-light extinction
+(Greenberg et. al., 1997a). This novel system allows the precise measurement
+of soot volume fraction and is the enabling technology for experiments that continue
+to provide benchmark data on soot formation and destruction. Rainbow Schlieren
+Deflectometry system developed at GRC provided the first full-field quantitative
+measurements of gas-phase temperature in microgravity combustion experiments
+(Greenberg, et al., 1995). The most significant developments have
+been technologies to both measure and characterize small aerosol particles (e.g., Qi
+et. al., 2008).
+
+Spacecraft Fire Safety
+The 1967 tragic accident of Apollo 1, in which three NASA astronauts lost their
+lives when a cabin fire broke out during a launch pad test, and the near-tragedy
+of Apollo 13 in 1970, when an oxygen tank exploded during transit to the moon,
+34
+
+

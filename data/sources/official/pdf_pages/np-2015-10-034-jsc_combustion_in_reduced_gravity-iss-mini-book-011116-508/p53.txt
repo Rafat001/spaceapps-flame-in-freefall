@@ -1,0 +1,79 @@
+Acronyms
+ACME
+BASS
+BRE
+CIR
+CFD
+CLD
+CM
+CNES
+DECLIC
+E-FIELD
+ELF
+EXPRESS
+FLEX
+GRC
+HTI
+HTI-R
+ISS
+LOI
+LSP
+MAMS
+MDCA
+MSG
+PIMS
+PMMA
+POC
+SAME
+SAMS
+SCWM
+SCWO
+SEA
+SLICE
+SOFBALL
+SoFIE
+SPICE
+TGDF
+TSC
+ZGF
+
+Advanced Combustion via Microgravity Experiments
+Burning and Suppression of Solids
+Burning Rate Emulator
+Combustion Integrated Rack
+Computational fluid dynamics
+Coflow Laminar Diffusion
+Combustion Module
+French Space Agency
+DEvice for the study of Critical LIquids and Crystallization
+Electric-Field Effects on Laminar Diffusion
+Enclosed Laminar Flames
+EXpedite the Processing of Experiments to Space Station
+Flame Extinguishment Experiment
+Glenn Research Center
+High Temperature Insert
+High Temperature Insert (refurbished)
+International Space Station
+Limiting Oxygen Index
+Laminar Soot Processes
+Microgravity Acceleration Measurement System
+Multi-user Droplet Combustion Apparatus
+Microgravity Science Glovebox
+Principal Investigator Microgravity Services
+Polymethylmethacrylate
+Point of Contact
+Smoke Aerosol Measurement Experiment
+Space Acceleration Measurement System
+Super-Critical Water Mixture
+Super-Critical Water Oxidation
+Space Exploration Atmospheres
+Structure & Liftoff In Combustion Experiment
+Structure of Flame Balls at Low Lewis-number
+Solid Fuel Ignition and Extinction
+Smoke Point In Coflow Experiment
+Turbulent Gas-jet Diffusion Flame
+Telescience Support Center
+Zero Gravity Facility
+53
+
+

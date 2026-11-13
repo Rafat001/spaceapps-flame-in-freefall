@@ -1,0 +1,5 @@
+Engineering model of the ACME avionics package, with the internal card stack shown at the right
+(where the two photographs are at diﬀerent scales).
+Burners and Igniter
+
+

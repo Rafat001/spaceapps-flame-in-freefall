@@ -1,0 +1,46 @@
+same material in normal gravity with other conditions being identical (pressure, oxygen
+concentration, temperature, etc.).
+•
+
+BASS-M tests ten different treated textiles at various air ﬂow rates found in forced
+convection in microgravity environments, or in a free fall environment. Each textile’s ability
+to self-extinguish is evaluated and compared against normal terrestrial behavior.
+
+•
+
+NASA tests materials for ﬂammability using an upward burning test, which is considered to
+be the worst-case geometry for ﬂammability of the material on Earth. One objective of the
+BASS-M tests is to compare the microgravity results to the terrestrial upward burning used
+to screen the materials for safe use.
+
+Space Applications
+NASA selects materials for use in space based on ground tests of their ﬂammability. But these tests
+do not consider the effects of microgravity, which changes how materials burn. This investigation
+conducts space-based burning and ﬂame extinguishment tests on cotton textiles that have been
+treated with ﬂame retardants. Results provide new knowledge of how low gravity affects a
+material’s ﬂame-retardant behavior, improving procedures for testing new materials.
+Earth Applications
+Flame-retardant materials are designed to stop ﬂames from spreading and consuming more
+material. This investigation provides new information on how low gravity affects a material’s ﬂameretardant material behavior, which beneﬁts materials science research on Earth.
+Operational Requirements and Protocols
+BASS-M is conducted inside the sealed MSG work volume. The crew member is involved throughout
+the experiment to load ﬂame retardant textile samples, initiate tests, ignite the untreated textile
+sample, monitor and record data, exchange textile samples, and replace the memory card in the
+still camera. Forty-four test samples are burned in a variety of ﬂow conditions for a total of 44 test
+points.
+Data is downlinked via video during, or immediately after, each ﬂame test. Digital photos are
+downlinked after selected ﬂame tests for ground conﬁrmation before proceeding. BASS-M testing
+session must be conducted during periods when no major re-boost or docking procedures are
+underway on the International Space Station.
+The crew member installs the SPICE and BASS hardware in the MSG work volume. The SPICE and
+BASS hardware consists of a small ﬂow duct with an igniter and a small nozzle, along with
+exchangeable textile samples. During BASS operations, a fan produces a co-ﬂow of air through the
+duct. An anemometer is used to measure the actual ﬂow rate. The crew member adjusts the airﬂow
+from 5 to 50 cm/s. The untreated textile is ignited and allowed to impinge on the treated textile until
+both extinguish, which takes about a minute. A radiometer measures ﬂame output. The crew
+member conducts each test by installing the correct textile assembly and setting the correct air
+ﬂow rate through the duct before igniting the ﬂame. After the test, the crew member prepares for
+the next test. The science team on the ground monitors the video downlink to assist the crew
+member in determining any peculiar ﬂame behaviors and reviews the sensor data overlaid on the
+
+

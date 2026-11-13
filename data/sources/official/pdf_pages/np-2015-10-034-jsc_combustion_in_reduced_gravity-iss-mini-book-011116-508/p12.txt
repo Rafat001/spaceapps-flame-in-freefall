@@ -1,0 +1,32 @@
+Figure 2. Flame image of n-heptane droplet
+burning in 70 percent carbon dioxide, 21 percent
+oxygen, balance nitrogen and translated to the right
+at 3 cm/s. (Image credit: NASA, FLEX experiment)
+
+Figure 3. Comparison of sooting propensity in different
+diluents with ethanol burning in 30 percent oxygen at pressure of
+2.4 atm. (Image credit: NASA, FLEX-2 experiment)
+
+The droplet combustion community is fortunate to currently have the Combustion
+Integrated Rack (CIR) and a CIR insert called Multi-user Droplet Combustion
+Apparatus (MDCA) available to study droplet combustion aboard the ISS. This
+facility is currently operational and allows the dispensing, deployment and ignition
+of droplets ranging in size from 1 to 5 mm (either free floating or fiber supported)
+in a 0-3 atm ambient environment of up to 40 percent oxygen by volume (balance
+of a range of inert gases and inert gas mixtures).
+
+Flame Extinguishment Experiment (FLEX)
+The objective of the FLEX is to study heptane and methanol droplets in ambient
+mixtures of oxygen and nitrogen diluted with a second inert gas (nitrogen, carbon
+dioxide, helium or xenon). The goal of the research is to examine how the addition
+of an inert gas suppressant influences the flammability limit of the two fuels. The
+application is an improved quantitative understanding of how flammability limits
+change in reduced gravity as it relates to fire safety. The research to date has shown
+that the flammability limit is lower in reduced gravity. The implication is that
+terrestrial standards for inert gas suppressants in low gravity do not offer the same
+margin of safety as in normal gravity.
+The FLEX is of interest for terrestrial applications as well. The physical and
+chemical kinetic models of heptane and methanol combustion are the building
+12
+
+

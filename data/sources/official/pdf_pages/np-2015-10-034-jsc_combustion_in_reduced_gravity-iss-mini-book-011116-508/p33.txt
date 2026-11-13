@@ -1,0 +1,38 @@
+Flame Stability
+In normal gravity, flames that approach their flammability limit are frequently
+“blown off” by the large buoyancy-induced flow. These same near-limit flames in
+microgravity exhibit very different and unique behaviors in many cases. The simple
+microgravity candle flame in Figure 1, as it depleted the ambient oxygen and
+neared extinction, exhibited flame oscillations in most tests (Dietrich et al., 2000).
+These oscillations increased in magnitude until the flame finally extinguished, but
+they could exist for prolonged periods of time (over one minute in extreme cases).
+Similar flame oscillations occur during spherically symmetric droplet combustion
+(Dietrich et al., 1996).
+Instabilities also occur during flame spread over solid and liquid surfaces. Over
+solids, a complex fingerlike smoldering front occurs during near-limit flame spread
+under certain conditions (Olson et al., 1998). A pulsating gas-phase flame spread
+occurs as a flame spreads across a liquid pool under selected ambient conditions (e.g.,
+Miller et al., 2000). Finally, microgravity experiments involving premixed flames
+demonstrate instabilities in both low- and high-Lewis-number gas mixtures (e.g.,
+Pearlman and Ronney, 1994).
+These instabilities, obscured in normal gravity by the strong buoyant flow, highlight
+the ability of microgravity experiments to provide insights into fundamental flame
+behavior. Highly exothermic reactions coupled with nonlinear heat loss through
+radiative and diffusive transport of both heat and mass provide combustion
+theoreticians and modelers a rich canvas on which to develop, test and validate
+simplified and detailed flame models.
+
+Cool Flames
+Recent spaceflight experiments (FLEX) involving single alkane droplets burning in
+a quiescent ambient uncovered unexplained and unexpected behavior. For the large
+alkane droplets, after ignition the droplet burns for a short time with a typical hot
+flame. As expected, the hot flame extinguished when the radiative loss reduced the
+flame temperature below a critical value. Inexplicably after hot flame extinction,
+however, the droplet continued to vaporize at the same rate for an extended period
+and then suddenly stopped vaporizing at a finite droplet size. The plateau in
+vaporization occurred coincident with the formation of a large vapor cloud. This
+vaporization, we now know, is supported by a lower-temperature cool flame that
+forms after visible flame extinction. The vaporization stops when the cool flame
+33
+
+

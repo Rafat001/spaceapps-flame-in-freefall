@@ -1,0 +1,28 @@
+•
+
+NASA Glenn Research Center (lead center for ISS combustion research)
+
+•
+
+Profs to a Flame (cover story, pp. 24-29)
+
+•
+
+Structure & Liftoﬀ In Combustion Experiment (SLICE, an ACME precursor)
+
+•
+
+To Understand Combustion, Yale Engineers Look to the Skies
+
+•
+
+ZIN Technologies, Inc. (ACME payload developer)
+
+Implementation
+The ACME experiments will be conducted with a single modular set of hardware in the Combustion
+Integrated Rack (CIR) on the International Space Station (ISS), where the CIR is depicted below.
+
+The three main elements of the ACME-unique hardware are the chamber insert (shown below), a highdeﬁnition color camera, and an avionics package (for data acquisition and control and also depicted
+below).
+
+

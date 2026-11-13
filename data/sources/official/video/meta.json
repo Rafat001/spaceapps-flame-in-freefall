@@ -1,0 +1,20 @@
+{
+  "id": "AVuEiKxOpc0",
+  "title": "2026 Challenge | Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion",
+  "uploader": "NASA Space Apps Challenge",
+  "uploader_id": "@NASASpaceAppsChallenge",
+  "channel": "NASA Space Apps Challenge",
+  "upload_date": "20261110",
+  "duration_seconds": 519,
+  "duration": "8:39",
+  "description": "The explanation of the \"Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion Data\" challenge is more specifically described on https://www.spaceappschallenge.org/2026/challenges/",
+  "webpage_url": "https://www.youtube.com/watch?v=AVuEiKxOpc0",
+  "view_count": 1477,
+  "like_count": 25,
+  "video_path": "/workspace/spaceapps-video/video.mp4",
+  "video_format": "YouTube format 18 (mp4, H.264 640x360 30fps + AAC stereo); downloaded via yt-dlp android player client after other clients were blocked",
+  "video_bytes": 14426301,
+  "transcript_path": "/workspace/spaceapps-video/transcript.txt",
+  "transcript_source": "auto",
+  "transcript_source_detail": "YouTube automatic captions, language en-orig (English Original). No manual English subtitles were available. Manual langs: none. Cleaned and de-duplicated from json3 timedtext."
+}

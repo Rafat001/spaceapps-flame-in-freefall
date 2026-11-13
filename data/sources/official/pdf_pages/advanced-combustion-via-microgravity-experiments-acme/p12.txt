@@ -1,0 +1,35 @@
+Imaging Overview
+•
+
+ACME’s primary ﬂame diagnostics are a suite of imaging systems including ﬁve video cameras
+and two illumination systems. Three of the cameras and one illumination system are part of
+the CIR facility and are already in use on orbit.
+
+•
+
+Collectively, the imaging systems will enable color, CH*, and OH* imaging; pyrometry;
+measurement of the soot volume fraction; and/or operational support.
+
+•
+
+All but one of the cameras is mounted outside of the chamber.
+
+Color Imaging
+•
+
+Color imaging is provided by two video cameras: a high-deﬁnition digital camera mounted
+outside of the chamber and a standard analog camera mounted on the chamber insert (with a
+turning mirror).
+
+•
+
+Both cameras are part of the ACME hardware that is now in development.
+
+•
+
+The signal from the analog camera (shown below) will be downlinked in near real time to
+support the experiment operations, where Light-Emitting Diodes (LEDs) within the chamber can
+be used to illuminate the igniter and burner to both support the operations and provide
+reference images.
+
+

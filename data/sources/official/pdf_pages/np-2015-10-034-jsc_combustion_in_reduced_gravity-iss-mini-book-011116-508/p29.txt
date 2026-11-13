@@ -1,0 +1,22 @@
+Figure 18. Sub-critical and super-critical states of water mixtures imaged aboard the International Space Station showing
+(a) the geometry of the fluid meniscus at sub-critical conditions and the monophasic super-critical fluid with no meniscus at
+super-critical conditions. (Image credit: NASA-CNES, SCWM experiment)
+
+The investigation will utilize a refurbished High Temperature Insert (HTI-R), built
+by CNES, with a fluid cell (approximately 0.3 cm3) filled with a water-salt mixture
+using Na2SO4 (0.5 percent w/v) at its critical density. During an experiment, the
+salt-water mixture will be slowly raised to a temperature and pressure above its
+critical point enabling observation of homogenous salt precipitation, measurement
+of the critical end-point (i.e., the shift in critical temperature that is due to the
+presence of the salt), and the transport mechanisms both with and without the
+presence of a temperature gradient. A baseline test was conducted using pure water
+in the HTI during a test sequence on the ISS performed in July 2010. Images from
+this test showing the location of the liquid phase and meniscus geometry at subcritical and super-critical conditions is shown in Figure 18. This test sequence was
+designed to investigate the formation and stability of a temperature gradient in the
+fluid in its super-critical state. The follow-on SCWM experiment will employ a
+similar test sequence and results from the pure-water test sequence will establish a
+useful baseline for comparison.
+
+29
+
+

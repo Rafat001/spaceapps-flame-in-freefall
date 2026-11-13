@@ -1,0 +1,31 @@
+Figure 5. Effect of increasing coflow velocity (from left to right, where the image scale is not consistent) on lifted flame
+behavior from exploratory tests for the Structure & Liftoff In Combustion experiment, which were conducted in 2009 on
+the ISS as part of the Smoke Point In Coflow experiment.
+
+burner and stabilize at a downstream position. The twin purposes for the SLICE
+research are increased fuel efficiency and reduced pollutant emission in practical
+combustion devices. More explicitly, the experiment is being conducted to advance
+combustion modeling capability, which “allows system designers to improve
+efficiency and reduce harmful pollutants in ways never before possible” (as stated
+by an external reviewer of the SLICE). SLICE will be carried out using the SPICE
+hardware in the MSG and is a precursor to the CLD Flame experiment that is now
+in development for the ISS CIR as part of the ACME project (Figure 5).
+
+Burning Rate Emulator (BRE)
+Unlike the other current ACME, the BRE is focused on fire prevention, especially
+in spacecraft. Specifically, BRE’s objective is to improve our fundamental
+understanding of materials flammability, such as ignition and extinction behavior,
+and assess the relevance of existing flammability test methods for low- and partialgravity environments. The burning of solid and liquid fuels will be simulated
+by using a flat porous burner fed with gaseous fuel. The fuel flow rate will be
+controlled based on the measured heat flux (at the burner) and surface temperature,
+mimicking the dependence of condensed-phase fuel vaporization on thermal
+feedback. A small number of gaseous fuels will be used to simulate the burning of
+fuels such as paper, plastic and alcohol by matching properties such as the surface
+temperature and smoke production. The significance of this work is that it has the
+potential to efficiently and completely measure burning rate over a wide range of
+fuel properties. Since this study controls the inherent fuel properties that affect
+various fire scenarios, it will ascertain the relevance of existing flammability test
+methods for low- and partial-gravity environments.
+15
+
+

@@ -1,0 +1,28 @@
+This International Space Station (ISS) Researcher’s Guide is published by
+the NASA ISS Program Science Office.
+Authors:
+Suleyman A. Gokoglu, NASA Glenn Research Center
+Daniel L. Dietrich, NASA Glenn Research Center
+Dennis P. Stocker, NASA Glenn Research Center
+Paul V. Ferkul, Universities Space Research Association
+Sandy L. Olson, NASA Glenn Research Center
+Michael C. Hicks, NASA Glenn Research Center
+Executive Editor: Amelia Rai
+Technical Editor: Neesha Hosein
+Designer: Cory Duke
+Cover and back cover:
+a. S pherical flame in microgravity with ethylene flowing from a porous sphere into quiescent air.
+Glowing soot is trapped within the blue hydrocarbon flame, while a bright arc of large soot
+particles can be seen in the foreground. The test was conducted in NASA Glenn’s 2.2-Second
+Drop Tower as a prelude to the Flame Design experiment which is in development for conduct on
+the International Space Station as part of the Advanced Combustion via Microgravity Experiments
+(ACME) project. (Image credit: NASA, ACME project, Flame Design experiment)
+b. Candle flames: burning in earth gravity (left) in comparison to one burning in 0-g (right). (Image
+credit: NASA, Candle Flames experiment)
+c. A snapshot of 2-cm diameter acrylic sphere burning in microgravity at 17 percent oxygen and
+10 cm/s flow from the Burning and Suppression of Solids (BASS) experiment conducted on the
+International Space Station. Occasional yellowish-red streaks appear as vapor bubbles formed in the
+solid are ignited as they burst through the blue flame. (Image credit: NASA, BASS experiment)
+2
+
+

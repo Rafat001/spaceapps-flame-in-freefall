@@ -1,0 +1,18 @@
+•
+
+The 12-bit digital camera (shown below) records at up to 30 full frames (1360×1024) per second,
+and is equipped with a motorized lens with independent control of the zoom, iris, and focus.
+
+•
+
+The digital camera will be equipped with a ﬁlter assembly (shown below) with four options,
+where selection of a clear “ﬁlter” allows for color imaging.
+
+•
+
+Color imaging can also be carried out with a blue-green BG7 Schott glass ﬁlter, which balances
+the color planes to avoid saturation in the red while maintaining sensitivity in the blue and
+green. The natural ﬂame color can be approximately reconstructed, but the primary purpose of
+the ﬁlter is color-ratio pyrometry and measurement of the soot volume fraction.
+
+

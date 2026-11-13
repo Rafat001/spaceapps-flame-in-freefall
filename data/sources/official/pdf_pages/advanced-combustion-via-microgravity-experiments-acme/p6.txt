@@ -1,0 +1,49 @@
+case of the inverse ﬂames, the oxygen/inert mixture is injected from a central tube, while the fuel is
+ejected from a surrounding annulus. The Flame Design experiment will explore whether the
+stoichiometric mixture fraction can characterize soot and ﬂammability limits for non-premixed ﬂames
+like the equivalence ratio serves as an indicator of those limits for premixed ﬂames.
+Structure and Response of Spherical Diﬀusion Flames (s-Flame)
+The purpose of the Spherical Flame (s-Flame) experiment is to advance our ability to predict the
+structure and dynamics, including extinction, of both soot-free and sooty ﬂames. The spherical ﬂame,
+which is only possible in microgravity, will be created through use of a porous spherical burner from
+which a fuel/inert gas mixture will issue into the CIR chamber. Flames will be ignited at non-steady
+conditions and allowed to transition naturally toward extinction. Tests will be conducted with various
+inert diluents, in both the fuel and chamber atmosphere. The fuel gases include hydrogen and methane
+for soot-free ﬂames, and ethylene for sooty ﬂames. One experiment objective is to identify the
+extinction limits for both radiative and convective extinction (i.e., at high and low system Damkohler
+numbers, respectively). Another objective is to determine the existence, onset, and nature of pulsating
+instabilities that have been theoretically predicted to occur in such ﬂames with fuel/diluent mixtures
+that are above a critical Lewis number.
+https://youtu.be/f9AQ-OebO_U
+Cool Flames Investigation with Gases (CFI-G)
+Cool diﬀusion ﬂames were discovered during droplet combustion experiments aboard the International
+Space Station (ISS) in 2012, and this initiated a rapidly growing ﬁeld of combustion research. Droplet
+experiments necessarily involve unsteady burning rates, so cool diﬀusion ﬂames have never been
+observed as steady spherical ﬂames. A natural progression toward understanding cool diﬀusion ﬂames
+is to observe quasi-steady spherical ﬂames on porous burners, and this is the topic of this research. The
+ﬂames to be studied are rich in the physics and chemistry of combustion and thermal transport
+processes.
+This experiment was selected for spaceﬂight by the Center for the Advancement of Science in Space
+(CASIS) and the National Science Foundation (NSF).
+GENERAL OVERVIEW
+•
+
+RELEVANCE: Most internal combustion engines are designed using computer models that
+neglect cool ﬂame chemistry, but ignition and ﬂame propagation in engines depend on cool
+ﬂame chemistry. Cool ﬂame chemistry also has a signiﬁcant impact on fuel octane and cetane
+numbers, whose understanding has large economic consequences.
+
+•
+
+MICROGRAVITY: The ﬂame system to be studied will allow steady spherical cool diﬀusion ﬂames
+to be observed for the ﬁrst time. The tests, performed with gaseous fuel and a porous spherical
+burner, cannot be performed in normal gravity or in ground-based microgravity facilities.
+
+•
+
+MODELING: Observing cool ﬂames burning as steady spherical diﬀusion ﬂames will yield
+valuable insight into cool ﬂame chemical kinetics. An advanced Computational Fluid Dynamics
+(CFD) model will simulate the ﬂames and will aid the testing and development of cool ﬂame
+kinetics models.
+
+

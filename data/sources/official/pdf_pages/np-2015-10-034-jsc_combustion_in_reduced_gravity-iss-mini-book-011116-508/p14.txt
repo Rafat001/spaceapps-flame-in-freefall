@@ -1,0 +1,40 @@
+a fuel to emit light and to produce
+soot (see Figure 4). Soot control
+remains one of the major unsolved
+problems in combustion and
+engine development.
+The current research program
+includes six experiments planned
+for the ISS. The Structure &
+Liftoff In Combustion Experiment
+(SLICE) of M.B. Long (Yale U.)
+Figure 4. Flames from the 2009 Smoke Point In Coflow experiment et al. uses the SPICE hardware
+showing the transition, with increasing fuel flow, from non-smoking to study lifted and lifting flames
+(left) to a fully open and smoking flame tip (right).
+in the space station glovebox.
+With the similarity in both
+research focus and hardware, SLICE is effectively a second generation of the ELF
+investigation. SLICE started and completed its operations in 2012. The other
+five planned experiments are part of the Advanced Combustion via Microgravity
+Experiments (ACME) project and are in joint development for the CIR, where
+they will each be conducted using a single modular set of hardware. The ACME are
+focused on soot processes, flame stability and extinction, materials flammability,
+and electric-field effects. In alphabetical order, the experiments include: Burning
+Rate Emulator (BRE) of J.G. Quintiere (U. Maryland) et al.; Coflow Laminar
+Diffusion Flame (CLD Flame) of M.B. Long (Yale U.) et al.; Electric-Field Effects
+on Laminar Diffusion Flames (E-FIELD Flames) of D. Dunn-Rankin (UC Irvine)
+et al.; Flame Design of R.L. Axelbaum (Washington U.) et al.; and Structure and
+Response of Spherical Diffusion Flames (s-Flame) of C.K. Law (Princeton U.) et
+al. The ACME are expected to begin operating in 2016. As with their predecessors,
+the ACME experiments are all laminar diffusion flames. Two experiments take
+advantage of the microgravity environment by using a one-dimensional, spherical
+flame enveloping a porous spherical burner. Another experiment uses a porous plate
+burner, whereas the remaining two use a gas-jet flame configuration, both with and
+without a coaxial air flow.
+
+Structure & Liftoff in Combustion Experiment (SLICE)
+The SLICE investigates the structure of lifting and lifted flames where flow
+conditions and the combustion chemistry cause the flame to detach from the
+14
+
+

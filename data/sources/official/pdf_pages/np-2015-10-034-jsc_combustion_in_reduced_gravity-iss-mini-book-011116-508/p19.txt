@@ -1,0 +1,28 @@
+around flight experiment that started its operations in March 2012. It is a precursor
+for the Solid Fuel Ignition and Extinction (SoFIE) flight experiments that are
+currently planned for launch in 2019. The BASS approach is to use an existing
+flow duct, SPICE, to carry out microgravity tests in the ISS Microgravity Science
+Glovebox. Several types of solid materials were burned including flat samples,
+polymethylmethacrylate (PMMA) spheres, porous wax slabs and wax candles.
+The glovebox is normally limited to ISS “air,” nominally 21 percent oxygen by
+volume and one atmospheric pressure. However, more recently nitrogen has been
+
+Figure 10. Solid Fuel Ignition and Extinction insert concept under development. A recirculating flow provides a region of well
+characterized jet flow within which solid samples will be burned.
+
+used to perform tests as low as 17 percent oxygen. The tests have yielded useful results
+on the flow-velocity effect and flame suppression (by nitrogen), and the quick return
+of the test results has helped to guide the next, more complete flight experiments.
+The SoFIE flight hardware (Figure 10) is currently under development and
+includes an insert for the CIR rack. In addition, some of the investigations will
+make use of a larger and improved flow duct along the lines of the BASS concept.
+The considerations for the solid fuels include material, preparation and purity,
+geometry, external heating, pre-ignition conditions, and ignition. The most likely
+candidates include plastics like PMMA or Delrin. There is a tremendous advantage
+to be gained if the sample can be burned, extinguished and then re-ignited multiple
+times. This minimizes the time-consuming process of opening the chamber and
+replacing the fuel specimens. The chamber environment will consist of oxygen
+from 10 percent to 40 percent by volume at a pressure between 0.2 and 1.5 atm.
+19
+
+

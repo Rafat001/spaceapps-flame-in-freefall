@@ -1,0 +1,34 @@
+Science Results
+The Smoke Point isn’t a break room for those who like to light up, it’s the point at which gas-jet
+ﬂames begin to emit soot. Studying soot-emitting ﬂame advances our understanding of ﬁre safety
+in space. This investigation completed 250 combustion tests with various fuel mixtures, including
+propylene, propane, and ethylene, in microgravity. Researchers identiﬁed more than 70 smoke
+points, which yielded estimates of soot-forming conditions and ﬂame dimensions. The data will
+help researchers understand how smoke points are affected by microgravity and co-ﬂowing air
+speed, or air ﬂowing in the same direction as fuel gas.
+Space Applications
+Current NASA spacecraft materials selection is based upon a simpliﬁed test method that
+segregates material based upon behavior on Earth without real consideration of microgravity
+effects. A critical element of this understanding is the radiative heat emission from the ﬂame. This
+heat emission is strongly inﬂuenced by the extent of soot formation. Improved understanding of
+soot formation and thereby the heat release from microgravity ﬁres will allow more complete and
+effective utilization of the ﬂammability test results. These results can be used in ﬁrst-order models
+and predictions of heat release in spacecraft ﬁres and as a means to extend heat release data from
+tests like the NASA cone-calorimeter test to microgravity ﬁres to a performance-based material
+selection process.
+Earth Applications
+The smoke-point phenomena is a classical metric in the understanding of the heat release and
+spread rate of ﬁres. It is commonly used in ﬁre modeling on Earth and to understand the soot
+growth and emission by ﬂames. The dominant characteristics of many ﬂames of practical interest
+are nonbuoyant. SPICE seeks to extend our understanding by looking at the interaction of ambient
+ﬂow with the smoke point, enabling us to better predict heat release from non-buoyant ﬂames in
+practical combustors (e.g., jet engines and furnaces).
+
+SPICE Contacts
+Project Manager: Robert Hawersaat, NASA Glenn Research Center
+Principal Investigator: Dr. David Urban, NASA Glenn Research Center
+Co-Investigator: Prof. Peter Sunderland, U. Maryland
+Project Scientist: Dr. Zeng-guang Yuan, NCSER
+Engineering Team: ZIN Technologies, Inc.
+
+

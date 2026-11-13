@@ -1,0 +1,41 @@
+droplet radius in a quiescent ambient. During the experiments involving binary droplet arrays, two
+droplets are placed along a support ﬁber at known locations and the droplets are ignited
+simultaneously and the subsequent burning is recorded. In the convective ﬂow tests, a single
+droplet is subjected to a known and controlled sub-buoyant ﬂow of the quiescent atmosphere
+around the droplet. The ﬂow is realized when the droplet is tethered to a substrate. In this tethered
+mode the droplet is placed at the intersection of two ﬁber crosshairs. The cross hairs are then
+moved through the quiescent atmosphere surrounding the droplet.
+The experiments in FLEX-2 can easily be categorized into four separate groupings; these being, the
+pure fuel experiments, the fuel mixture experiments, the convective ﬂow experiments, and the
+binary droplet array experiments. Each of these groupings are sponsored by one or more
+investigators comprising the investigation team and entail anywhere from 30 to 60 separate tests
+using different fuels, different ambient conditions, or different droplet conﬁgurations.
+Contact Information
+PI Team: Prof. Forman Williams, UCSD (lead)
+Prof. Frederick Dryer, Princeton;
+Prof. Mun Choi, University of Connecticut;
+Prof. Benjamin Shaw, USC-Davis;
+Dr. Vedha Nayagam, NCSER;
+Prof. Thomas Avedisian, Cornell;
+Dr. Daniel Dietrich, NASA GRC
+PS: Michael Hicks, NASA GRC
+PM: J. Mark Hickman, NASA GRC
+Engineering Team: ZIN Technologies, Inc.
+
+Flame Extinguishment Experiment -2 JAXA (FLEX-2J)
+The FLEX-2J experiment is a joint effort between NASA and the Japanese
+Space Agency, JAXA, as well as Nihon University and Yamaguchi
+University. Derived from the JAXA Group Combustion Experiment
+science objectives, the FLEX-2J will complement those goals using the
+NASA FLEX-2 hardware and combustion facilities on ISS. FLEX-2J will
+observe and measure fuel droplet motions during ﬂame spreading along
+a one-dimensional droplet array. Three droplets will be deployed to ﬁxed
+positions upon ceramic beads on a silicon carbide ﬁber. Then an
+additional three to ten movable droplets are positioned to the ﬁber at
+known locations. The ﬁrst ﬁxed droplet is ignited, and the ﬂame is propagated down the array from
+droplet to droplet. The subsequent burning and motions of the unpinned droplets are recorded;
+particularly the velocities of the free droplets before and after ﬂame spread are measured. In
+addition, the experiment will obtain the history of ﬂame leading edge position, ﬂame spread limit
+span, and the growth process of the group ﬂame along the fuel droplet array. Speciﬁcally, the
+
+

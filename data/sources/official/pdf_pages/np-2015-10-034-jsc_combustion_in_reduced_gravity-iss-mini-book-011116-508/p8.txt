@@ -1,0 +1,40 @@
+Why Conduct Combustion
+Research in Microgravity?
+Combustion occurs when fuel and oxygen react to produce carbon dioxide, water
+and heat. For the foreseeable future, the overwhelming majority of delivered energy
+in terrestrial applications will be from combustion or other chemically reacting
+systems. These energy uses cover the range from electric power and transportation
+to processes directly tied to the delivered material (e.g., glass and steel manufacture).
+These processes produce some of the most important environmental hazards
+currently facing humanity (global climate change, acid gas pollution, mercury
+contamination from coal, and wild-land fires).
+Despite being the subject of active research for over 80 years, combustion processes
+remain one of the most poorly controlled phenomena that have a significant impact
+on human health, comfort and safety. This is because the simplest combustor
+(e.g., kitchen stove) remains beyond our detailed numerical modeling capabilities.
+Typically, the combustion process involves a large number of chemical species
+(hundreds) and reactions (even thousands). It is these species and reactions
+that determine flammability limits (combustor operating ranges) and pollutant
+emissions. Much of combustion research involves developing a comprehensive and
+predictive quantitative understanding of this complex process. This understanding
+usually occurs in smaller, bench-scale experiments that are amenable to detailed
+study and modeling. In these bench-scale experiments, however, buoyant forces,
+created by gravity and the large temperature differential between the flame and
+the ambient gas, dominate and frequently obscure the physical and chemical
+phenomena of interest, and hence, complicate analyses. In the absence of gravity,
+buoyancy can be suppressed, and the analyses can be reduced to much simpler onedimensional systems.
+To understand the strong influence of gravity on flames, one can consider the
+density gradients in flames. Typical flame temperatures are on the order of 2,300
+degrees Kelvin, whereas ambient temperatures are approximately 300 degrees
+Kelvin. This produces an eight-fold density change over the scale of a centimeter.
+The resultant density gradient induces a strong velocity field that dominates all but
+the highest flow fields. This flow field causes the flame to lift and point upward.
+The resultant flow instabilities cause the flicker typical of flames on Earth. Figure 1
+contains a gallery of 1-g to 0-g comparison flames.
+By varying or eliminating the effects of gravity, we can extract fundamental data
+that are important for understanding combustion systems. This approach has
+been implemented to some extent in existing terrestrial reduced-gravity platforms,
+but the experimental time scales and sizes have been limited. Long-duration
+8
+
+

@@ -1,0 +1,35 @@
+highlight the hazard posed by accidental fires on spacecraft. A fire or explosion
+requires all elements of the “fire triangle” to be present: fuel, oxygen and a source of
+ignition. Crewed spacecraft, by necessity, contain all three. In addition, spacecraft
+frequently operate at an ambient oxygen mole fraction higher than that of air, have
+limited options for escape, and have almost no tolerance for damage to critical life
+support systems. As a result, NASA maintains a very disciplined safety culture with
+respect to fire through strict material controls, rigid design standards for electronic
+equipment (and all possible ignition sources), and mandatory suppression systems on
+all spacecraft.
+Although NASA has been vigilant in its approach to accidental fires, the approach
+to fire safety aboard spacecraft was dominated by a general lack of knowledge about
+how fire behaves in microgravity. This resulted in several critical misconceptions
+about potential fires in spacecraft:
+1. A steady fire cannot exist in a quiescent microgravity environment.
+2. A fire will self-extinguish if ventilation is shut off.
+3. Because the reduced-gravity environment is inherently safer, terrestrial fire
+standards and tests represent a very conservative approach to fire safety.
+Research at NASA GRC in both ground-based laboratories and microgravity
+facilities and space-based microgravity experiments (summarized by Friedman and
+Ross, 2001 and Ruff et al., 2009) demonstrates the fallacy of these assumptions and
+demonstrates GRC’s contribution to spacecraft fire safety science with respect to fire
+prevention through material flammability and screening.
+GRC also maintains active research programs in both fire detection and suppression.
+Fundamental research in microgravity highlighted the vastly different particulate size
+associated with flames in microgravity. Since many fire detectors operate by sensing
+fire-generated particulates, they would need to use different signatures to detect
+fires in microgravity. If terrestrial fire detectors were used in space, they would be
+“looking” for something different than they should. One of the achievements in this
+area is a new device that monitors particulates and chemical species simultaneously
+to better detect the onset of a fire. In joint testing with the Federal Aviation
+Administration, this device outperformed current aircraft smoke detectors in falsealarm rejection and real-event detection. The new device can be “tuned” to examine
+particulates and species characteristics associated with fires in microgravity.
+35
+
+

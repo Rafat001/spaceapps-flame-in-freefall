@@ -1,0 +1,38 @@
+The significance of this portion of the work is that it will establish quantitative
+criteria, based on fundamentals, which determine the flammability of materials
+in microgravity where radiative heat transfer dominates because of high-residence
+time created by a lack of buoyancy-induced or forced flow. This can lead to the
+specification of a critical fuel thickness, a critical forced velocity, or a critical oxygen
+level that makes a material inherently fire safe.
+
+External Heat Flux Effects on the Ignitability and Suppression of
+Materials in Microgravity
+The goal is to conduct microgravity ignition and suppression experiments for materials
+burning in low-speed, forced flow with externally applied heat flux in SEA. Time to
+ignition and the time between introduction of suppression agent and extinction are
+measured as a function of environmental conditions. The experiment will be supported
+by a comprehensive model of piloted ignition and extinction of materials in SEA.
+Reduced-gravity aircraft tests have been conducted. However, because of the limited,
+reduced gravity time, ignition times could be obtained only at high, radiant heat
+fluxes. At airflow velocities below those induced by buoyancy, ignition times reach
+values that are significantly lower than those observed in normal-gravity buoyant
+flows. The reduction of the ignition times indicates that, under these low-flow
+conditions, the ignition process is affected more by the reduction in surface heat loss
+than by the corresponding oxygen transport reduction. By developing a theoretical
+model for the ignition time, it was also shown that the critical heat flux for ignition
+in microgravity can be as short as half the value measured in normal gravity.
+Microgravity experiments will be used to validate the model, which in turn will
+be used to predict the fire behavior of different combustible materials in SEA.
+Currently, there exists no testing methodology specifically designed to determine
+the fire hazard of materials under those conditions. The significance of this portion
+of the work is that it will fill that void with a new test methodology and provide
+additional information about the effect of SEA on the flammability and suppression
+of materials. It may also help to interpret and extend current NASA testing
+procedures to SEA.
+
+Narrow Channel as a 1-g Flammability Test Method
+The goal is to measure flame spread rate across a representative, thick, solid fuel
+as a function of forced opposed flow velocity, oxygen concentration, and pressure,
+24
+
+

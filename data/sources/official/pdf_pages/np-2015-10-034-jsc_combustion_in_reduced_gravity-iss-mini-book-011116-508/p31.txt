@@ -1,0 +1,38 @@
+Low-Stretch (Low-Velocity) Flames
+Reduced-gravity facilities offer the opportunity to study flames where the
+characteristic velocities are much lower than typical buoyancy-induced gas
+velocities, approximately 1 m/s in the candle flame in Figure 1. These low-speed
+flows result in flame stretch or strain rates that are unachievable in terrestrial,
+bench-scale experiments. Conventional theories of flame limits all predicted that,
+as the flame stretch characteristic velocity decreased, the oxygen concentration
+that would support steady or quasi-steady-state combustion would monotonically
+decrease.
+This was not the case, however, as several classes of experiments demonstrated. At
+low-characteristic velocities (low-flame stretch), radiative loss begins to dominate,
+eventually leading to flame extinction at sufficiently low velocities or stretch rates
+(e.g., Olson et al., 1988). Figure 8 shows this schematically. For flame spread across
+solid materials, the ordinate in Figure 8 is the ambient oxygen mole fraction and the
+abscissa the gas velocity across the solid surface. The boundary represents limit of
+steady flame spread. Outside of this boundary, steady flame spread does not occur;
+inside, it does. The curve identifies a much lower flammability limit than originally
+predicted. For flame spread across solid materials, the characteristic gas velocity
+of the minimum in the curve is on the order of 10 cm/s and also corresponds
+to a maximum in the flame spread rate. To give perspective, this is the velocity
+typical of that of spacecraft ventilation systems. This observed minimum has large
+implications for material flammability in reduced gravity and, thus, implications for
+spacecraft fire safety.
+Another related phenomenon with spacecraft fire safety implications is the
+observation of flame spread direction at low-flow velocities in the microgravity
+environment of spaceflight when a thin fuel is ignited at the middle of the sample.
+Completely contrary to normal-gravity behavior, the flame spreads upstream, into
+the oncoming airflow, in space when the forced-flow velocities are low (Figure 9);
+whereas, the flame always spreads downstream, in the buoyant flow direction, in
+normal gravity, even in the absence of forced flow.
+Recent results from the BASS experiment currently running on the ISS indicate
+that NASA-STD-6001 Test 1 is not conservative, and materials can burn at lower
+oxygen levels in microgravity than on Earth. Also, current findings show that local
+application of suppressant is not adequate for flame extinguishment. The local jet
+entrains air and sustains the flame even when the ambient airflow is turned off.
+31
+
+

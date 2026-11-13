@@ -1,0 +1,38 @@
+(CFD) codes for combustor design and analysis is inherently tied to the reliability of
+laminar flame velocities, either built directly into the codes or, more frequently, used
+to calibrate the chemical models employed in the codes.
+
+Super-Critical Processes
+Hydrothermal flames (e.g., Figure 20) are defined as regions where oxidation
+reactions occur in a super-critical water medium with sufficient intensity and rates
+as to produce luminous flames. They may be utilized to solve both of the major
+issues impacting SCWO mentioned earlier; i.e., surface fouling and flow blockage
+that is due to the precipitation of salts and corrosion of internal reactor surfaces.
+This may be accomplished by confining the flame to the interior of the reactor
+within a co-flowing region of sub-critical water. Any precipitated salts formed in
+the super-critical flame region will dissolve in the sub-critical fluid and the acidity
+is diluted, thereby eliminating both precipitate build-up on and corrosion of the
+reactor walls.
+Ground-based studies of hydrothermal flames have focused primarily on laminar and
+turbulent diffusion flames. Major challenges remain in the understanding of heat and
+mass transport, chemical kinetics, the mixture equation-of-state and hydrodynamics
+associated with laminar and turbulent flows. Eliminating buoyancy will lead to an
+improved understanding of laminar and turbulent flames by controlling the flow rate
+independent of buoyant acceleration. For turbulent diffusion flames, eliminating
+buoyancy will eliminate its influence on the energetic large scales of turbulence
+allowing for the development of improved turbulent sub-models.
+A SCWO research facility for the ISS to investigate the effects of buoyancy in
+SCWO reactors and to enable the progression of SCWO technology for NASA
+life support application to higher technology readiness levels (TRLs) has been
+proposed. It will have a reactor with an internal volume of approximately one liter,
+two orthogonal optical views and will be designed with a removable, principalinvestigator-specific reactor base to accommodate different injection and/or
+burner configurations. It is envisioned that the facility will be placed in an Express
+Rack and will require the build-up of new diagnostic hardware, comprising two
+cameras, a collimated backlight, a Raman spectrometer and an array of temperature,
+pressure and flow sensors. It will have a wide range of science objectives including
+studying the hydrodynamics of sub-critical and super-critical mixing, reaction zone
+characterization, heat transfer in super-critical fluids and precipitate transport in
+reacting super-critical water.
+40
+
+

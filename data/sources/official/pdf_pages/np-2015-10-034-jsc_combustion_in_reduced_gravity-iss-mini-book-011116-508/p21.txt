@@ -1,0 +1,27 @@
+Figure 13. Drop tower test burning PMMA sphere showing transition to 0-g and flame response to the application of a jet of
+nitrogen for extinguishment.
+
+Space Exploration Atmospheres (SEA) relevant to NASA can be investigated.
+Airflows in the spacecraft ventilation range of 0 to 30 cm/s will be supplied to the
+flame. The flow field must be well-characterized so the models will have accurate
+boundary conditions.
+
+Burning and Suppression of Solids (BASS)
+The BASS investigation is currently being conducted in the MSG to examine
+the burning and extinction characteristics of a wide variety of fuel samples in
+microgravity (Figures 11-13). The BASS experiment will improve 1-g material fire
+safety rating tests and help to guide strategies for extinguishing accidental fires in
+microgravity. BASS results contribute to the limited database of solid combustion
+in microgravity. In addition, BASS will guide combustion computational models
+used in the design of fire detection and suppression systems in microgravity
+and on Earth. Detailed combustion models are validated using the simpler flow
+environment afforded by tests in microgravity. Once validated, they can be used to
+build more complex combustion models needed to capture the important details
+of flames burning in normal gravity. These models have wide applicability to the
+general understanding of many terrestrial combustion problems.
+BASS tests the hypothesis that materials in microgravity, with adequate ventilation,
+burn as well if not better than the same material in normal gravity with other
+conditions being identical (pressure, oxygen concentration, temperature, etc.).
+21
+
+

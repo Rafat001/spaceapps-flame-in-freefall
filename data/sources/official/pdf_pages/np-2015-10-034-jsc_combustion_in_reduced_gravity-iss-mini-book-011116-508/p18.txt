@@ -1,0 +1,46 @@
+Figure 8. Flammability map shows region of
+enhanced flammability in the low-convective flow
+range.
+
+The fuel gases include hydrogen and methane
+for soot-free flames, and ethylene for sooty
+flames. One experiment objective is to identify
+the extinction limits for both radiative and
+convective extinction (i.e., at high and low
+system Damkohler numbers, respectively).
+Another objective is to determine the existence,
+onset and nature of pulsating instabilities that
+have been theoretically predicted to occur in
+such flames with fuel/diluent mixtures that are
+above a critical Lewis number.
+
+Solid-Fuel Combustion/Material
+Flammability
+
+Space-based and ground-based, low-gravity
+experiments in material flammability have
+revealed substantial differences in the behavior
+of flames over solid materials in reduced
+Figure 9. Flame spreading preferentially upstream gravity. Many of these observations have
+in slow convective flow. (Image credit: NASA,
+specific impact on the hazard of spacecraft
+Radiative Ignition and Transition to Spread
+fires in addition to being of fundamental solid
+Investigation experiment)
+fuel combustion importance. Microgravity
+experiments demonstrated that the assumed
+margin of safety of reduced flammability in microgravity, based on quiescent test
+results, may not be valid for most spacecraft environments where ventilation flow
+strongly enhances flames. In the low-flow conditions of microgravity or partial
+gravity, some materials are flammable at lower oxygen concentrations than in
+normal gravity (Figure 8). Materials are easier to ignite in low gravity because of
+reduced natural convective cooling from the fuel surface. Once established, flames
+in low-speed airflows may preferentially spread into the oncoming airflow (Figure
+9) depending on the flow speed. This is opposite to the effect that occurs in normal
+gravity. Radiant heat transfer was shown to substantially affect the material’s
+flammability. Surface radiative heat loss reduces the flammability, but an external
+radiative heat flux can cause materials to ignite and spread faster.
+Currently, solid fuel combustion flight research is limited to the Burning and
+Suppression of Solids (BASS) experiment aboard the ISS. BASS is a rapid turn18
+
+

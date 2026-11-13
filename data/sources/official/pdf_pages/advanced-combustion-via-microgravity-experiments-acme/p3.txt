@@ -1,0 +1,45 @@
+examined for ﬂames at both very dilute and highly sooting conditions. Measurements will be made of
+the structure of diluted methane and ethylene ﬂames in an air coﬂow. Lifted ﬂames will be used as the
+basis for the research to avoid ﬂame dependence on heat loss to the burner. The results of this
+experiment will be directly applicable to practical combustion issues such as turbulent combustion,
+ignition, ﬂame stability, and more.
+
+GENERAL OVERVIEW
+•
+
+EXPERIMENT: The Coﬂow Laminar Diﬀusion Flame (CLD Flame) experiment investigates
+combustion at the extremes of the fuel dilution spectrum – namely pure-fuel ﬂames that
+produce soot, and highly diluted ﬂames that are close to extinction. At ﬁrst glance, the pure-fuel
+ﬂame shapes resemble familiar candle ﬂames. However, comparison of the ﬂames under
+normal gravity and microgravity conditions shows a striking diﬀerence (in microgravity, the
+absence of buoyancy means hot gases no longer rise).
+
+•
+
+SOOT: The yellow color of these ﬂames comes from the incandescence of hot soot, which is
+made up of tiny carbon particles. These soot particles have been shown to have adverse health
+eﬀects as well as being a signiﬁcant contributor to climate change. Sooty microgravity ﬂames
+are wider and taller than their normal gravity counterparts, and the concentration of soot can be
+larger by nearly a factor of ten. By careful design of the burner and close monitoring of the ﬂow
+conditions, the images from the ﬂames produced can be analyzed to give quantitative
+information on temperature and soot concentration. This data can then be used to compare and
+improve computer models of soot formation and destruction, which will have beneﬁts on earth
+as well as in space.
+
+•
+
+FUEL DILUTION: When the fuel is diluted with an inert gas (nitrogen in our case), the soot
+disappears and the ﬂame can lift oﬀ the burner surface and appear as a faint blue cone. With
+increased dilution, the ﬂame becomes a ﬂat disk, and ﬁnally extinguishes. Once again, the
+microgravity ﬂames are seen to behave quite diﬀerently, with highly diluted fuels producing
+stable ﬂames that would not be possible under normal gravity conditions. In addition to
+implications for ﬁre safety in space, results from these weak ﬂames are important for
+understanding their stabilization mechanism and dilution limits.
+
+SELECTED FINDINGS
+•
+
+For sooty ﬂames, results show that the absence of gravity can have a major eﬀect. Flames are
+taller, wider, cooler, and far sootier in microgravity as compared to normal gravity.
+
+

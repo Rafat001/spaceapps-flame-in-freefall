@@ -1,0 +1,69 @@
+•
+
+As a result of the signal loss through the narrow bandpass ﬁlter, binning is employed such that
+the OH* images are recorded at 512×512 and 30 fps.
+
+Color Ratio Pyrometry
+•
+
+Pyrometry is a technique used to determine an object’s temperature from its broadband
+thermal radiation which is typically infrared but becomes visible at high temperatures. The
+yellow through red coloring of a typical hydrocarbon ﬂame is caused by the glow of the hot soot
+particles, whereas the blue is related to the combustion chemistry (and is predominantly CH*
+emission). Yellow indicates a higher temperature than red, but a ratio of the light emitted at
+diﬀerent wavelengths (or wavelength ranges) can be used to determine the temperature, but
+only where the soot is visibly glowing.
+
+•
+
+Pyrometry can be accomplished with CIR’s monochrome High-Bit Depth Multispectral (HiBMs)
+camera, when equipped with a Liquid-Crystal Tunable Filter (LCTF) for imaging at multiple
+spectra. However, it requires a quasi-steady ﬂame for measurement at each desired wavelength
+band.
+
+•
+
+The HiBMs camera has a telecentric optical system and is recorded at 512×512 and 30 frames
+per second (fps). Although it has a 1024×1024 pixel array, binning has been necessary because of
+signal loss through the LCTF ﬁlter.
+
+•
+
+* For soot-free ﬂames, Thin Filament Pyrometry (TFP) can be used to determine the ﬂame
+temperature. Ceramic ﬁbers are stretched across the ﬂame and glow when hot, just like the soot
+particles.
+
+•
+
+ACME’s chamber insert is equipped with a crew-replaceable array of 5 silicon carbide (SiC) ﬁbers.
+The TFP ﬁbers are orthogonal to the ﬂame axis and the array can be translated along the ﬂame
+axis to the desired position downstream of the burner, e.g., based on the downlink of the analog
+video.
+
+•
+
+* During set up, the crew can manually orient the TFP ﬁber array so that it is orthogonal to
+either the HiBMs camera with the LCTF or ACME’s digital color camera.
+
+Temperature Measurement
+•
+
+As a supplement to the pyrometry, the ACME chamber insert can accommodate six far-ﬁeld
+thermocouples to measure the spread of the thermal ﬁeld in the spherical ﬂame experiments.
+
+•
+
+The thermocouples are of limited utility for the other experiments because they are positioned
+upstream of the burner tip. Therefore, they will generally not be installed by the crew to reduce
+the chance of accidental damage.
+
+•
+
+There will be two versions of a four-thermocouple rake to allow a choice of near and far
+measurements. Other arrays could be designed to support future experiments, but they cannot
+extend downstream of the burner tip without interfering with other (e.g., optical)
+measurements.
+
+Soot Volume Fraction
+
+

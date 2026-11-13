@@ -1,0 +1,21 @@
+•
+
+Alternately, CH* imaging can be conducted with this camera because the ﬁlter assembly includes
+a 430-nm bandpass ﬁlter with a 10-nm full width at half-maximum transmission (FWHM). A 450nm bandpass ﬁlter (again with a 10-nm FWHM) can be used with the CH* ﬁlter to eﬀectively
+subtract interfering broadband soot emission. However, the ﬁlter assembly rotates slowly so
+such subtraction eﬀectively requires a separate test with each ﬁlter and of course reproducible
+ﬂame conditions.
+
+OH* Imaging
+•
+
+OH* is an excited (radical) molecule that emits light at 310 nm, which is in the ultraviolet, when
+it drops to a lower energy state in a process known as chemiluminescence.
+
+•
+
+ACME will carry out OH* imaging using CIR’s Low-Light-Level Ultraviolet (LLL-UV) package, which
+is a monochrome camera with an intensiﬁer (for 280-700 nm) and a 310-nm bandpass ﬁlter
+(with a 10-nm FWHM) for OH* imaging.
+
+

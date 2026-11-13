@@ -1,0 +1,35 @@
+The experimental hardware for the Smoke Points In Co-ﬂow Experiment (SPICE), of David L. Urban
+(NASA Glenn) and Peter B. Sunderland (U. Maryland), which is currently onboard the International
+Space Station, was built to allow studies of coﬂow laminar diffusion ﬂames. The SPICE hardware is
+within the ISS MSG in the image to the right. While the SPICE investigation has been speciﬁcally
+focused on a study of soot production and oxidation within ﬂames, the hardware can be used
+without modiﬁcation to conduct the SLICE experiment. In terms of the experimental hardware, the
+only additional requirements for SLICE are more fuel (i.e., gas bottles), recording media, and minor
+hardware elements such as new nozzle(s). The three existing SPICE nozzles are all smaller than the
+nozzle planned for the CLD Flame experiment. Of course, the SLICE testing could most beneﬁt the
+CLD Flame experiment by bracketing and/or including the same nozzle size. It is also possible that
+screen(s) would be ﬂown to alter the velocity proﬁle of the coﬂow.
+The SLICE operating procedures will have some differences to the standard SPICE procedures given
+the differing objectives. However, those changes are fully within the capabilities of the SPICE
+hardware, as demonstrated by exploratory testing that has already been conducted on orbit. As a
+simple example, the standard SPICE procedure calls for a ﬁxed air velocity and an increase of the
+fuel ﬂow until the smoke point is reached. In contrast, SLICE will include testing where the fuel ﬂow
+is ﬁxed, and the air velocity is incrementally increased until the diffusion ﬂame detaches and lifts
+off from the nozzle. In all cases, still and video measurements of the ﬂame structure will be made
+for comparison with detailed numerical computations. Given that the capture of the lifting
+processes in normal gravity is extremely difficult, SLICE will provide valuable photographic
+observations on the transient ﬂame behavior.
+The lifted nature of the ﬂames can be discerned from the ﬂame shape in the example images
+(which are not at the same scale) and the distance from the nozzle tip (which is not visible). While
+the case(s) on the left may look like attached ﬂames, the outward fuel-lean ﬂare of each ﬂame’s
+base reveals it’s lifted nature.
+
+SLICE Contacts
+Project Manager: Robert Hawersaat, NASA Glenn Research Center
+Principal Investigator: Prof. Marshall Long, Yale University
+Co-Investigator: Prof. Mitchell Smooke, Yale University
+Co-Investigator: Mr. Dennis Stocker, NASA Glenn Research Center
+Co-Investigator: Dr. Fumiaki Takahashi, NCSER
+Engineering Team: ZIN Technologies, Inc.
+
+

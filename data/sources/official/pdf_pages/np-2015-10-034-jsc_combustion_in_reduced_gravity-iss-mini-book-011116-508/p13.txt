@@ -1,0 +1,37 @@
+blocks for more complex models of practical liquid fuels such as diesel and jet fuel.
+The long-duration experiments on the ISS provide benchmark data that researchers
+can develop, improve and ultimately validate detailed theoretical and numerical
+models of liquid hydrocarbon fuel combustion. The FLEX experiments performed
+to date demonstrated radiative and diffusive extinction, combustion instabilities,
+lower flammability limits and recently explained cool flame phenomenon after
+visible flame extinction. Comparison with theoretical and numerical models
+validated aspects of the models while identifying areas that require improvement.
+FLEX-2, the follow-on experiment, builds upon FLEX. It studies a range of fuels
+including mixtures of pure fuels, real fuel surrogates, soot formation, slow subbuoyant, convective flow effects and droplet-droplet interactions. International
+collaborations extend this to study flame propagation in droplet arrays and
+investigate the combustion of liquid, biologically derived fuels.
+
+Gaseous Diffusion Flames
+Past research involved four space experiments that focused on soot processes, flamevortex interaction and flame stability. The Laminar Soot Processes (LSP) experiment
+of G. Faeth (U. Michigan) et al. was conducted in the Combustion Module (CM)
+facility in 1997 on the STS-83 and STS-94 space shuttle missions and again in
+2003 on the STS-107 mission. The STS-87 mission in 1997 included both the
+Turbulent Gas-jet Diffusion Flame (TGDF) experiment of M. Y. Bahadori (SAIC)
+et al. and the Enclosed Laminar Flames (ELF) investigation of L. D. Chen (U.
+Iowa) et al.; TGDF was automated and conducted in a Get-Away-Special Canister
+(GAS Can) in the payload bay. ELF was crew operated and conducted in the
+Middeck Glovebox. Lastly, the Smoke Point In Coflow Experiment (SPICE) of D.
+L. Urban (NASA Glenn Research Center [GRC]) et al. was conducted in 2009 on
+the ISS in its Microgravity Science Glovebox (MSG).
+All four experiments were studies of laminar, axisymmetric, gas-jet diffusion flames.
+This is true of even the TGDF experiment, where the flame was not turbulent but
+where an iris mechanism around its base induced vortices in the entrained air. While
+TGDF and LSP flames were within sealed chambers, ELF and SPICE flames were
+within fan-driven flow ducts. The affiliated LSP and SPICE experiments studied
+soot processes in ambient and coflow configurations, respectively. The SPICE
+experiment investigated the transition from non-sooting to sooting with a major goal
+to provide simple predictions of soot emissions. The smoke-point is a result of the
+fuel chemistry and flow conditions and is an effective indicator of the propensity of
+13
+
+

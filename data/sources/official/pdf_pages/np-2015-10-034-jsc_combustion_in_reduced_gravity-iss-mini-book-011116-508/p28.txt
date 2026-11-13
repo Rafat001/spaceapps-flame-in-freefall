@@ -1,0 +1,25 @@
+Figure 17. Comparison between 1-g and 0-g axial temperature immediately following axial injection of oxidizer; (a) in
+1-g temperature profiles show high degree of buoyant-driven thermal mixing for locations above injector and (b) in 0-g
+temperature profiles show significant thermal stratification with a hot zone (TC-B) established between two cooler regions
+suggesting poor thermal mixing in 0-g. (Image credit: NASA, SCWO experiment)
+
+The first experimental objective was to determine the extent to which buoyancy
+affects the developing temperature profile. Buoyancy effects were expected because
+the reaction is exothermic; however, because of the limited microgravity time in the
+drop tower, it was not entirely clear these would be observable. Comparison of the
+temperature traces, as shown in Figure 17 for both normal gravity and microgravity,
+confirmed this expectation. In normal gravity, temperatures were found to be
+more uniform in the bulk fluid, which is due to buoyant mixing; whereas, nonuniformities resulting in thermal stratifications (evidenced by a “hot zone” between
+two cooler regions) were observed under microgravity conditions. A second
+experimental objective, to measure the reaction rate and product concentrations
+with Raman spectroscopy, was not met because of budgetary constraints.
+This earlier work, which was initiated in 2008, at GRC was instrumental in
+development of a collaborative effort between NASA and the French space agency,
+CNES. The objective of this ISS flight investigation, referred to as the SuperCritical Water Mixture experiment (SCWM), is to investigate the behavior of
+salt precipitate formation and transport in super-critical water in the presence of
+temperature gradients. This will provide practical insights into the mechanisms of
+salt agglomeration, transport and deposition that often plague SCWO reactors.
+
+28
+
+

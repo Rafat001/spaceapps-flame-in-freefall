@@ -1,0 +1,40 @@
+Highlights and Lessons
+Learned
+Well over 200 principal investigators have utilized reduced-gravity facilities to
+study fundamental combustion phenomena in the areas described above. Most of
+the research was conducted in drop towers and aircraft, and the most promising
+experiments, after a thorough scientific and engineering review process, were
+selected for conduct in space-based facilities. The investigations led to numerous
+discoveries, highlighted the importance of frequently neglected phenomena,
+improved our understanding and predictive capabilities for all combustion systems,
+and enhanced our ability to detect and prevent spacecraft fires. Some of the most
+pertinent highlights and lessons learned are presented below.
+
+Flame Existence
+One of the most seemingly simple, but long-standing, questions addressed by
+microgravity testing involved whether flames could even exist without buoyancy.
+Many researchers, including notable experts, argued openly in the scientific
+literature that, in the absence of convection, a steady flame could not exist;
+diffusive transport alone could not sustain a flame. Two spaceflight experiments
+demonstrated conclusively the fallacy of such arguments.
+The first involved the behavior of a simple candle flame in a long-duration
+microgravity environment (Dietrich et al., 2000). The candle flames in Figure 1 show
+images of a familiar shape seen in normal gravity and a flame during a microgravity
+test aboard the Russian Mir orbiting station. Contrary to published speculation, the
+microgravity flame burned in some tests for over 45 minutes before extinguishing
+from a lack of fuel. Despite having a much lower burning rate (the microgravity flame
+in Figure 1 was nearly invisible to the naked eye and a very long shutter time was
+needed to record the image shown), the microgravity flame burned to a lower ambient
+oxygen mole fraction than the identical candle flame would have on Earth.
+The second example involves the existence of stationary, spherical premixed flames
+or flame balls. These flames were predicted theoretically to exist if (among other
+conditions) the thermal diffusivity of the bulk mixture was much lower than the
+mass diffusion of the limiting reactant: that is, a low Lewis number. Their existence,
+however, was thought to be a strictly mathematical exercise. The SOFBALL studied
+premixed fuel/oxidizer/diluent mixtures in a large combustion chamber and showed
+conclusively that the flames could exist (Figure 14), producing the weakest flames
+ever burned (approximately 1 Watt) and some burning for over 40 minutes before
+the experiment timed out (e.g. Ronney, et al., 1998).
+30
+
+

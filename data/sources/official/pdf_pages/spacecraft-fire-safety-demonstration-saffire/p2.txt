@@ -1,0 +1,39 @@
+Launched April 18, 2017 aboard Orbital ATK’s seventh contracted commercial resupply
+services mission for NASA.
+The third in the Saffire series, Saffire-III will test the same cotton-ﬁberglass blend that was burned
+in Saffire-I, but at a higher ﬂow velocity. Saffire-III will be ignited after the Cygnus module departs
+the space station in early June, before its destructive entry through Earth’s atmosphere.
+Saffire-IV
+Launched February 15, 2020 aboard Northrop Grumman CRS-15 to the International Space
+Station
+Saffire-IV was ignited May 11, 2020, when Cygnus departed the International Space Station, before
+its destructive re-entry through Earth’s atmosphere. This large-scale ﬁre experiment was remotely
+activated by Northrop Grumman operators and NASA/GRC Saffire staff helped monitor the
+experiment as it burned in four installments. Data returns will continue through May 28. Saffire IV
+burned the same materials were burned in Saffire II, but at different pressures and oxygen
+saturation for comparison.
+NASA’s Spacecraft Fire Safety Demonstration Project, Saffire IV
+NASA ignited another set of space ﬁre experiments last week when Saffire IV lit a number of longer,
+stronger ﬂames inside Northrop Grumman’s Cygnus cargo spacecraft.
+Saffire, NASA’s Spacecraft Fire Safety Demonstration Project, is a series of six experiments that
+investigate how ﬁres grow and spread in space, especially aboard future spacecraft bound for the
+Moon and Mars.
+During the Saffire IV experiment, researchers burned a sample of SIBAL cloth, a composite of 75%
+cotton and 25% ﬁberglass. As the ﬂame spreads shortly after ignition, you can see bright speckles
+behind, which are glowing char on the cloth.
+Saffire-V
+Ensuring the reliability of ﬁre safety measures for future spacecraft requires experiments that
+provide a realistic examination of the risks, but it is difficult to study ﬁres of practical size in an
+occupied spacecraft.The Spacecraft Fire Experiment-V (Saffire-V) investigation builds on the
+previous Saffire experiment using the Northrop Grumman Cygnus cargo resupply vehicle after it
+leaves the International Space Station (ISS). Saffire-V examines ﬁre growth in the range of pressures
+and oxygen concentrations expected in future exploration spacecraft.
+Saffire-VI
+Understanding how ﬁres spread in space is vital for developing ﬁre prevention measures and ﬁre
+suppression protocols, but it is difficult to perform ﬂame-related experiments aboard a spacecraft.
+The Spacecraft Fire Experiments (Saffire) use the Cygnus resupply vehicle after it leaves the space
+station to reduce risk to crew and spacecraft. Saffire-VI, the last of the series, builds on previous
+results from Saffire-I through V to test ﬂammability at different oxygen levels and to demonstrate
+ﬁre detection, combustion product monitoring, and post-ﬁre cleanup capabilities.
+
+

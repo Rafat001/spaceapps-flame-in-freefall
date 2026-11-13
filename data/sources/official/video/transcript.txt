@@ -1,0 +1,63 @@
+Transcript of: 2026 Challenge | Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion
+Source: YouTube auto-captions (en-orig), cleaned and de-duplicated
+Uploader: NASA Space Apps Challenge
+Duration: 8:39
+
+[00:03] [music]
+
+[00:04] Tracy Prater:
+[00:04] Hi, I'm Tracy Prater, and I'm the program scientist for physical sciences at NASA headquarters.
+[00:09] I'm part of the team who helped develop the Flames in Free Fall Challenge. Fires are extremely dangerous, especially in space exploration. Imagine you're on a space mission and you're 239,000 miles from the Earth in a confined space when you hear a fire alarm.
+[00:26] To help avoid that scenario, NASA has been conducting research on fire in space for decades, and much of that data is housed within the Physical Sciences Informatics database, which you'll be using for this challenge.
+[00:38] In microgravity, we don't have buoyancy-driven convection. This means hot air doesn't rise and cold air doesn't sink the way it does on Earth.
+[00:47] This creates a different thermal environment, and thus flame characteristics, ignition, propagation, and extinguishment can be quite different than in normal gravity. You'll hear more about that later in this video.
+[01:01] As NASA gets back to the lunar surface, this time to stay and establish a long-term presence there, we need to understand the behavior of flames in a partial gravity environment.
+[01:10] We anticipate habitats on the lunar surface will have increased oxygen levels, which mitigates the risk of crew experiencing decompression sickness, aka the bends, and enables them to conduct more frequent activities on the Moon in space suits.
+[01:24] However, this enhanced oxygen and partial gravity environment also has implications for flammability of materials.
+[01:32] By helping NASA look at our existing data sets in new ways, you can help us on our journey to explore farther while also keeping crew safe.
+[01:41] The data sets we have can inform fire safety protocols, design of fire suppression systems, and how we screen materials to assess the risk of fire in various environments.
+
+[01:54] Yichen Alice Chen:
+[01:54] Welcome, welcome. My name is Yichen Alice Chen, the director of Lasers, Flames, and research group from the mechanical and aerospace engineering department at the University of California, Irvine.
+[02:08] I'm a subject matter expert for the flame in free fall challenge.
+[02:14] NASA has been studying how different types of fuels including gaseous, liquid, and solid fuels burn in low gravity environment under different atmospheric conditions.
+[02:25] And these microgravity flames have been studied using drop towers, parabolic flights, sounding rocket, suborbital flights, and through the missions to the ISS.
+[02:37] Now, let's see what flames look like in microgravity.
+[02:43] Let's take a candle flame as an example. On Earth, buoyancy causes hot gases to rise, given its flame familiar teardrop shape and carrying the soot upwards, making the flame yellow.
+[02:58] In microgravity, buoyancy is greatly reduced. The flame becomes more spherical, soot-free, and blue because the hot gas is no longer rise as they do on Earth.
+[03:11] The flame also does not flicker in the same way as it does on Earth.
+[03:17] Another striking example is NASA's microgravity e-field flames experiment.
+[03:23] An electric field drags flame ions in the spherical flame, creating ion-driven wind, and it transform it into a teardrop-shaped flames even in microgravity.
+[03:39] This acrylic rod burns in a fan-driven flow during the bass two microgravity experiment.
+[03:47] And the melting acrylic bubbles create irregular features of the flame.
+[03:53] This is a BRE gaseous burner which uses a porous burner for flammability and extinction in low gravity.
+[04:03] To sum up, microgravity flames can look dramatically different from the flames on Earth because the buoyancy is greatly reduced.
+[04:15] Now, let's look at the data.
+
+[04:18] Shubha Yusen:
+[04:18] Hello and welcome to the NASA Space App Challenge. My name is Shubha Yusen and I work at the Marshall Space Flight Center serving as the lead scientist for a NASA Physical Science Data Repository known as Physical Science Informatics or PSI for short.
+[04:35] By now, you must have read all about the specific combustion-related Space App Challenge.
+[04:42] Over the last couple of decades, NASA has been performing significant investigations in the area of combustion science showing how a flame behaves very differently in a microgravity environment compared to that of Earth.
+[05:00] This has generated a large volume of data. Sometimes for a user looking for a specific investigation or a specific data set, this might be a little overwhelming and confusing.
+[05:14] Equally important, it might be difficult to interpret the data such that such that they can design the next generation of spacecrafts or even habitats on the lunar surface that are safer from a fire safety standpoint.
+[05:32] This way to get to PSI is to just type in psi.nasa.gov and it takes you to the PSI web link and the data repository from there.
+[05:44] Alternatively, you can just scan in the QR code.
+[05:48] Once you are there, you'll notice that there are six different areas of physical sciences.
+[05:54] You select combustion science and you'll see 24 investigations with 12 terabytes of data.
+[06:01] That in itself is a large volume of data and that is why we need your help with your app.
+[06:06] Once you click on one of these investigations, it will give you the overview of that specific investigation such as the objectives and the approach. And also on the left, you will see a number of folders containing the important scientific data sets and the scientific documents.
+[06:25] For example, if you click on data files and documents, it will take you to a folder where you will notice that a number of samples were tested under the reduced gravity environment and each of them have a folder of its own with scientific data in them.
+[06:43] Also important are the publications, the ones marked in blue.
+[06:48] Each have their own DOI which can take you directly to the journal publication website where you can either read the entire publication or at least get an abstract.
+
+[07:01] Xiaoting Miao:
+[07:01] Hello everyone. My name is Xiaoting Miao. I'm an associate professor in the Department of Mechanical and Aerospace Engineering at Case Western Reserve University.
+[07:11] I am a subject matter expert for the Flame in Free Fall Challenge.
+[07:16] Okay, this is the challenge for you to build an SI power web-based dashboard that summarizes ranks and interprets the results of combustion investigations to deliver fire safety insights.
+[07:30] Your tool should enable users to first, identify investigations most relevant to the fire safety needs of habitable crew environment.
+[07:39] Second, extract data that supports predictive modeling of flammability and fire scenarios in space explorations.
+[07:48] And third, highlight research that enforces the development of next generation fire safety controls and equipment.
+[07:57] Here is challenge add-on for Earth applications. Your dashboard could also address potential applications of the PSI data to fire safety on Earth.
+[08:07] Here some examples. The fine water mist extinguishers originally developed for use on the ISS have practical application here on Earth.
+[08:17] Similarly, some NASA technology has led to improvements in intellectual smoke detection and firefighter gear, including protective clothing, air tank, etc.
+[08:30] Together, let's turn complex data into clear answers and make NASA's next giant leap a safer one.

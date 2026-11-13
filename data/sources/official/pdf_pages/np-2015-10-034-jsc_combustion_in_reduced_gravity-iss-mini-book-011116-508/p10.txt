@@ -1,0 +1,14 @@
+fundamentally different in space than on Earth. Thus, an improved knowledge of
+combustion in reduced gravity is essential to adapt fire safety concepts and systems
+to the more stringent conditions of the space environment.
+Benefits of conducting combustion research in microgravity can thus be
+summarized as:
+• Removal of the complex interaction between the buoyant flow and the energy
+feedback to the flame.
+• Realistic simulation of the fire risk seen in manned spacecraft.
+• Practical simulation of the gravitational environment seen for reacting systems
+in future spacecraft.
+
+10
+
+

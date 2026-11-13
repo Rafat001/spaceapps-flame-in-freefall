@@ -1,0 +1,40 @@
+Fire Safety
+Past research involved a space experiment
+that focused on measuring the
+extinguishing capability of water mist on
+a premixed flame propagating along a
+tube to gain a better understanding of the
+water mist fire suppression phenomenon
+and help design more effective mist firesuppression systems to replace banned
+Halon systems. The Water Mist Fire
+Suppression experiment (Mist) of T.
+McKinnon (Colorado School of Mines)
+et al. was conducted in the CM facility
+in the space shuttle mission STS-107 in
+2003. The purpose of the Mist experiment
+was to study how water droplet diameter
+and water concentration affect the speed,
+strength and shape of flames created
+in various fuel and oxygen mixtures.
+After years of research, testing, flight
+experiments, and advocating the benefits
+Figure 15. Low-polluting burner remains cool to touch.
+(Image credit: NASA-Lawrence Berkeley Lab, Ultraclean of water-mist technology, non-toxic
+water-mist portable fire extinguishers
+Low Swirl Combustion project)
+were designed, tested, fabricated and
+certified for spaceflight. The first two of the planned nine water-mist portable fire
+extinguishers were sent to the ISS in December 2015 to replace CO2 units that are
+currently onboard. The rest of the units will be sent in three more missions.
+Spacecraft fire detection provides significant challenges compared to terrestrial
+conditions because the properties of the smoke emitted from fires is affected
+by buoyancy. The conditions on a spacecraft require rapid detection of fires
+with limited false alarms. Two recent experiments examined the issues related
+to spacecraft fire detection. The Dust Aerosol measurement Feasibility Test
+examined the background aerosol particulate levels on the ISS. The Smoke Aerosol
+Measurement Experiment (SAME) examined the particle-size distribution of the
+smoke from spacecraft materials. These instruments can provide useful guidance for
+the designers of future spacecraft smoke detectors.
+26
+
+

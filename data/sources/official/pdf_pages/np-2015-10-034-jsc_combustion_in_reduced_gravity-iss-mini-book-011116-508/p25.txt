@@ -1,0 +1,39 @@
+corresponding in particular to NASA‘s SEA in microgravity. Opposed flow
+extinction limits for the thick, solid fuel will be found by lowering the velocity
+until the flame extinguishes at a given oxygen concentration and pressure.
+The data will be used to determine if an optimum gap height in the corresponding
+Narrow Channel device can be found to reproduce these results in normal gravity,
+or how the gap height needs to be changed for different conditions. The Narrow
+Channel is a 1-g material flammability test, which minimizes buoyant flow by
+constraining flame height. By restricting the buoyant plume, the flame size is
+controlled and in many ways mimics microgravity flames.
+The significance of this portion of the work is that experiments can be structured
+using the Narrow Channel in normal gravity to predict aspects of microgravity
+flammability for a wide range of candidate materials. The flight experiment will
+provide a direct comparison of the Narrow Channel tests and the numerical
+model results.
+
+Premixed Flames
+Prior work in premixed flames,
+flown on two separate space
+shuttle missions, was limited to
+very fuel-lean conditions in which
+the mass diffusivity dominated
+the thermal diffusivity (i.e., very
+low Lewis number). Under these
+conditions, steady flame balls were
+Figure 14. Flame balls, a classical combustion phenomenon that is
+shown to be possible (Figure 14). unique to microgravity. (Image credit: NASA, SOFBALL experiment)
+This remarkable result validated
+prior theoretical predictions,
+improved our understanding of combustion reactions near extinction limits, and
+provided pure test beds for numerical modeling. The Structure of Flame Balls at
+Low Lewis-number (SOFBALL) experiment of P. Ronney (USC) was conducted
+in the CM facility in 1997 on the STS-83 and STS-94 space shuttle missions and
+again in 2003 on the STS-107 mission.
+Another noteworthy microgravity work related to premixed flames was the invention
+of a burner with ultra-low pollutant emissions (Figure 15). This has applications in
+domestic water heaters and furnaces.
+25
+
+

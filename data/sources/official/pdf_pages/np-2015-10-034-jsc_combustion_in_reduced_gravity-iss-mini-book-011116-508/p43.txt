@@ -1,0 +1,40 @@
+Facilities and How
+to Choose Them
+Acceleration Measurement and Environment Characterization
+The terms microgravity, reduced gravity, low gravity, zero gravity and weightlessness
+are often used interchangeably to describe an environment where the gravitational
+body force is significantly less than that on Earth. This ambiguous description
+points to a question of how to measure and characterize a reduced-gravity
+environment and any disturbances. Disturbances in a microgravity environment
+are created by crew activities such as exercising, push-offs and landings, and simply
+opening and closing drawers and doors in addition to equipment operation, vehicle
+docking and undocking, thruster firings, and other movements. These disturbances
+must be measured to understand their impact on the data from scientific and
+engineering experiments.
+The Space Acceleration Measurement System (SAMS) and the Microgravity
+Acceleration Measurement System (MAMS) provide continuous measurement of
+the ISS vibratory and quasi-steady acceleration environment, respectively. SAMS
+sensors measure acceleration levels using tri-axis accelerometers. SAMS flew on
+Mir from 1994 to 1998, continued on 20 shuttle missions and currently flies
+aboard the ISS. To complement SAMS, MAMS was developed to measure the
+very low-frequency disturbances (less than 0.01 hertz) that the SAMS sensors are
+unable to detect. Both SAMS and MAMS sensors have measured acceleration levels
+aboard the ISS since its establishment in 2001 and currently record acceleration
+disturbances in 21 unique locations aboard the ISS. SAMS measurement capability
+extends to all three laboratories, while MAMS data can be mathematically mapped
+to any arbitrary location using rigid-body assumptions.
+SAMS and MAMS support NASA‘s Physical Sciences Research Program. These
+instruments, along with the Principal Investigator Microgravity Services (PIMS)
+project, serve a critical, ongoing role in support of vehicle loads and dynamics
+monitoring and assist technology developers and principal investigators in various
+disciplines. The goal is to characterize and understand the acceleration environment
+as related to a wide array of disturbances and events that routinely or uniquely take
+place on the ISS.
+
+Combustion Integrated Rack (CIR)
+The CIR was designed to test experiments that focus on fire prevention, detection
+and suppression of fires in space. The hardware was delivered on STS-126
+(November 2008) to the ISS and installed in the U.S. Laboratory. The CIR
+43
+
+

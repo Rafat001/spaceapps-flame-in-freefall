@@ -1,0 +1,42 @@
+record data, exchange fuel samples, and replace the igniter. Forty-one test samples will be burned
+in a variety of ﬂow conditions for a total of 89 test points.
+Data is downlinked via video during or immediately after each ﬂame test. Digital photos are
+downlinked after selected ﬂame tests for ground conﬁrmation before proceeding. BASS testing
+session must be conducted during periods when no major reboost or docking procedures are
+underway on the International Space Station (ISS).
+Operational Protocols:
+The crewmember installs the BASS hardware in the MSG work volume. The BASS hardware consists
+of a small ﬂow duct with an igniter and a small nozzle along with exchangeable fuel samples.
+During BASS operations a fan produces a co-ﬂow of air through the duct. An anemometer is used to
+measure the actual ﬂow rate. The crewmember adjusts the airﬂow from 5 to 50 cm/s. The ﬂame is
+ignited and allowed to burn for about a minute. A nitrogen suppressant is then supplied via a mass
+ﬂow controller, from 0 to 500 cc/min. A radiometer measures ﬂame output. The crewmember
+conducts each test. They install the correct fuel assembly and set the air ﬂow rate through the duct
+before igniting the ﬂame. When the ﬂame is ignited, the crewmember allows some time for the
+ﬂame to stabilize then adjusts the ﬂow of nitrogen suppressant through the nozzle until the ﬂame
+goes out. After the test, the crewmember turns off the nitrogen ﬂow and prepares for the next test.
+The science team on the ground monitors the video downlink to assist the crewmember in
+determining any peculiar ﬂame behaviors and reviews the sensor data overlaid on the video image.
+Upon completion of the tests the crewmember stows the hardware, and the stored images and
+data are returned to Earth for analysis.
+Space Applications:
+The current NASA spacecraft materials selection is based on a standard test method (NASA–STD–
+6001 Test 1) that segregates material based on 1-g behavior without consideration of low gravity
+effects. A critical element of this understanding is the radiative heat emission from the ﬂame. These
+results are used in ﬁrst order models and predictions of heat release in spacecraft ﬁres and to
+extend heat release data from tests like the NASA cone calorimeter test (NASA–STD–6001 Test 2) to
+a performance-based material selection process. Using nitrogen as a ﬂame suppressant in
+microgravity provides a direct link to current and planned extinguishment techniques.
+Earth Applications:
+BASS results provide essential guidance to ground-based microgravity combustion research
+efforts. Detailed combustion models are validated using the simpler ﬂow environment afforded by
+tests in microgravity. Once validated, they can be used to build more complex combustion models
+needed to capture the important details of ﬂames burning in normal gravity. These models have
+wide applicability to the general understanding of many terrestrial combustion problems.
+Related Publications
+•
+
+Armstrong JB, Olson SL, T’ien JS. Transient Model and Experimental Validation of Low
+Stretch
+
+

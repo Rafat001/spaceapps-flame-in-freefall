@@ -1,0 +1,37 @@
+and spray combustion. These programs have immense practical applications
+to the nation’s energy future as the vast majority of energy consumption in the
+transportation sector is from liquid fuels. Finally, a critical missing element in the
+current program is the lack of a comprehensive, ground-based research program
+that includes experiments in drop towers and the companion theoretical and
+numerical modeling efforts. These programs serve two purposes. First, they provide
+valuable and relevant insights into the physics of liquid fuel combustion, while
+providing unparalleled educational opportunities to graduate and undergraduate
+students. Second, they form the basis of the next generation of space-based
+microgravity experiments.
+
+Gaseous Diffusion Flames
+The gaseous diffusion flame research is generally focused on improved combustion
+technology for Earth applications. Practical combustion often involves turbulent
+flames at elevated pressures with at least partial premixing. These aspects suggest
+promising opportunities for future research. Turbulent combustion is exceedingly
+complex, but microgravity testing provides the opportunity to study momentumdominated flames with increased scales and residence times making the research
+more tractable. Although turbulent flames can present significant challenges for
+microgravity research, innovative experiments studying pulsed laminar flames,
+and the interaction of vortices with laminar flames (e.g., TGDF) can advance
+fundamental understanding of turbulent combustion. As previously discussed,
+high-pressure combustion is strongly influenced by buoyancy and challenging to
+investigate in normal gravity. Partially premixed combustion is found in a wide
+variety of applications and has promising potential for high fuel efficiency and low
+pollutant emission, for example in modern gas turbine combustion.
+The ACME hardware that is now in development will accommodate experiments
+with burner-stabilized, partially premixed flames. The ACME investigations,
+planned to follow the FLEX experiments, examine gas-jet diffusion flames. These
+fundamental experiments again exploit the simplified flame geometry afforded
+by microgravity to develop, validate and refine chemical kinetic models relevant
+to nearly all terrestrial combustion systems. Simplified precursor experiments are
+underway in the MSG to provide interim data to the ACME investigators that
+complement the CIR experiments.
+
+37
+
+

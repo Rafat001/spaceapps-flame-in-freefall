@@ -1,0 +1,37 @@
+An alternative option with considerably less flexibility and scope has been proposed.
+It is termed the SCWO-D (for DEvice for the study of Critical LIquids and
+Crystallization [DECLIC]) and envisions build-up of an insert to be installed in the
+DECLIC facility. This option, because of the constraints imposed by fitting into an
+existing facility, will be limited in capability and will only be able to accomplish a
+subset of the science scope described above. The primary limiting features are: (i)
+the reactor volume (approximately 0.5 percent of Option 1), which limits the range
+of hydrodynamic studies (e.g., no bulk fluid motion); (ii) the diagnostic limitations
+that are due to the reliance on existing DECLIC hardware (e.g., no Raman
+spectroscopic diagnostic will eliminate chemical kinetic studies); (iii) a single optical
+axis, making simultaneous reaction zone and precipitate transport observations
+difficult if not impossible; and (iv) experiments may be limited to “quasi-steady”
+processes since constant pressure conditions will be difficult to maintain for any
+significant time because of the volume limitations.
+
+New Initiatives
+Besides the SoFIE and ACME experiments planned to be conducted in CIR on the
+ISS, there are a number of new combustion initiatives that are envisioned for future
+ISS research. Some of these may be undertaken more readily in the near term as spinoffs of existing research since they require relatively smaller resources and hence may
+be faster to develop. New initiatives such as Cool Flames in CIR, NASA Flammability
+Test Campaign and Schlieren Diagnostic in MSG may fall into this category.
+Cool Flames would be an example of how one of the unprecedented findings of CIRFLEX studies can set the stage for a new research direction on combustion utilizing
+existing hardware available on the ISS. Cool Flames objectives include: (i) use a range
+of fuel types and environmental conditions (e.g., pressure, diluent concentrations,
+etc.) in order to determine the necessary pre-conditions for hot-flame/cool-flame
+transitions, cool flame stability and spontaneous re-ignition and (ii) development
+of a robust numerical modeling capability with detailed chemistry to complement
+analytical development of Cool Flame Theory. The initiative has great relevance to
+the next-generation engine designs such as Homogeneous Charged Compression
+Ignition and Reactivity Controlled Compression Ignition since these engines rely on
+low-temperature combustion processes, such as Cool Flames, to control emissions
+and reduce fuel consumption. This research also has significant impact on spacecraft
+fire safety concerns; reduced-gravity environments have been shown to be particularly
+conducive to a low-temperature combustion regime marked by very weak but
+41
+
+

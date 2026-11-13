@@ -1,0 +1,38 @@
+material flammability limits in microgravity. It will also provide an increased margin
+of safety for materials flammability based upon a slightly modified NASA Test 1
+protocol, since recent drop-tower results suggest that the current Test 1 might not
+be conservative.
+
+Fundamentals of Flame Growth and Extinction in Microgravity
+The goal is to understand the fundamental processes of flame growth, spread and
+decay over solid materials, and their dependence on gravity, flow velocity, oxygen
+percentage, pressure, sample size and preheating. Solid spheres of plastic fuel will be
+burned in long-duration tests so that the entire flame history can be obtained.
+Using the experimental results, a robust numerical model will be developed to a)
+simulate the transient flame development in the reduced-gravity experiment; b)
+relate material flammability performance between normal and reduced gravity;
+and c) examine the relevance of NASA-STD-6001 (Flammability, Offgassing, and
+Compatibility Requirements and Test Procedures) Test 1.
+The practical limitations of ground-based microgravity facilities are well
+understood. While future ISS solid combustion experiments can be conducted
+for long durations, even these will have some limitations. The significance of this
+portion of the work is that by careful selection of ISS experiments together with the
+model, many of these limitations can be overcome to a degree sufficient to lead to
+a significant improvement in our understanding of how material flammability tests
+conducted on Earth apply to space environments.
+
+Thermal and Species Field Effects on Material Flammability
+Theory and modeling results suggest that an important difference between normal
+gravity and microgravity material flammability is caused by the influence of the
+flow field on the relative overlap of the thermal and species fields in the flame zone.
+The goal is to determine flame spread rate over thin fuels in quiescent microgravity
+and compare that with a closed-form expression including the pertinent solid
+properties and environmental parameters. Gas phase temperature and concentration
+fields of carbon dioxide and oxygen will be measured at certain key locations
+with the objective of delineating the propagation of the thermal field from the
+propagation of the species field; the separation between the two is postulated to be
+the mechanism for radiative flame extinguishment. The separation between the two
+fields will be controlled by changing the fuel thickness and ambient pressure.
+23
+
+

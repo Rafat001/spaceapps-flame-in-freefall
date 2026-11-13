@@ -1,0 +1,66 @@
+•
+
+Each PMT will have a wide-angle view, a sight line that is orthogonal to the chamber axis, and
+will be centered (along the chamber length) relative to the chamber windows so that it is aligned
+with most of the other instrumentation.
+
+•
+
+The PMTs’ spectral range will be 230-700 nm, i.e., visible and near ultraviolet, but one will have a
+310-nm bandpass ﬁlter and another will have a 430-nm bandpass ﬁlter (where both are with a
+10-nm FWHM). The ﬁltered pair of detectors will enable measurement of OH* and CH*
+emission, respectively. The third PMT will be equipped with a neutral density ﬁlter to prevent
+saturation. Like many other ACME components, the PMT array can be removed from the
+chamber insert by the crew.
+
+Other Measurements
+•
+
+Additional supporting measurements will be made for the ACME experiments, where the
+chamber pressure is a simple example.
+
+•
+
+The ACME experiments will use the CIR’s gas chromatograph for pre- and post-test analysis of
+the chamber atmosphere, e.g., for oxygen, nitrogen, carbon dioxide, carbon monoxide, and fuel
+gases.
+
+•
+
+Acceleration measurements will be provided by the Space Acceleration Measurement System II
+(SAMS-II), which is the primary instrument for such measurements on ISS. Its predecessor
+previously served that role for the space shuttle.
+
+Experiment-Unique Equipment
+•
+
+Experiment-unique hardware is also mounted on the chamber insert. For example, to
+accommodate the E-FIELD Flames experiment, the insert is equipped with a high-voltage supply
+and a crew-removable electrode mesh which can be set between +10 and -10 kV. The circular
+mesh is orthogonal to the chamber axis and is positioned (during set up) at either ~35 or ~50
+mm downstream of the insulated burner. The ion current between the burner and electrode
+mesh will be determined via measurement of the voltage drop across a known resistor and
+application of Ohm’s Law.
+
+ACME Operations
+•
+
+All ACME experiments will be constant volume (i.e., rather than constant pressure) studies,
+where the chamber’s free volume will be about 90 liters. Burner ﬂows will generally be
+constrained to limit the pressure rise, and tests will typically be 0.5-2 minutes in duration.
+
+•
+
+The ACME experiments will be conﬁgured, but not conducted, by the ISS crew. Instead, the
+experiments will be commanded from the ground, speciﬁcally from the Telescience Support
+Center (TSC) at the NASA Glenn Research Center.
+
+•
+
+The ACME tests can be conducted in a nominally automated mode using pre-programmed
+scripts or in a “manual” mode where changes can be made (e.g., in the burner ﬂow) in response
+to the analog video downlink and/or the numerical data available in the telemetry stream. The
+latter mode can facilitate the conduct of tests at or near limit conditions, e.g., for soot or
+stability.
+
+

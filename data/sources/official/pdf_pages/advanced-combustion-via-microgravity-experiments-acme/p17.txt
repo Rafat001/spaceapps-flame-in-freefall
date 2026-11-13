@@ -1,0 +1,20 @@
+•
+
+An additional wide-view radiometer, that is ﬁxed and not crew exchangeable, is positioned
+downstream of the burner and ﬂame at 30o from the chamber axis. This detector is primarily
+intended to support the spherical ﬂame experiments and will have a quicker response than the
+more sensitive detectors that will used in the linear arrays.
+
+•
+
+ACME’s radiometers are more precisely thermopile detectors with a spectral range of nominally
+0.2-11 micron and ﬁelds of view that are established by appropriately selected apertures (i.e.,
+rather than lenses).
+
+Chemiluminescent Emission
+•
+
+To detect the quenching of dim ﬂames, the chamber insert will be equipped with a set of three
+Photomultiplier Tube (PMT) modules.
+
+

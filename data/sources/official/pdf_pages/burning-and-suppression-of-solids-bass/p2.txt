@@ -1,0 +1,58 @@
+has a very low soot point. For many of these tests, the nitrogen suppressant system is engaged at a
+gradually increasing level until extinction is reached.
+The important experimental observations from BASS with respect to the burning process include
+ﬂame shape and appearance as a function of ﬂow speed, ﬂame spread rate (how fast the ﬂame
+develops), and ﬂame dynamics (pulsations, oscillations, etc.). With respect to extinction, the
+critical observations and data are the time to extinction as a function of fuel geometry, the nitrogen
+ﬂow rate, and the ﬂame distance from the nozzle. The dynamics of the ﬂame before extinction are
+also important for comparison to the modeling work.
+The modeling effort includes:
+•
+
+Modeling ﬂame spread over ﬂat samples: For ﬂat samples, the steady spread
+characteristics can be examined using the three-dimensional model currently available.
+Alterations are the new tunnel and sample geometry and the upstream boundary condition.
+For the ﬂame growing phase, a transient model is currently being developed.
+
+•
+
+Suppression by nitrogen injection: This can also be modeled readily using the current
+model.
+
+•
+
+Modeling burning and extinction of PMMA spheres: Similar problem on modeling twodimensional circular PMMA cylinder in cross ﬂow has been performed. Some changes are
+needed for the sphere and the duct ﬂow.
+
+Zero-g facility test burning 2-cm-diameter PMMA sphere in 30 cm/s airﬂow. Left: 1 g; Middle: 0 g, 1 s
+after drop; right: 0 g, 4 s after application of nitrogen extinguishing agent. PMMA Sphere
+Drop tower results and modeling of a 2-cm-diameter PMMA sphere burning in 17% oxygen, 1 atm.
+pressure, at 2 cm/s forced convective ﬂow. Experiment images are overlaid with computer
+simulations, which can capture the ﬂame response as it transitions from 1-g to 0-g. Left-side
+contours show reaction rate (kgmol/m3/s); right side contours show temperature (K).
+Brief Research Operations
+•
+
+The crewmember unstows and assembles the BASS hardware on the base plate within the
+MSG working volume and connects electrical and data harnesses.
+
+•
+
+Before each test point, the crew installs and positions fuel samples and igniters. Tunnel
+ﬂow speed, nitrogen ﬂow rate, and ﬂame ignition are controlled.
+
+•
+
+After ignition and some period of burning, the crew turns on the nitrogen suppressant at an
+increasing level until the ﬂame goes out.
+
+•
+
+The crew controls video and still camera functions. Some photos are downlinked for nearreal time coordination with the investigator. The crewmember uninstalls experiment from
+the MSG and stows the hardware once BASS is completed.
+
+Operational Requirements:
+BASS is conducted inside the sealed MSG work volume. The crewmember is involved throughout
+the experiment to load fuel samples, initiate tests, ignite the fuel, adjust suppression, monitor and
+
+

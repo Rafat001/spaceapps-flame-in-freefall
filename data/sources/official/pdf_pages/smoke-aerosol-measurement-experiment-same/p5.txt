@@ -1,0 +1,18 @@
+sensitivity of the shuttle detector. As described by Friedman, there have been six component
+failures by overheating or other causes in the NASA Orbiter ﬂeet in addition to several similar
+incidents that have occurred on the ISS. None of these events spread into a real ﬁre but as mission
+durations increase, the likelihood of failures increases. The experience on Mir in 1997 has shown
+that failure of oxygen generation systems can have signiﬁcant consequences. As a result, improved
+understanding of spacecraft ﬁre detection is critically needed.
+
+Contact Information
+Principal Investigator(s)
+David L Urban, Ph.D., Glenn Research Center, Cleveland, Ohio, United States
+Co-Investigator(s)/Collaborator(s)
+Zeng-guang Yuan, Glenn Research Center, Cleveland, Ohio, United States
+Jiann Yang, National Institute for Standards and Technology, Gaithersburg, Maryland, United States
+Thomas Cleary, National Institute of Standards and Technology, Gaithersburg, Maryland, United
+States
+George Mulholland, University of Maryland, College Park, Maryland, United States
+
+

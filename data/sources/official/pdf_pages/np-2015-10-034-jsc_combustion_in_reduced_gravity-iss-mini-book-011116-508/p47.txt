@@ -1,0 +1,39 @@
+Developing and Flying
+Research on the ISS
+Complexity of the experiment should be minimized if at all possible. Science
+requirements that add complexity not only add additional cost to the development,
+but often lengthen the development time, making turnover an issue for both the
+project team and, in particular, for the principal investigator and his/her science
+team when the experiment timeline extends beyond the typical tenure of a Ph.D.
+student. It is strongly recommended to design the experiment to be flexible and
+repairable. Unlike the space shuttle experiment days, the International Space Station
+is very much like a laboratory on Earth and crew members gain good experimental
+skills while operating a particular experiment over months rather than just a week
+or so, and they can become quite adept at experiment repair if this capability is
+designed into the experiment and clear straightforward procedures are provided.
+Although experiments in microgravity offer enticing rewards to combustion
+researchers, the harsh realities of experiments in reduced-gravity facilities present
+significant hardware and diagnostic challenges to scientists and engineers. Drop
+tower and space-based experiments have severe space, weight, volume, safety,
+and power limitations. The hidden benefit of these limitations have been the
+developments of technology with applications far beyond the microgravity
+combustion science program. Future capability needs for conducting combustion
+science in space certainly include advanced diagnostics, and supporting such needs
+requires more space and power.
+One of the most severe limitations of future space-based combustion science
+experiments is crew time. Astronaut availability is prioritized on the basis of many
+factors and the realistic assumption should be that it will remain as limited as it has
+been in the past. It is therefore extremely important that the space experiments be
+built with a capability for autonomous start, operation, and finish, and with as little
+maintenance as possible. The test matrices should be designed such that minimal
+crew interaction is necessary for fuel and oxygen supplies, sample and holder
+change-out, diagnostic adjustments, etc.
+Given these additional limitations beyond the challenges of the past, it is
+anticipated that upcoming, near-term NRA soliciting proposals for space
+experiments will be based on using existing hardware. NRA soliciting proposals to
+use larger, new hardware builds to enhance capability will be part of a long-term
+plan to follow in the future.
+
+47
+
+

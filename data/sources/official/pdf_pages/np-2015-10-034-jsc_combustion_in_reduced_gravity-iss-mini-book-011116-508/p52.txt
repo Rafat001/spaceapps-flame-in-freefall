@@ -1,0 +1,125 @@
+Appendix
+A summary of available hardware and mini-facilities relevant for combustion
+research is given in the table below with some details as to the descriptive specs and
+operational parameters.
+MDCA*
+
+ACME**
+
+SoFIE***
+
+MSG#
+
+Up Mass (kg)
+
+254
+
+250
+
+250
+
+40
+
+Volume (m3)
+
+0.48
+
+0.5
+
+0.5
+
+0.1
+
+Power (kW)
+
+0.73
+
+0.75
+
+0.75
+
+0.05
+
+Data Volume (GB)
+
+72
+
+72
+
+72
+
+10
+
+Diagnostics
+
+analog color camera,
+radiometer, low light level
+UV camera, two HiBMs
+cameras
+
+radiometers, two color
+cameras, low light level UV
+camera, two HiBMs cameras,
+photomultiplier tubes, ion
+current measurement, gas
+chromatograph
+
+same as ACME
+
+digital still camera,
+video camera, air flow,
+fuel flow, radiometer
+
+TSC capable
+
+yes
+
+yes
+
+yes
+
+yes
+
+On-orbit
+
+yes
+
+no
+
+no
+
+yes
+
+POC Name
+
+Mark Hickman
+
+Mark Hickman
+
+Mark Hickman
+
+Robert Hawersaat
+
+POC Number
+
+216.977.7105
+
+216.977.7105
+
+216.977.7105
+
+216.433.8157
+
+* MDCA mini-facility supports the following experiments: FLEX, FLEX-2,
+FLEX-ICE-GA, FLEX-2J (future)
+** ACME mini-facility is planned to support the following experiments: BRE,
+CLD Flame, E-FIELD Flames, Flame Design, s-Flame
+*** SoFIE mini-facility is planned to support the following experiments: Flame
+Spread, GEL, Narrow Channel, SMμRF, MIST
+#
+
+52
+
+MSG mini-facility supports the following experiments: SPICE, SLICE, BASS
+
+

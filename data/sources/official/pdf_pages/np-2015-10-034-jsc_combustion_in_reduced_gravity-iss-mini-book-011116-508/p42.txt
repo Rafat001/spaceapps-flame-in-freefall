@@ -1,0 +1,25 @@
+persistent flames, invisible to the unaided eye, that will spontaneously re-ignite
+long after the visible flame has been extinguished. The necessary pre-conditions, the
+combustion chemistry, and the mechanisms for spontaneous re-ignition are poorly
+understood. The Cool Flames development effort would utilize existing FLEX-2 CIR/
+MDCA hardware augmented with some additional diagnostic capabilities.
+Other new initiatives currently envisioned include:
+• Clean-airLab: series of investigations directed toward carbon sequestration and
+pollution reduction.
+• NanopropLab: self-assembling propellants and catalysts.
+• CombustionLab: focusing on high pressures as related to (i) engines and (ii)
+supernova formation.
+• CyberLab: focusing on developing a Fire Database Reference containing
+information on such things as transport measurements at flame conditions,
+flame speeds and chemical kinetics.
+Microgravity combustion research has had significant impact on the combustion
+discipline and can be expected to continue to make strong contributions. Research
+directions in spacecraft fire safety have promise to significantly improve vehicle
+safety. The microgravity environment continues to be a critical resource for
+improved understanding of combustion phenomena. The combustion discipline has
+been very successful in utilizing low gravity to advance the field and is anxious to
+seek further opportunities.
+
+42
+
+

@@ -1,0 +1,51 @@
+•
+
+ACME provides common mounting (on the chamber axis) of a variety of burners, which are
+depicted and described below.
+
+•
+
+Most burners will be equipped with a surface thermocouple, and each burner for
+the BRE experiment will have two heat ﬂux transducers.
+
+•
+
+The internal pressure of the porous burners will be measured to allow monitoring of the
+pressure diﬀerential across the outlet surface.
+
+•
+
+The retracting and resistively heated igniter will have a crew-exchangeable tip and arm (to
+accommodate the various burners) and its stepper-motor drive will allow for precise positioning.
+
+Gas Delivery
+•
+
+ACME’s chamber insert includes three mass ﬂow controllers for the delivery of fuel, oxidizer or
+inert (e.g., helium or carbon dioxide), and nitrogen to the burner or for chamber ﬁlling.
+
+•
+
+The maximum fuel ﬂow is 2 slpm (on a nitrogen basis), whereas much higher ﬂows, e.g., 10 slpm
+(on a nitrogen basis), are possible for the oxidizer and nitrogen lines. The crew can exchange the
+mass ﬂow controllers to provide appropriate ranges that maximize the ﬂow accuracy.
+
+•
+
+The gas delivery system enables on-orbit dilution of the fuel or oxidizer (but not both
+simultaneously), coﬂow ﬂames, inverse ﬂames (e.g., oxidizer delivery to the center of a coﬂow
+burner), and premixed ﬂames, although the latter are not planned for any of the current ACME
+experiments.
+
+•
+
+Gases can also be delivered premixed to the space station where that is necessary in some
+circumstances, such as the blending of diﬀerent fuel gases.
+
+•
+
+CIR’s standard bottle sizes are 1, 2.25, and 3.8 liters but ACME will sometimes use smaller bottles
+as a hazard control to limit the deﬁcient reactant (e.g., fuel) that can be released into the
+combustion chamber.
+
+

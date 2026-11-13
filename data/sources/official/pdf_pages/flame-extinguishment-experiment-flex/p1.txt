@@ -1,0 +1,42 @@
+Flame Extinguishment Experiment (FLEX)
+The Flame Extinguishment Experiment (FLEX) experiment was designed
+to assess and quantify the effectiveness of inert-gas suppressants in
+microgravity and obtain the most conservative estimate of the limiting
+oxygen index for steady combustion. FLEX is studying the behavior of
+near-limit diffusion ﬂames examining in detail liquid- and gas-phase
+transport and chemical kinetics and developed and is validating detailed
+and reduced-order transport and chemistry models that are the
+foundation for real engine simulations.
+Flame Extinguishment Experiment (FLEX) will map the ﬂammability boundaries for liquid fuel
+combustion in reduced gravity to quantify the suppressant efficacy of various gaseous
+suppressants over the range of candidate atmospheric pressures and oxygen concentrations. This
+investigation will develop predictive theoretical and numerical codes and chemical kinetic
+schemes to model ﬂammability boundaries as a function effective gravitational acceleration on the
+unique ambient conditions encountered in space exploration applications. The development and
+validation of these models will require detailed spatially and temporally resolved measurements of
+droplet burning rate, ﬂame extinction, ﬂame radiation, soot concentration, soot temperature, etc.
+This investigation will also develop improved and validated reduced (simpliﬁed) theoretical and
+numerical sub-models of important physical processes (chemical kinetics, radiation, soot
+formation/destruction) that can be used in simulations of large scale, realistic ﬁres.
+The independent experiment variables analyzed by MDCA-FLEX are:
+Oxygen Mole Fraction: The ambient oxygen mole fraction in a typical space environment can vary
+from high concentrations in EVA pre-breathing environments down to that typically found in air. At
+high oxygen concentrations, however, the chemical times are small enough (relative to the
+characteristic ﬂow times) such that the droplets will burn to completion rather than exhibiting
+ﬂame extinction. Therefore, it is also necessary to study low oxygen concentrations, down to the
+Limiting Oxygen Index (LOI). It is also important to determine the LOI to verify the chemical
+mechanisms. The oxygen mole fractions in the present study will vary from 0.10 to 0.50. The
+chamber must also be large enough such that there is no signiﬁcant decrease in ambient oxygen
+mole fraction during an experiment (i.e. the droplet burns in an essentially constant ambient).
+Diluent (non-suppressant): The ambient mixture will consist of oxygen mixed with a suppressant
+and the balance of an inert diluent gas. The diluent gas for these studies will be primarily nitrogen
+since that is the typical diluent on Earth and expected in space. There will be a small number of
+tests with a helium diluent gas. The reason is primarily for baseline comparisons with the Droplet
+Combustion Experiment, which used helium as the diluent gas and to vary the physical properties
+of the diluent gas.
+Suppressant Type: The tests will examine candidate gaseous suppressants that have widely
+varying physical, chemical and radiative properties. This will enable model and sub-model
+development and validation over a wide range of ambient conditions to improve the predictive
+capabilities of the models. The suppressants are carbon dioxide and helium. The expected
+
+

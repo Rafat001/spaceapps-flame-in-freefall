@@ -1,0 +1,18 @@
+Telescience Support Center
+The Telescience Support Center (TSC) was established in 1993 to provide ground
+support for shuttle experiments. With the development of the ISS in 2001,
+additional capabilities were needed to support new ISS experiments. During this
+time, the TSC was reconstructed and doubled in size. Currently, the TSC consists
+of 33 workstations that provide real-time audio and video downlinks allowing
+researchers to observe and control experimental operations aboard the ISS from
+the ground. The ISS video downlink provides a real-time view of the astronauts
+aboard the ISS interacting with the experiment. The TSC also allows researchers
+to operate and control experiments remotely with little astronaut interaction after
+the installation and setup of experimental hardware. The TSC supports projects 24
+hours a day, seven days a week; and since 2001, the TSC has logged over 26,000
+hours of continuous support of microgravity experiments aboard the ISS. The TSC
+continues to provide ground support to the ISS experiments today.
+
+46
+
+

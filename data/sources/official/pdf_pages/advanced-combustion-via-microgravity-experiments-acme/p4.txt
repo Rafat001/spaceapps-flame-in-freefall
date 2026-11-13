@@ -1,0 +1,23 @@
+•
+
+Soot volume fraction measurements indicate that microgravity ﬂames contain ﬁve to eight times
+more soot than the equivalent normal gravity ﬂames.
+
+•
+
+The data has shown that for highly diluted weak ﬂames, microgravity ﬂames are more stable
+than their normal gravity counterparts. The dilution limits are extended allowing for lifted ﬂames
+at lower fuel concentrations than observed in normal gravity.
+
+The experiment has provided high-ﬁdelity quantitative measurements of axially symmetric nonpremixed ﬂames over a wide range of ﬂow conditions, without the complication of buoyancy forces that
+are experienced by ﬂames on Earth. These results, coupled with carefully measured ﬂow boundary
+conditions, will provide a rigorous testbed for verifying computational models.
+Electric-Field Eﬀects on Laminar Diﬀusion Flames (E-FIELD Flames)
+
+Electric ﬁelds can strongly inﬂuence ﬂames because of its eﬀect on the ions present as a result of the
+combustion reactions. The direct ion transport and the induced ion wind can modify the ﬂame shape,
+alter the soot or ﬂammability limits, direct heat transfer, and reduce pollutant emission. The purpose of
+the Electric-Field Eﬀects on Laminar Diﬀusion Flames (E-FIELD Flames) experiment is to gain an improved
+understanding of ﬂame ion production and investigate how the ions can be used to control non-
+
+

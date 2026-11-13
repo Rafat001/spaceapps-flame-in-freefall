@@ -1,0 +1,37 @@
+Spacecraft Fire Safety Demonstration (Saffire)
+Creating a safe environment for astronauts is the number one priority for
+all crew missions. Aboard the space station, astronauts have been able
+to conduct small-scale ﬁre experiments, most recently during the BASSM experiment.
+The series of three Spacecraft Fire Safety Experiments (Saffire)was
+established to investigate large-scale ﬂame growth and material
+ﬂammability limits in space. The experiments are ignited in a Cygnus
+cargo vehicle after it has completed its primary International Space
+Station supply mission, departed the station, and before its planned destructive reentry to Earth.
+Spacecraft Fire Safety
+Understanding how ﬁre behaves in microgravity, and how different materials propagate ﬂames in
+space is immensely important for the development of future crew spacecraft. It also will help
+inform operational protocols for dealing with ﬁre emergencies, particularly when astronauts do not
+have the ability to exit a spacecraft or quickly return to Earth.
+Saffire is managed by NASA’s Advanced Exploration Systems Division, which pioneers innovative
+approaches and public-private partnerships to rapidly develop prototype systems, advance key
+capabilities, and validate operational concepts for future human missions beyond Earth orbit.
+Saffire-I
+Mission Completed July 2016
+The Saffire-I experiment enclosure was approximately half a meter wide by 1 meter deep by 1.3
+meter long and consisted of a ﬂow duct and avionics bay. Inside the ﬂow duct, the cotton-ﬁberglass
+blend burn sample measured 0.4 m wide by 1 meter long. When commanded by Orbital ATK and
+Saffire ground controllers operating from Dulles, Virginia, it was ignited by a hot wire. Previous to
+this experiment, the largest ﬁre experiment that had been conducted in space is about the size of
+an index card.
+Saffire-II
+Mission completed Nov. 27, 2016
+Saffire-II launched inside Orbital ATK’s Cygnus spacecraft during its sixth contracted cargo resupply
+mission with NASA to the International Space Station in October 2016. This second experiment in
+the Spacecraft Fire Safety series builds on the data captured during Saffire-I and expands the test
+portfolio with new materials. The nine samples in the experiment kit include a cotton-ﬁberglass
+blend, Nomex, and the same acrylic glass that is used for spacecraft windows. After Cygnus
+departs the station, and before its destructive reentry to Earth, mission controllers on the ground
+will remotely ignite the samples.
+Saffire-III
+
+

@@ -1,0 +1,28 @@
+Solid Fuel Combustion/Material Flammability
+New initiatives are needed to allow ongoing, long-duration, solid fuel combustion
+testing in microgravity. A robust, ground-based solid fuel combustion program
+needs to be restarted to hone and augment the flight research portfolio. Many of
+the prior research results were obtained in ground-based tests, so this investment
+is well worth the modest price. The SoFIE insert in the CIR could continue to be
+used by additional NASA Research Announcement-selected principal investigators
+who wish to study solid fuel flammability and flame spread with different geometry
+fuels in a variety of oxygen, pressure, flow and external heat flux conditions. To
+further augment the solid fuel in-orbit test capability, a Microgravity Wind Tunnel
+for fire research is being proposed for the ISS MSG. This facility would enable large
+samples to be used to study fire growth patterns, materials flammability compared
+to NASA’s STD-6001 Test 1, fire suppression testing, and post-fire cleanup
+applied research. These two in-orbit facilities complement each other and provide
+different capabilities for principal investigator use—SoFIE can accommodate
+testing in exploration atmospheres with reduced pressure and elevated oxygen, and
+the Wind Tunnel can accommodate large samples and easy sample change out.
+This investment in future research will improve our ability to evaluate material
+flammability and fire risk in low gravity by increasing our understanding of the
+actual material flammability risk for practical materials and flow configurations
+expected on future spacecraft.
+
+Figure 19. A chaotic mixture of flamelets in an intense turbulent flame obtained from sophisticated 3-D computations
+conducted at the Naval Research Labs.
+
+38
+
+

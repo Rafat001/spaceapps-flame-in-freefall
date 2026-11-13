@@ -1,0 +1,41 @@
+Flame Extinguishment Experiment-2 (FLEX-2)
+The second in the FLEX series of experiments, the FLEX-2 investigation
+uses fuels and environmental conditions that mimic real combustor
+conditions. The investigation will extend and advance the research into
+droplet combustion, studying the inﬂuence of sub-buoyant convective
+ﬂows on combustion rates, determining the inﬂuence of a second
+burning droplet on a linear array, and beginning the study of practical
+fuels by burning bi-component and surrogate fuels. As the research
+extends into increasingly complex fuels, FLEX-2 data can help verify
+models of real fuels used in transportation and industry. Results of the
+FLEX-2 experimental data will help to develop veriﬁed detailed and reduced-order models of
+droplet combustion, particularly with ﬂow-ﬁeld and droplet-droplet interactions.
+The spherically symmetric combustion of a liquid fuel droplet in a quiescent oxidizing atmosphere
+is a classical problem in combustion research. The advantage of the spherical symmetry is that
+only one spatial dimension enters the description of the combustion process. This greatly
+simpliﬁes the mathematics required for modeling combustion processes. Microgravity experiments
+provide the opportunity to achieve this spherical symmetry, a fact which NASA has used to its
+advantage in fundamental investigations for a number of years. The Fundamental Studies in Droplet
+Combustion and Flame Extinguishment in Microgravity (FLEX-2) investigation touches on a number
+of far-reaching combustion phenomena that can be uniquely addressed through the idealized
+geometry of a droplet burning in microgravity.
+Studies of the liquid-phase mixing of the different components in fuels clariﬁes the way practical
+fuels turn to gas from liquid in the combustion process. Understanding soot formation during the
+combustion of liquid fuels is also studied. These studies are important due to soot’s negative
+effects on the environment and on human health. Knowledge of soot formation also has practical
+uses in certain industrial processes. The interactions of droplets with their gaseous environments
+and with other droplets are studied to reveal the fundamental dynamics of combustion.
+In the absence of gravity, small droplets of fuel (i.e., from 2 mm to 4 mm in diameter) burn “onedimensionally”, which means the ﬂame will be shaped a like ball about the size of a large olive that
+will be centered around the droplet. This one-dimensional nature of the droplet ﬂame allows the
+science team to easily measure and understand important features of the burning fuel that would
+otherwise be impossible to obtain on the ground. This particular type of ﬂame conﬁguration allows
+measurement and observation of very complex interactions in a spherically one-dimensional
+system, providing insights into the behavior of combustion phenomena that would otherwise be
+difficult, if not impossible, to obtain in multi-dimensional systems that are typically found in most
+1-g ﬁres.
+The Fundamental Studies in Droplet Combustion and Flame Extinguishment in Microgravity – 2
+(FLEX-2) experiments involve dispensing, deploying and igniting either a single droplet or a pair of
+droplets, depending on the experiment conﬁguration, in a known and controlled gaseous
+environment. The ignited droplets either burn to completion or the ﬂame extinguishes at a ﬁnite
+
+

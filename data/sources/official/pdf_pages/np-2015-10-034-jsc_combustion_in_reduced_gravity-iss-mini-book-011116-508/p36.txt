@@ -1,0 +1,40 @@
+Opportunities for Combustion
+Research on the ISS
+Combustion research remains an active field of research with direct application to
+terrestrial issues, fundamental science, and NASA‘s exploration goals. The New
+Initiative program is based upon continued use of the in-orbit resources (CIR
+inserts) with the addition of another CIR insert to the on-orbit resources. These
+topics were selected based upon the data sources considered by the Decadal survey.
+All of these topics have direct application to either terrestrial or exploration issues
+and are among the most challenging questions faced in the discipline.
+
+Droplet Combustion
+Currently operating inside the CIR is the FLEX, which uses the MDCA to study
+droplet combustion. FLEX and the follow-on FLEX–2 experiments are exploiting
+the microgravity environment to study the spherically symmetric combustion
+of liquid droplets. FLEX is motivated by the need to better identify and predict
+limiting oxygen indices (LOIs) and inert-gas suppressant efficacy. The FLEX–2
+experiments are motivated by the need to better understand droplet combustion as
+it applies to the fundamental problems of energy conversion and utilization where
+liquid hydrocarbon fuels are a predominant source of energy in the world.
+To date, these experiments have identified both the radiative and diffusive
+extinction limits for heptane and methanol droplets and identified an LOI that is
+both significantly lower than in normal gravity and lower than previously predicted
+and anticipated. The data from these experiments are helping researchers to develop,
+refine and validate chemical kinetic models important to terrestrial combustion
+systems. The most significant observation from these experiments, however, is the
+identification of stable, quasi-steady cool flames that form after radiative extinction
+of the visible flame for heptane droplet combustion (Nayagam et al., 2012). This
+low-temperature chemistry is important in automobile engines because it is one of
+the major phenomena limiting engine efficiency.
+While the droplet combustion research community is fortunate to have access to
+the CIR and MDCA, funding limitations have severely cut down on the number of
+researchers, the number of research projects, and the overall extent of the program.
+The space-based research in the CIR/MDCA should be expanded to a wider range
+of fuels, specifically focusing on practical fuels and practical fuel surrogates. Ideally,
+this would be closely aligned with similar efforts funded by other federal agencies
+(e.g., Department of Energy and Department of Defense). Virtually absent from
+the current program is also critical research on high-pressure droplet combustion
+36
+
+

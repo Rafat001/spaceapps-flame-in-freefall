@@ -1,0 +1,37 @@
+Results from Past and
+Recent Research
+Over the past two decades, microgravity combustion research has focused primarily
+on increasing our understanding of fundamental combustion processes (e.g.,
+droplet combustion, soot production, flame spread, smoldering and gas jet flames).
+This research program has been highly successful and was aided by synergistic
+programs in Europe and in Japan. Overall improvements were made in the ability
+to model droplet combustion in spray combustors (e.g., jet engines), predict flame
+spread, predict soot production, and detection and prevention of spacecraft fires.
+Some of the findings from past microgravity combustion research are presented
+below. Current ongoing flight projects on the International Space Station (ISS) are
+given in each area.
+
+Droplet Combustion
+The availability of a long-duration, high-quality microgravity environment allows
+researchers to study the textbook problem of a spherical droplet surrounded by a
+spherical flame in an infinite, quiescent, ambient atmosphere. A cadre of researchers
+from academia, industry and federal laboratories has successfully established this
+simple geometry as an excellent test bed to study fundamental combustion science
+problems and other topics of applied combustion research. Through a robust
+program, researchers gained insight into wide-ranging problems of interest in
+combustion science. These programs included ground-based experimental work in
+drop towers and aircraft flying parabolic trajectories (and normal gravity; i.e., 1-g,
+test laboratories), numerical and theoretical modeling, and ultimately experiments
+in space-based facilities. The programs provided the opportunity to investigate
+phenomena such as:
+• Departures from quasi-steady combustion.
+• Transition from diffusive to radiative extinction.
+• Liquid-phase transport.
+• The influence of convection on flame dynamics (refer to Figure 2).
+• The dynamics of soot formation and destruction (refer to Figure 3).
+• The behavior of multi-component fuels.
+• Droplet-droplet interactions and flammability limits.
+
+11
+
+

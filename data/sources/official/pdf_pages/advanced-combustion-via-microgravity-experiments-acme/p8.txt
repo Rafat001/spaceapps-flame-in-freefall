@@ -1,0 +1,72 @@
+•
+
+Flicker, which is a buoyancy-driven (i.e., gravity-driven) instability, is eliminated yielding quasisteady ﬂames.
+
+•
+
+Length scales are increased in microgravity ﬂames facilitating analysis of the ﬂame structure.
+
+•
+
+Momentum-dominated ﬂames, which are important for most practical combustion, can be
+studied at low velocities to simplify analysis.
+
+•
+
+Microgravity ﬂames tend to have a much stronger sensitivity to their atmosphere and exhibit a
+much broader range of characteristics than normal-gravity ﬂames because of the near absence
+of buoyant entrainment.
+
+•
+
+The long residence times in microgravity ﬂames can lead to strong soot production, but many
+microgravity ﬂames are soot free.
+
+•
+
+Microgravity ﬂames are great for studies of limit and stability behavior where chemical kinetics
+are important. Soot, extinction, and stability limits are being studied in the ACME experiments.
+
+•
+
+Microgravity is of course the appropriate environment for studies related to spacecraft ﬁre
+safety.
+
+Why study combustion on the ISS?
+•
+
+Microgravity durations in drop facilities, such as the 2.2 Second Drop Tower and 5.18-second
+Zero Gravity Research Facility, are (1) too short for soot to achieve quasi-steady conditions, and
+(2) too short to establish a ﬂame and then vary its ﬂow rate, for example, to investigate stability
+or extinction limits.
+
+•
+
+While research aircraft ﬂying in parabolic maneuvers can provide reduced gravity durations of
+~20 seconds, low-momentum ﬂames are often dramatically disturbed by the aircraft vibrations.
+Although the jitter can be avoided if the experiment is ﬂoated within the aircraft, that reduces
+the low-gravity duration to mere seconds.
+
+Publications
+Link to PDF with all publications listed.
+Downloads
+A collection of downloads/documents related the ACME.
+Need to upload all documents from old site.
+ACME related Links
+•
+
+ACME Image Processing Software (OMA2 and QtOma)
+
+•
+
+Combustion Integrated Rack (CIR, facility in which ACME will be conducted)
+
+•
+
+ISS Researchers Guide to Combustion Science
+
+•
+
+International Space Station (ISS)
+
+

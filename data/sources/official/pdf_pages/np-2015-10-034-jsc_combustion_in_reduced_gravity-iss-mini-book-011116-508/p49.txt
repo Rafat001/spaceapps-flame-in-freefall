@@ -1,0 +1,36 @@
+Funding Opportunities/
+Points of Contact
+There are various avenues that can result in funding for research to be conducted
+on the ISS, and the source of funding often dictates the availability of launch
+opportunities. Generally, funding for microbiology-related research is awarded
+through NASA-sponsored research announcements (NRA’s), ISS National
+Laboratory awards through other government agencies, private commercial
+enterprise, nonprofit organizations, and research awards sponsored by the ISS
+International Partners. It is not the responsibility of a researcher awarded an
+ISS flight experiment to fund costs associated with launch or the ISS laboratory
+facilities. Greater detail concerning current funding opportunities for ISS research
+can be found through the NASA ISS research website http://www.nasa.gov/
+mission_pages/station/research/ops/research_information.html.
+The NASA Solicitation and Proposed Integrated Review and Evaluation System
+(NSPIRES) can be accessed via http://nspires.nasaprs.com/external/.
+
+Citations
+Dietrich, D. L., Ross, H. D., Shu, Y., Chang, P., and T’ien, J. S. (2000),
+“Candle flames in non-buoyant atmospheres,” Combustion Science and
+Technology, 156:1-24.
+Dietrich, D. L., Haggard, J. B., Dryer, F. L., Nayagam, V., Shaw, B. D., and
+Williams, F. A. (1996), “Droplet combustion experiments in spacelab,” Proceedings
+of the Combustion Institute, 26:1201-1207.
+Dotson, K. T., P. B. Sunderland, Z. G. Yuan, D. L. Urban, “Laminar Smoke Points
+of Coflowing Flames in Microgravity,” Fire Safety Journal 46, 2011, pp. 550-555.
+Friedman, R. and Ross, H. D. (2001), “Microgravity Combustion: Fire in Free
+Fall,” Chapter 8: Combustion Technology and Fire Safety for Human-crew Space
+Missions, pages 525-562, Academic Press.
+Greenberg, P.S., Klimek, R.B., and Buchele, D.R. (1995), “Quantitative Rainbow
+Schlieren Deflectometry,” Applied Optics 34(19), 3810-3822.
+Greenberg, P.S., Ku, J.C., (1997) “Soot Volume Fraction Maps for Normal and
+Reduced Gravity Laminar Acetylene Jet Diffusion Flames,” Combustion and Flame
+108, 227-230.
+49
+
+

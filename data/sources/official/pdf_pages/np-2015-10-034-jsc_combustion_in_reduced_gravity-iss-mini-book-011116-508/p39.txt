@@ -1,0 +1,42 @@
+Premixed Flames
+Combustion experts agree that
+understanding premixed flames, the basic
+unit of combustion, is absolutely key to
+understanding turbulent combustion in
+general. Burners and engines based on
+fuel-lean mixtures promise higher thermal
+efficiencies and lower pollutant emissions
+because of reduced fuel consumption
+and more complete combustion of fuel
+in oxygen-rich environments. Real-life
+accidental explosions can originate from tiny
+kernels of barely flammable mixtures (Figure
+19). Conclusive settlements of the extinction
+limits, if they exist, are of paramount
+importance. Therefore, the resolution
+of issues related to the structure and
+behavior of premixed-gas flames has great
+significance for and can have a major impact
+on many fields ranging from automobiles
+to propulsion to fire safety, and even to
+our understanding into what might spark
+colossal explosions of Type Ia supernovae.
+Although premixed flames are in the current
+baseline, no funding is allocated in the ISS
+budget for a specific experiment or insert
+Figure 20. Hydrothermal flame existing in a super-critical
+on
+the ISS. It is anticipated that future
+core region surrounded by a sub-critical annular region
+(Wellig, B., Swiss Federal Institute of Technology, Zurich). studies of premixed flames will allow new
+exploration of the true limits of reactivity
+under limiting conditions and have
+application to both terrestrial combustion systems and the astrophysical modeling of
+stellar ignition and explosions. Perhaps the most important parameter in fundamental
+and practical premixed-gas combustion is the laminar burning velocity, defined as the
+propagation rate of a flame relative to the background gas, as it indicates the mixture‘s
+burning intensity as well as its propensity to exhibit such critical responses as blowout,
+flashback, and combustion instability. The fidelity of computational fluid dynamics
+39
+
+

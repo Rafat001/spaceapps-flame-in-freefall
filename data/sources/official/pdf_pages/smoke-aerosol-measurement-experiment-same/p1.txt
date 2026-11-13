@@ -1,0 +1,55 @@
+Smoke Aerosol Measurement Experiment (SAME)
+Spacecraft smoke detectors must detect different types of smoke. For
+example, hydrocarbon fuels typically produce soot, and plastics
+produce droplets of recondensed polymer fragments. While paper and
+silicone rubber produce smoke comprised of liquid droplets of
+recondensed pyrolysis products. Each of these materials produces a
+different type of smoke, with particles of various sizes and properties.
+Smoke and Aerosol Measurement Experiment (SAME) will assess the
+size and distribution of smoke particles produced by different types of
+material found on spacecraft such as, Teﬂon, Kapton, cellulose and silicone rubber. SAME will
+evaluate the performance of the ionization smoke detectors (used on Space Shuttles), evaluate the
+performance of the photoelectric smoke detectors (used on the ISS) and collect data for which a
+numerical formula can be developed and used to predict smoke droplet growth and to evaluate
+alternative smoke detection devices on future spacecraft.
+The experimental design and practical application of the data will be complemented by the
+development of a numerical code to predict the smoke droplet growth as a function of the fuel
+pyrolysis rate, the thermodynamic properties of pyrolysis vapor, and the ﬂow environment. SAME
+also has the capability to evaluate other ﬁre detection/particulate sensing devices for the test
+materials. The results will provide statistics of the smoke particulate size distribution for a range of
+smoke generation conditions and measurement of a readily modeled reference for validation of
+smoke growth models.
+Research Overview
+•
+
+Fire is commonly detected by measuring changes in the amount of airborne microscopic
+particles (one of the components of smoke).
+
+•
+
+Smoke detectors currently in use on ISS and Space Shuttle are based on detectors used on
+Earth that detect different sizes of smoke particles.
+
+•
+
+SAME will measure the distribution of particle sizes in smoke from on-orbit combustion of
+several materials found in the spacecraft. Testing will also examine the effects of sample
+temperature, air ﬂow and smoke residence time (near the source) on the particle size
+distribution of the smoke.
+
+•
+
+Results will allow an evaluation of the performance in microgravity of the two existing U.S.
+spacecraft smoke detector designs, in use on the Shuttle and ISS, and evaluate other ﬁre
+detection devices.
+
+•
+
+Information from this experiment will improve the design requirements for and reliability of
+smoke detectors on future spacecraft.
+
+Space Applications
+The SAME experiment will provide technology for an advanced ﬁre detector for future spacecraft
+that will be used for long duration missions. SAME will provide quantitative data on the sensitivity of
+
+

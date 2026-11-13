@@ -1,0 +1,40 @@
+Contact Information
+Principal Investigators:
+Dr. Sandra Olson, NASA Glenn Research Center, Cleveland, Ohio, United States
+Co-Investigators/Collaborators:
+Dr. Paul Ferkul, National Center for Space Exploration Research, Cleveland, Ohio, United States
+Prof. Carlos Fernandez-Pello, , University of California at Berkeley, Berkeley, California, US
+Prof. Fletcher Miller, San Diego State University, San Diego, California United States
+Prof. Indrek Wichman, Michigan State University, East Lansing, Michigan, United States
+Prof. James Tien, Case Western Reserve University, Cleveland, Ohio, United States
+Prof. Subrata Bhattachjee, San Diego State University,San Diego, California, United States
+Project Manager:
+Robert Hawersaat, Glenn Research Center, Cleveland, Ohio, United States
+Engineering Team:
+ZIN Technologies, Inc.
+
+Burning and Suppression of Solids-Milliken (BASS-M)
+The Burning and Suppression of Solids-Milliken (BASS-M) investigation
+utilizes slightly modiﬁed Smoke Point In Co-ﬂow Experiment (SPICE)
+hardware within the Microgravity Science Glovebox (MSG) for
+observations of burning solid materials on board the International Space
+Station (ISS).
+BASS-M consists of 44 textile samples with integrated igniter wires.
+There are four samples of each textile type, of which there are eleven. A
+set of control samples are included which provide untreated textile
+samples. The other ten sets of textile samples share a similar conﬁguration. Each has a small piece
+untreated textile which is ignited by an integrated hot wire igniter. The ﬂame from the untreated
+textile impinges on the treated textile which is immediately adjacent to the untreated sample.
+The important experimental observations from BASS-M, with respect to the burning process,
+include ﬂame shape and appearance as a function of ﬂow speed, ﬂame spread rate (how fast the
+ﬂame develops), and ﬂame dynamics (pulsations, oscillations, etc.). With respect to extinction, the
+critical observations and data to be collected are the time to extinction as a function of textile
+material and air ﬂow. The dynamics of the ﬂame before extinction are also important for
+comparison to the modeling work.
+Research Overview
+•
+
+The Burning and Suppression of Solids-Milliken (BASS-M) investigation tests the hypothesis
+that materials in microgravity, with adequate ventilation, burn as well, if not better than, the
+
+

@@ -1,0 +1,57 @@
+Figure 6. Image of a spherical diffusion
+flame on a porous burner (which is also
+visible) at the end of a test conducted
+in NASA’s 2.2-second Drop Tower.
+The gas from the burner was 1.51 mg/s
+of 100 percent ethylene issuing into air
+at atmospheric pressure. (Image credit:
+NASA, ACME project, Flame Design
+experiment)
+
+and soot free. An outside review panel recently
+declared that Flame Design “… could lead to greatly
+improved burner designs that are efficient and less
+polluting than current designs.” Flame Design will
+investigate the soot inception and extinction limits
+of spherical microgravity flames, created in the
+same manner as for the s-Flame experiment. Tests
+will be conducted with various concentrations of
+both the injected fuel (i.e., ethylene or methane)
+and the oxygen-enriched atmosphere in order to
+determine the role of the flame structure on soot
+inception (Figure 6). The effect of the flow direction
+on soot formation will be assessed with an inverse,
+spherical flame unless such testing is not approved
+by the Payload Safety Review Panel. If inverse
+spherical flame testing is not allowed, the plan is to
+use a coflow burner, conducting both normal and
+inverse flame tests. In the case of the inverse flames,
+the oxygen/inert mixture is injected from a central
+tube while the fuel is ejected from a surrounding
+annulus. The Flame Design experiment will explore
+whether the stoichiometric mixture fraction can
+characterize soot and flammability limits for nonpremixed flames like the equivalence ratio serves as
+an indicator of those limits for premixed flames.
+
+Figure 7. Image of a partially premixed
+Structure and Response of Spherical Diffusion
+spherical flame on a porous burner (which
+Flames (s-Flame)
+is also visible). The microgravity test was
+conducted in a NASA’s 2.2-second Drop
+The purpose of the s-Flame experiment is to
+Tower. The gas issuing from the burner
+was 25 percent propane, 2 percent oxygen, advance our ability to predict the structure and
+49 percent argon, and 24 percent nitrogen. dynamics, including extinction, of both soot(Image credit: NASA, ACME project,
+free and sooty flames. The spherical flame, which
+s-Flame experiment)
+
+is only possible in microgravity, will be created
+through use of a porous spherical burner from which a fuel/inert gas mixture
+will issue into the CIR chamber (Figure 7). Flames will be ignited at non-steady
+conditions and allowed to transition naturally toward extinction. Tests will be
+conducted with various inert diluents in both the fuel and chamber atmosphere.
+
+17
+
+

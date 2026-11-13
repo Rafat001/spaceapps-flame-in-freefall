@@ -1,0 +1,38 @@
+provides a 100-liter chamber with eight optical windows with easily reconfigurable
+diagnostics, digital cameras and lighting with large data storage capability, gas
+distribution/cleanup, passive vibration isolation, and vacuum resources to support a
+wide range of gravity-dependent gaseous, liquid and solid combustion experiments.
+The current research program on gaseous fuels includes five experiments planned for
+the CIR on the ISS. These experiments are part of the ACME project where each
+will be conducted using a single modular set of hardware. The ACME experiments
+are focused on soot processes, flame stability and extinction, materials flammability
+and electric-field effects. In alphabetical order, the experiments, described in more
+detail above, include BRE, CLD Flame, E-FIELD Flames, Flame Design and
+Structure and Response of Spherical Diffusion Flames (s-Flame). The ACME set of
+experiments are expected to begin operating in 2016. As with their predecessors,
+the ACME experiments are all laminar diffusion flames. Two experiments take
+advantage of the microgravity environment by using a one-dimensional, spherical
+flame enveloping a porous spherical burner. Another experiment uses a porous plate
+burner, while the remaining two use a gas-jet flame configuration, both with and
+without a coaxial air flow.
+The SoFIE flight hardware (Figure 10), involving combustion research on solid
+fuels, is currently under development as a CIR insert and planned for launch in
+2019. The SoFIE project is in the Science Definition phase to serve up to five
+separate investigations. These investigations all support the overall objective of the
+SoFIE project, which is to study and characterize ignition and flammability of solid
+spacecraft materials in practical geometries and realistic atmospheric conditions.
+The SoFIE insert in the CIR could continue to be used by additional NRA-selected
+private investigators who wish to study solid fuel flammability and flame spread
+with different geometry fuels in a variety of oxygen, pressure, flow and external heat
+flux conditions.
+A brief summary of available mini-facilities/CIR inserts is tabulated in the Appendix.
+
+Microgravity Science Glovebox (MSG)
+The MSG is a rack facility aboard the ISS in which fundamental and applied
+scientific research is conducted. The MSG has been operating on the ISS since July
+2002 and is located in the U.S. Laboratory. The unique design of the facility allows
+it to accommodate science and technology investigations in a workbench-type
+environment. The facility has an enclosed working volume that is held at a negative
+44
+
+

@@ -1,0 +1,38 @@
+The fuel is ignited and the airflow speed is the main variable. After some time,
+a nitrogen gas suppressant was applied to selected flames. There are important
+differences in the suppression of fires in space compared to on Earth. On Earth
+it is understood that the best results are generally obtained when the extinguisher
+“attacks” the base of the flame, which is both the stabilization point and the point
+where fresh air first enters the flame. For a fire burning in microgravity, the best
+point of application of suppressant may not be immediately apparent, especially for
+a partially obstructed flame or a wake-stabilized flame. Depending on the geometry
+of the flame and the characteristics of the extinguisher (distance from flame,
+dispersion angle), it is possible that the suppressant stream will be ineffective or
+might actually make the flame worse through the entrainment of oxygen.
+Early results have demonstrated that nitrogen applied to the flame can actually
+strengthen it because of this effect. Using nitrogen as a flame suppressant in
+microgravity provides a direct link to current and planned extinguishment
+techniques.
+The SoFIE project is in the Science Definition phase with the plan of developing
+a CIR insert and large flow duct within the MSG to serve up to five separate
+investigations. These investigations all support the overall objective of the SoFIE
+project, which is to study and characterize ignition and flammability of solid
+spacecraft materials in practical geometries and realistic atmospheric conditions.
+There are currently five investigations described on the following pages.
+
+Correlation of Flammability between Normal and Microgravity
+The goal is to obtain the microgravity flammability map for select materials to
+provide information on the sensitivity of the material’s flammability to ventilation
+flow, ambient oxygen concentration and possibly pressure, to find the fundamental
+limiting oxygen concentration in microgravity. This will be defined as the worst
+case in microgravity for comparison with the NASA-STD-6001 Test 1 worst case
+upward flame spread in normal gravity. The comparison will enable evaluation of
+the oxygen margins of safety associated with normal gravity testing.
+The microgravity burning behavior of some actual engineering materials planned
+for spacecraft can be obtained as a function of oxygen, pressure and flow speed for
+comparison to normal gravity results.
+The significance of this portion of the work is that it will provide a better
+understanding of how the NASA Test 1 flammability limits relate to the actual
+22
+
+

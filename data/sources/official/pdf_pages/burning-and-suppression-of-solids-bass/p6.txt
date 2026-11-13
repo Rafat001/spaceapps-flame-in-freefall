@@ -1,0 +1,51 @@
+The modeling effort includes:
+•
+
+Modeling ﬂame spread over ﬂat samples: For ﬂat samples, the steady spread
+characteristics can be examined using the three-dimensional model currently available.
+Alterations are the new tunnel and sample geometry and the upstream boundary condition.
+For the ﬂame growing phase, a transient model is currently being developed.
+
+•
+
+Modeling burning and extinction of PMMA spheres: Similar problem on modeling twodimensional circular PMMA cylinder in cross ﬂow has been performed. Some changes are
+needed for the sphere and the duct ﬂow.
+
+Science Objectives
+The Burning and Suppression of Solids –II (BASS-II) investigation examines the burning and
+extinction characteristics of a wide variety of fuel samples in microgravity. The BASS-II experiment
+will guide strategies for materials ﬂammability screening for use in spacecraft as well as provide
+valuable data on solid fuel burning behavior in microgravity. BASS-II results contribute to the
+combustion computational models used in the design of ﬁre detection and suppression systems in
+microgravity and on Earth.
+Science Results
+BASS-II tests produced data on how ambient oxygen, ventilation, and fuel affect combustion and
+burning. Theoretical formulas and data on ﬂame spread do not always match in normal gravity.
+With data from microgravity, scientists determined thin and thick fuel spread rates and a formula
+for transition from thin to thick fuels. Models predict higher spread rates than observed, so need
+improvement. Data also allowed calculation of combustion completeness, heat release rates, and
+fuel-to-oxygen global equivalence ratios and supported theoretical models for quenching
+boundaries. Results will guide choice of materials for future spacecraft and advance ﬁre detection
+and suppression in space and on Earth.
+Research Overview
+•
+
+Burning and Suppression of Solids – II (BASS-II) tests the hypothesis that materials in
+microgravity, with adequate ventilation, burn as well if not better than the same material in
+normal gravity with other conditions being identical (pressure, oxygen concentration,
+temperature, etc.).NASA tests materials for ﬂammability using an upward burning test,
+which is considered to be the worst-case geometry for ﬂammability of the material on
+Earth. One objective of the BASS-II tests is to identify what is the worst case for material
+ﬂammability in spacecraft environments, and how does that compare to the terrestrial
+upward burning used to screen the materials for safe use aboard spacecraft.
+
+•
+
+The main variables to be tested are the effects of ambient oxygen concentration, ventilation
+ﬂow velocity, and fuel type, thickness, and geometry. Many of the tests will focus on ﬁnding
+a minimum oxygen concentration or ﬂow velocity where a material will burn in space, to
+compare with Earth-based limits. Flame growth rates are also of interest, to determine how
+quickly a ﬁre in space can grow and if the ﬂames reach a ﬁnite size or continue to grow. This
+has implications for ﬁreﬁghting strategies in spacecraft.
+
+

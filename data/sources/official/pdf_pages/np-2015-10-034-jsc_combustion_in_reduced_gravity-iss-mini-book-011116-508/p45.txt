@@ -1,0 +1,37 @@
+pressure with respect to the ISS pressurized volume. This allows the facility to
+provide two levels of containment for small parts, particulates, fluids and gases. This
+containment approach protects the crew from possible hazardous operations that
+take place inside the MSG work volume.
+Research investigations operating inside the MSG are provided a large, 255-liter,
+enclosed work space, 1,000 watts of dc power via a versatile supply interface (120,
+28, + 12, and 5 Vdc), 1,000 watts of cooling capability, video and data recording
+and real-time downlink, ground commanding capabilities, access to ISS Vacuum
+Exhaust and Vacuum Resource Systems, and gaseous nitrogen supply. These
+capabilities make the MSG one of the most utilized science facilities on ISS. In
+fact, the MSG has been used for over 10,000 hours of scientific payload operations.
+MSG investigations involve research in cryogenic fluid management, fluid
+physics, spacecraft fire safety, materials science, combustion, plant growth, human
+health and life support technologies. The MSG facility is ideal for advancing our
+understanding of the role of gravity upon science investigations and research and to
+utilize the ISS as a technology platform for space exploration.
+The microgravity combustion research program has conducted the SAME project
+in 2007 and 2010, SPICE project in 2009, SLICE project in 2012, and has been
+running the BASS experiments since 2012 in the MSG facility. To further augment
+the solid-fuel, in-orbit test capabilities, a Microgravity Wind Tunnel for fire research
+is being proposed for the MSG in conjunction with the SoFIE project planned to
+be conducted in the CIR.
+
+EXpedite the PRocessing of Experiments to Space Station
+(EXPRESS) Racks
+The eight EXPRESS racks are multi-use facilities, which provide standard
+interfaces and resources for Middeck Locker and International Subrack Interface
+Standard Drawer Payloads. Payloads using single-, double-, or quad-locker
+configurations can be accommodated by these racks. The racks provide a number
+of services for payloads including nitrogen, vacuum, RS422, ethernet, video, and
+air- and water-cooling.
+The proposed SCWO research facility to investigate the effects of buoyancy in
+SCWO reactors and to enable the progression of SCWO technology for NASA life
+support applications is envisioned to be placed in an EXPRESS Rack.
+45
+
+

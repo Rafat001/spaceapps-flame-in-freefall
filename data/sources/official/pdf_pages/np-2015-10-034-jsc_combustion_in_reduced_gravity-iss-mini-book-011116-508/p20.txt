@@ -1,0 +1,15 @@
+Figure 11. Flame sequence of a burning 2-cm diameter acrylic sphere at 17 percent oxygen and 12 cm/s flow from the
+Burning and Suppression of Solids experiment. The images are about 1.5 sec. apart. With the reduction in oxygen from
+21 percent (air) to 17 percent, the flame stays bluer much longer (soot formation is delayed) facilitating comparison with
+model. The high-resolution images allow model comparison of flame growth rate, flame-to-fuel distance, and the solid
+regression rate.
+
+Figure 12. Digital still camera images showing a flame burning a 2-cm wide cotton-fiberglass fabric in opposed flow.
+Images are taken every 1.25 seconds (starting at top and moving from left to right). The flow is decreased in discrete
+steps from 10 cm/s all the way down to less than 1 cm/s. The flame response to flow changes is very rapid, and the
+flow effects on the flame and its spread rate are dramatic. Total burn time is 90 seconds. Flow changes are indicated
+by numbers.
+
+20
+
+

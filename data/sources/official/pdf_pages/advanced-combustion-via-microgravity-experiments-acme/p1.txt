@@ -1,0 +1,52 @@
+Advanced Combustion via Microgravity Experiments (ACME)
+ACME is focused on advanced combustion technology via fundamental
+microgravity research. The primary goal is to improve eﬃciency and reduce
+pollutant emission in practical terrestrial combustion. A secondary objective
+is ﬁre prevention, especially for spacecraft.
+ACME included ﬁve independent experiments (see ACME Experiments
+below) investigating laminar, gaseous, non-premixed ﬂames.
+The ACME experiments will be conducted with a single modular set of
+hardware (see ACME Implementation) in the Combustion Integrated Rack (CIR) on the International
+Space Station (ISS).
+An ACME precursor, Structure & Liftoﬀ In Combustion Experiment (SLICE), was conducted in the ISS’
+Microgravity Science Glovebox (MSG) in early 2012.
+The ACME design is complete and the engineering hardware is being assembled for integrated testing.
+On-orbit testing is expected to begin in 2017 and continue for a few years.
+ACME Status
+For the latest updates and photos,
+see www.facebook.com/space.ﬂames/ and www.ﬂickr.com/photos/space-ﬂames, respectively.
+ACME Experiments
+•
+
+The Advanced Combustion via Microgravity Experiments (ACME) project includes six
+independent experiments investigating laminar gaseous non-premixed ﬂames. In other words,
+the ﬂow is smooth and without vortices, the fuel is a gas (and not a liquid or solid), and the fuel
+and oxygen are not mixed in the burner (but are instead on opposite sides of the ﬂame sheet).
+
+•
+
+ACME is focused on advanced combustion technology via fundamental microgravity research.
+The primary goal is to improve eﬃciency and reduce pollutant emission in practical terrestrial
+combustion, for example through the development and veriﬁcation of improved computational
+models. A secondary objective is ﬁre prevention, especially for spacecraft.
+
+•
+
+In addition to enhanced performance, the improved modeling capability resulting from ACME
+could lead to reductions in the time and cost for combustor design.
+
+•
+
+Some speciﬁc ACME goals are to improve our understanding of combustion at fuel lean
+conditions where both optimum performance and low emissions can be achieved, soot control
+and reduction, oxygen-enriched combustion which could enable practical carbon sequestration,
+ﬂame stability and extinction limits, and the use of electric ﬁelds for combustion control.
+
+•
+
+The goal of ACME’s spacecraft ﬁre prevention research is to improve our fundamental
+understanding of materials ﬂammability, such as extinction behavior and the conditions needed
+for sustained combustion, and to assess the relevance of existing ﬂammability test methods for
+the screening and selection of materials for spacecraft.
+
+

@@ -1,0 +1,34 @@
+Greenberg, P.S., Ku, J.C. (1997a) “Soot Volume Fraction Imaging,” Applied Optics
+36(22), 5514-5522.
+Hegde, U., Zhou, L., and Bahadori, M.Y. (1994) “The Transition to Turbulence of
+Microgravity Gas Jet Diffusion Flames,” Combustion Science and Technology 102,
+95-113.
+Law, C. K., Faeth, G. M., “Opportunities and Challenges of Combustion in
+Microgravity,” Progress in Energy and Combustion Science, Volume 20, Issue 1,
+1994, pp. 65-113.
+Miller, F.J., Ross, H.D., Kim, I., and Sirignano, W.A. (2000) “Parametric
+Investigations of Pulsating Flame Spread Across 1-Butanol Pools,” Proceedings of
+the Combustion Institute 28, 2827-2834.
+Musgrave, Gary E., Axel Larsen, Tommaso Sgobba, Safety Design for Space
+Systems, Butterworth-Heinemann, 2009.
+Nayagam, V., Haggard, J. B., Colantonio, R. O., Marchese, A. J., Dryer, F.
+L., Zhang, B. L., and Williams, F. A. (1998). Microgravity n-heptane droplet
+combustion in oxygen-helium mixtures at atmospheric pressure. AIAA Journal,
+36(8):1369-1378.
+Nayagam, V., Dietrich, D.L., Ferkul, P.V., Hicks, M.C., and Williams, F.A. (2012)
+“Can cool flames support quasi-steady alkane droplet burning?” Combustion and
+Flame, Vol. 159, 3583-3588.
+Olson, S.L., Baum, H.R., and Kashiwagi, T. (1998) “Finger-like Smoldering over
+Thin Cellulosic Sheets in Microgravity,” Proceedings of the Combustion Institute
+27, 2525-2533.
+Olson, S. L., Ferkul, P. V., and T’ien, J. S. (1988). Near-limit flame spread
+over a thin solid fuel in microgravity. Proceedings of the Combustion Institute,
+22:1213-1222.
+Olson, S.L., Hegde, U., Bhattacharjee, S., Deering, J.L., Tang, L., and Altenkirch,
+R.A. (2004) “Sounding rocket microgravity experiments elucidating diffusive and
+radiative transport effects on flame spread over thermally thick solids,” Combustion
+Science and Technology176(4), 557-584.
+
+50
+
+

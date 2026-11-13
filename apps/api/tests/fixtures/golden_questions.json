@@ -1,0 +1,2153 @@
+{
+  "version": "2026-11-13.2",
+  "generated_from": "files read on 2026-11-13 (America/New_York); G060+ from the guidance video https://youtu.be/AVuEiKxOpc0 checked against fetched PSI data",
+  "conventions": {
+    "CSV record N": "record index where the header is record 1 (no multi-line cells in these files; equals physical line number)",
+    "types": [
+      "lookup",
+      "coverage",
+      "comparison",
+      "abstain"
+    ],
+    "requires": "feature(s) that must exist for the app to pass this item",
+    "harness": "apps/api/tests/test_golden.py: non-abstain items must not abstain, must contain every must_include string (case-insensitive, Unicode NFKC), must cite every expected accession, and must carry at least one row/page/timestamp/field locator. Abstain items must abstain and contain their must_include strings. Coverage items also run coverage_params against /api/coverage and must return exactly coverage_expected_matches as documented matches.",
+    "scope": "Only the challenge resources tab, the brief, and references they name (see README 'Scope rule')."
+  },
+  "questions": [
+    {
+      "id": "G001",
+      "type": "lookup",
+      "question": "In FLEX test #1 (identifier 20CAL08), what fuel was burned and what were the initial droplet diameter, visible flame extinction diameter and burn time?",
+      "expected_answer": "Methanol; initial droplet diameter 1.69 mm; visible flame extinction diameter 0.89 mm; burn time 4.3 s; test ended in 'Disruption' (3/5/2009, 757.7 mmHg, O2 mole fraction 0.21).",
+      "must_include": [
+        "Methanol",
+        "1.69",
+        "0.89",
+        "4.3"
+      ],
+      "expected_accessions": [
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "CSV record 2 (FLEX Test # 1)",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G002",
+      "type": "lookup",
+      "question": "Which fuels were burned in the FLEX experimental table, and how many test rows does each have?",
+      "expected_answer": "Two fuels: Methanol (157 rows) and Heptane (117 rows); 274 rows in total.",
+      "must_include": [
+        "Methanol",
+        "Heptane",
+        "274"
+      ],
+      "expected_accessions": [
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "all 274 data records, column 'Fuel'",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G003",
+      "type": "lookup",
+      "question": "What range of initial ambient oxygen mole fraction was tested in FLEX?",
+      "expected_answer": "0.12 to 0.34 (mole fraction), i.e. 12% to 34% O2.",
+      "must_include": [
+        "0.12",
+        "0.34"
+      ],
+      "expected_accessions": [
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "column 'O initial ambient composition; mole fraction', all records",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G004",
+      "type": "lookup",
+      "question": "How many FLEX tests ended in extinction, disruption, and completion?",
+      "expected_answer": "Extinction 186, Disruption 61, Completion 27 (274 tests).",
+      "must_include": [
+        "186",
+        "61",
+        "27"
+      ],
+      "expected_accessions": [
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "column 'Test end', all records",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G005",
+      "type": "lookup",
+      "question": "Which FLEX test had the longest burn time?",
+      "expected_answer": "FLEX Test #146, identifier C01M301 (Methanol), burn time 39.2 s.",
+      "must_include": [
+        "C01M301",
+        "39.2"
+      ],
+      "expected_accessions": [
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "CSV record 147",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G006",
+      "type": "lookup",
+      "question": "What was the largest initial droplet diameter in FLEX, and which test was it?",
+      "expected_answer": "4.67 mm, FLEX Test #70 (identifier 193F001, Heptane, O2 0.15, 761 mmHg). Note the identifier 193F001 also appears on Test #73 (CSV record 74).",
+      "must_include": [
+        "4.67",
+        "193F001"
+      ],
+      "expected_accessions": [
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "CSV records 71 and 74",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ],
+      "notes": "Duplicate identifier: lookups by FLEX Identifier must return both rows."
+    },
+    {
+      "id": "G007",
+      "type": "lookup",
+      "question": "How many FLEX tests used helium in the initial ambient, and what was the highest helium mole fraction?",
+      "expected_answer": "50 tests had helium > 0 (Methanol 28, Heptane 22); maximum helium mole fraction 0.45.",
+      "must_include": [
+        "50",
+        "0.45"
+      ],
+      "expected_accessions": [
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "column 'He initial ambient composition; mole fraction'",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G008",
+      "type": "lookup",
+      "question": "How many FLEX tests used carbon dioxide in the initial ambient, and what was the highest CO2 mole fraction?",
+      "expected_answer": "123 tests had CO2 > 0 (Methanol 75, Heptane 48); maximum CO2 mole fraction 0.7.",
+      "must_include": [
+        "123",
+        "0.7"
+      ],
+      "expected_accessions": [
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "column 'CO initial ambient composition; mole fraction' (header reads 'CO'; values are the CO2 suppressant fraction per the FLEX brief text, flag for domain review)",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ],
+      "notes": "Header literally says 'CO initial ambient composition'. The brief says FLEX diluted with CO2 and He. Display the header verbatim and mark the CO2 reading as curator interpretation pending domain-lead confirmation."
+    },
+    {
+      "id": "G009",
+      "type": "lookup",
+      "question": "List the fuels in the FLEX-2 test matrix.",
+      "expected_answer": "IsoOctane (pure); n-Octane (pure); Heptane (pure); Decane (pure); Ethanol (pure); Propanol 95% / Glycerol 5%; Heptane 50% / IsoOctane 50%; Propanol 80% / Glycerol 20% (8 rows).",
+      "must_include": [
+        "IsoOctane",
+        "n-Octane",
+        "Decane",
+        "Ethanol",
+        "Glycerol"
+      ],
+      "expected_accessions": [
+        "PSI-68"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-68_Experimental table_Flex2.csv",
+          "location": "CSV records 2-9",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-68"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G010",
+      "type": "lookup",
+      "question": "What oxygen mole fractions, pressures and flow velocities does the FLEX-2 table list?",
+      "expected_answer": "O2 mole fraction 0.17; 0.21; 0.25; 0.3. Ambient pressure 0.5; 1.0; 1.5; 2.0; or 3.0 atm. Flow velocity 0.1-5 cm/s. Ambient temperature 25 C; initial droplet diameter 1.5-5 mm; O2/N2 or O2/He. These are the per-fuel test matrix, not individual runs.",
+      "must_include": [
+        "0.17",
+        "0.3",
+        "3.0",
+        "0.1 - 5"
+      ],
+      "expected_accessions": [
+        "PSI-68"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-68_Experimental table_Flex2.csv",
+          "location": "CSV record 2 (same values on all 8 rows)",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-68"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ],
+      "notes": "Answer must say 'test matrix' (row_kind=test_matrix) and not claim each combination was run."
+    },
+    {
+      "id": "G011",
+      "type": "lookup",
+      "question": "What pressures were tested in the Cool Flames Investigation (CFI), and how many tests at each?",
+      "expected_answer": "1 atm (47), 3 atm (14), 1.25 atm (9), 2 atm (7), 0.75 atm (4), 5 atm (3), 0.5 atm (3); 87 tests.",
+      "must_include": [
+        "0.5 atm",
+        "5 atm",
+        "87"
+      ],
+      "expected_accessions": [
+        "PSI-39"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-39_Experimental table_CFI.csv",
+          "location": "column 'Pressure', all records",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G012",
+      "type": "lookup",
+      "question": "What fuels were used in CFI?",
+      "expected_answer": "C12H26 (n-dodecane) and two n-dodecane/iso-dodecane blends: [.60]/[.40] (41 tests) and [.75]/[.25] (24 tests); pure C12H26 in 22 tests.",
+      "must_include": [
+        "C12H26",
+        "iso-dodecane"
+      ],
+      "expected_accessions": [
+        "PSI-39"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-39_Experimental table_CFI.csv",
+          "location": "column 'Fuel'",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G013",
+      "type": "lookup",
+      "question": "What is the highest oxygen concentration in the ACME CFI-G experimental table, and which configuration was it?",
+      "expected_answer": "XO2 = 0.85 (85% O2) in the inverse-flame configuration (oxygen-nitrogen flowing from the spherical burner). This matches the brief's 'up to 85% oxygen'.",
+      "must_include": [
+        "0.85",
+        "Inverse"
+      ],
+      "expected_accessions": [
+        "PSI-159"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-159_Experimental table_CFI-G_Inverse Flames.csv",
+          "location": "column 'XO2'; e.g. CSV record 18 (test 21202 A1)",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-159"
+        },
+        {
+          "file": "data/sources/spaceapps_challenge_details.md",
+          "location": "Potential Considerations > Spacesuits and oxygen concentration"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G014",
+      "type": "lookup",
+      "question": "Which fuels were burned in ACME CFI-G inverse flames, and how many non-blank rows does that table contain?",
+      "expected_answer": "Ethane (53), propane (43), butane (58); 154 non-blank rows (the CSV has 1,015 records including blank rows).",
+      "must_include": [
+        "ethane",
+        "propane",
+        "butane",
+        "154"
+      ],
+      "expected_accessions": [
+        "PSI-159"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-159_Experimental table_CFI-G_Inverse Flames.csv",
+          "location": "column 'Fuel', non-blank records"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G015",
+      "type": "lookup",
+      "question": "Which ACME CFI-G normal-flame tests recorded a cool flame?",
+      "expected_answer": "Tests marked 'yes' in the 'Cool flame?' column: 21174 C3 (PCI-D), 21174 C4 (PCI-B), 21174 D1 (PCI-C), 21174 F1 (PCI-E), 21174 C6 (PCI-A), 21291 A1 (PCI-G), 21291 C1 (PCI-F).",
+      "must_include": [
+        "21174",
+        "21291",
+        "PCI"
+      ],
+      "expected_accessions": [
+        "PSI-159"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-159_Experimental table_CFI-G_Normal Flames.csv",
+          "location": "CSV records 160-163, 165, 169, 170"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G016",
+      "type": "lookup",
+      "question": "What burner sizes and fuels were used in ACME BRE, and how many flames were ignited in total?",
+      "expected_answer": "Burner sizes 25 mm (16 test days) and 50 mm (2 test days); fuels 100% C2H4, 50% C2H4 and 100% CH4; 194 flames ignited in total across the 18 listed test days.",
+      "must_include": [
+        "25",
+        "50",
+        "C2H4",
+        "CH4",
+        "194"
+      ],
+      "expected_accessions": [
+        "PSI-20"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-20_Experimental table_ACME BRE.csv",
+          "location": "CSV records 2-19",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-20"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G017",
+      "type": "lookup",
+      "question": "How was the oxygen concentration recorded for ACME BRE on 7 March 2019?",
+      "expected_answer": "The table literally says '3400%' (a spreadsheet formatting artifact). The app must show the verbatim text, flag it as suspicious, and not treat it as 3400% or silently as 34%.",
+      "must_include": [
+        "3400%"
+      ],
+      "expected_accessions": [
+        "PSI-20"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-20_Experimental table_ACME BRE.csv",
+          "location": "CSV record 6"
+        }
+      ],
+      "requires": [
+        "structured_qa",
+        "data_quality_flags"
+      ]
+    },
+    {
+      "id": "G018",
+      "type": "lookup",
+      "question": "What fuels does the ACME Flame Design normal-flame table list and how many tests?",
+      "expected_answer": "C2H4 (187 tests) and C3H8 (20 tests); 207 tests.",
+      "must_include": [
+        "C2H4",
+        "C3H8",
+        "207"
+      ],
+      "expected_accessions": [
+        "PSI-10"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-10_Experimental table_Flame Design_Normal Flame.csv",
+          "location": "column 'Fuel', CSV records 2-208",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-10"
+        }
+      ],
+      "requires": [
+        "ingest_PSI-10",
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G019",
+      "type": "lookup",
+      "question": "What range of oxygen mole fraction and mean pressure was tested in ACME Flame Design inverse flames?",
+      "expected_answer": "XO2 0.212 to 0.850; mean pressure 0.426 to 3.018 atm; 120 tests.",
+      "must_include": [
+        "0.85",
+        "0.426",
+        "3.018",
+        "120"
+      ],
+      "expected_accessions": [
+        "PSI-10"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-10_Experimental table_Flame Design_Inverse Flame.csv",
+          "location": "columns 'XO2' and 'pmean (atm)'",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-10"
+        }
+      ],
+      "requires": [
+        "ingest_PSI-10",
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G020",
+      "type": "lookup",
+      "question": "What fuels were burned in ACME s-Flame?",
+      "expected_answer": "Fuel bottles: 50% C2H4 with N2, 45% CH4 with N2, 100% H2, 44.4% and 66.7% H2 with CH4, H2/CH4 mixtures with He, 45% H2 with He, 45% CH4 with He, 20/25/30% C2H4 with He, 35% H2 with He. Atmospheres ~21% or ~30% O2 with N2 or He. 18 test days, 276 flames ignited.",
+      "must_include": [
+        "H2",
+        "CH4",
+        "C2H4",
+        "276"
+      ],
+      "expected_accessions": [
+        "PSI-23"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-23_Experimental table_ACME s-Flame.csv",
+          "location": "CSV records 2-19",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23"
+        }
+      ],
+      "requires": [
+        "ingest_PSI-23",
+        "structured_qa",
+        "data_quality_flags"
+      ],
+      "notes": "Atmosphere cells 'N3','N4','N5','N6' are spreadsheet auto-fill artifacts of 'N2'. Show the verbatim text plus a flag; do not invent new diluents."
+    },
+    {
+      "id": "G021",
+      "type": "lookup",
+      "question": "What test types appear in the ACME CLD Flame table and how many flames were ignited?",
+      "expected_answer": "Methane based test (14 days), Ethylene based test (14 days), Improved coflow tests (4 days); 344 flames ignited over 32 test days.",
+      "must_include": [
+        "Methane",
+        "Ethylene",
+        "Improved coflow",
+        "344"
+      ],
+      "expected_accessions": [
+        "PSI-21"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-21_Experimental table_CLD Flame.csv",
+          "location": "CSV records 2-33",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-21"
+        }
+      ],
+      "requires": [
+        "ingest_PSI-21",
+        "structured_qa",
+        "data_quality_flags"
+      ],
+      "notes": "Fuel bottle cells such as '40% CH5' to '40% CH14' and '100% C2H5' to '100% C2H11' are auto-fill artifacts. Show verbatim, flag, and normalize only with a visible flag."
+    },
+    {
+      "id": "G022",
+      "type": "lookup",
+      "question": "What mesh polarities and burner types were used in ACME E-FIELD Flames?",
+      "expected_answer": "Negative and positive mesh polarity. First round used a coflow burner and the second round a gas-jet burner (2018).",
+      "must_include": [
+        "negative",
+        "positive",
+        "coflow",
+        "gas-jet"
+      ],
+      "expected_accessions": [
+        "PSI-22"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-22_Experimental table_ACME E-FIELD Flames.csv",
+          "location": "columns 'Test Type','Mesh Polarity'",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-22"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G023",
+      "type": "lookup",
+      "question": "What were the conditions and burn times of the two Saffire-I samples?",
+      "expected_answer": "Both SIBAL fabric, 0.37 cm thick, 20 cm/s air flow, 182 W ignition for 8 s. S1: concurrent flow, O2 21.5-21.7%, burn time 420 s. S2: opposed flow, O2 ~21.5%, burn time 70 s.",
+      "must_include": [
+        "SIBAL",
+        "20",
+        "420",
+        "70",
+        "Concurrent",
+        "Opposed"
+      ],
+      "expected_accessions": [
+        "PSI-98"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-98_Experimental table_SAFFIRE-1.csv",
+          "location": "CSV records 2-3",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G024",
+      "type": "lookup",
+      "question": "How many fuel samples were burned in Saffire-II, and which materials?",
+      "expected_answer": "Nine samples (2-1 to 2-9): silicone (2-1 to 2-4), cotton-fiberglass SIBAL (2-5), PMMA & Nomex (2-7), PMMA (2-8). Material is blank in the PSI table for 2-6 and 2-9 (Not reported). The NASA Saffire fact sheet also says nine samples, including a cotton-fiberglass blend, Nomex and acrylic glass.",
+      "must_include": [
+        "nine",
+        "9",
+        "Silicone",
+        "SIBAL",
+        "PMMA",
+        "Nomex"
+      ],
+      "expected_accessions": [
+        "PSI-99"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-99_Experimental table_SAFFIRE-2.csv",
+          "location": "CSV records 2-10 (records 11-16 are flow-visualization and notes, not samples)",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-99"
+        },
+        {
+          "file": "data/sources/official/pdf/spacecraft-fire-safety-demonstration-saffire.pdf",
+          "location": "page 1",
+          "url": "https://www.nasa.gov/wp-content/uploads/2025/07/spacecraft-fire-safety-demonstration-saffire.pdf"
+        }
+      ],
+      "requires": [
+        "structured_qa",
+        "row_kind_fix"
+      ]
+    },
+    {
+      "id": "G025",
+      "type": "lookup",
+      "question": "What was the microgravity flame spread rate of the SIBAL sample 2-5 in Saffire-II?",
+      "expected_answer": "2.1 mm/s (concurrent flow, 20 cm/s, ~22.1% O2, burn length 29 cm, burn time 145 s).",
+      "must_include": [
+        "2.1 mm/s"
+      ],
+      "expected_accessions": [
+        "PSI-99"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-99_Experimental table_SAFFIRE-2.csv",
+          "location": "CSV record 6 (sample 2-5), column '?-g Spread Length' (header garbled in source, likely µ-g)"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G026",
+      "type": "lookup",
+      "question": "What air flow and sample size were used in Saffire-III?",
+      "expected_answer": "SIBAL fabric, 0.33 cm thick, 94 cm long, 40.6 cm wide, 30 cm/s air flow; two samples (S1 concurrent, S2 opposed).",
+      "must_include": [
+        "30 cm/s",
+        "94",
+        "40.6"
+      ],
+      "expected_accessions": [
+        "PSI-100"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-100_Experimental table_SAFFIRE-3.csv",
+          "location": "CSV records 2-3",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-100"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G027",
+      "type": "lookup",
+      "question": "Who were the BASS-II principal investigators listed in the experimental table?",
+      "expected_answer": "Bhattacharjee, Ferkul, Fernandez-Pello, Miller, Olson, T'ien.",
+      "must_include": [
+        "Bhattacharjee",
+        "Ferkul",
+        "Fernandez-Pello",
+        "Miller",
+        "Olson",
+        "T'ien"
+      ],
+      "expected_accessions": [
+        "PSI-25"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-25_Experimental table_BASS-II.csv",
+          "location": "column 'PI', 129 records",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G028",
+      "type": "lookup",
+      "question": "What range of calibrated initial oxygen concentration was tested in BASS-II?",
+      "expected_answer": "13.6% to 22.2% O2 by volume (calibrated initial).",
+      "must_include": [
+        "13.6",
+        "22.2"
+      ],
+      "expected_accessions": [
+        "PSI-25"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-25_Experimental table_BASS-II.csv",
+          "location": "column 'Calibrated  initial O2 % by vol'",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G029",
+      "type": "lookup",
+      "question": "How many BASS test rows involved PMMA and how many involved candles?",
+      "expected_answer": "48 rows mention PMMA and 17 rows mention a candle (case-insensitive match on 'Fuel Sample Material'); 122 rows total.",
+      "must_include": [
+        "48",
+        "17",
+        "122"
+      ],
+      "expected_accessions": [
+        "PSI-26"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-26_Experimental table_BASS.csv",
+          "location": "column 'Fuel Sample Material'"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ],
+      "notes": "Counts depend on string matching; spheres listed only as '2 cm sphere' are not counted as PMMA."
+    },
+    {
+      "id": "G030",
+      "type": "lookup",
+      "question": "Which materials were tested in SAME and at what air flows?",
+      "expected_answer": "Teflon (samples 1-4) at 5 cm/s (samples 1-3) and 10 cm/s (sample 4), weight-loss rate 1-2 mg/min, aging 1 or 20 min. Kapton, silicone rubber, lampwick and dibutyl phthalate at the same conditions as 1-4.",
+      "must_include": [
+        "Teflon",
+        "Kapton",
+        "Silicone",
+        "Lampwick",
+        "Dibutyl Phthalate",
+        "5",
+        "10"
+      ],
+      "expected_accessions": [
+        "PSI-102"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-102_Experimental table_SAME.csv",
+          "location": "CSV records 2-9",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-102"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G031",
+      "type": "lookup",
+      "question": "Which sample types were tested in SAME-R and how many runs each?",
+      "expected_answer": "Kapton 29, Silicone 22, Lampwick 20, Pyrell 20, Teflon 18; 109 runs. Inlet velocity 0-8.1 cm/s.",
+      "must_include": [
+        "Kapton",
+        "Pyrell",
+        "109",
+        "8.1"
+      ],
+      "expected_accessions": [
+        "PSI-101"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-101_Experimental table_SAME-R.csv",
+          "location": "columns 'Sample Type', 'Inlet velocity (cm/s)'",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-101"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G032",
+      "type": "lookup",
+      "question": "What instruments and test material did DAFT use?",
+      "expected_answer": "Session D1 (GMT 54, 2005) used the modified P-Trak; session D2 (GMT 63, 2005) used a DustTrak. Both used Arizona Road Dust (ARD Fine) with ISS GN2.",
+      "must_include": [
+        "P-Trak",
+        "DustTrak",
+        "Arizona Road Dust"
+      ],
+      "expected_accessions": [
+        "PSI-47"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-47_Experimental table_DAFT.csv",
+          "location": "CSV records 2-3",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-47"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G033",
+      "type": "lookup",
+      "question": "What nozzle diameters and fuels were used in SPICE?",
+      "expected_answer": "Nozzles 0.4064, 0.762 and 1.6002 mm. Fuels: propylene, 75% propylene, 50% propylene, propane, ethylene, methane (469 rows).",
+      "must_include": [
+        "0.4064",
+        "0.762",
+        "1.6002",
+        "Propylene",
+        "Ethylene",
+        "469"
+      ],
+      "expected_accessions": [
+        "PSI-107"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-107_Experimental table_Spice.csv",
+          "location": "columns 'Nozzle (mm)', 'Fuel'",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-107"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G034",
+      "type": "lookup",
+      "question": "What fuels were burned in SLICE and over what dates?",
+      "expected_answer": "Twelve test days from 2012-FEB-09 to 2012-MAR-23, using 100% CH4, 40% CH4, 70% CH4, 20% C2H4 (balance N2), 100% C2H6 and 100% C2H4.",
+      "must_include": [
+        "CH4",
+        "C2H4",
+        "C2H6",
+        "2012"
+      ],
+      "expected_accessions": [
+        "PSI-106"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-106_Experimental table_Slice.csv",
+          "location": "CSV records 2-13",
+          "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-106"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G035",
+      "type": "lookup",
+      "question": "How many PSI investigations are in the Combustion Science research area, and how many are ground (non-flight) investigations?",
+      "expected_answer": "24 investigations: 19 microgravity investigations and 5 ground investigations (PSI-60, PSI-62, PSI-115, PSI-117, PSI-142).",
+      "must_include": [
+        "24",
+        "5"
+      ],
+      "expected_accessions": [
+        "PSI-60",
+        "PSI-62",
+        "PSI-115",
+        "PSI-117",
+        "PSI-142"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/search_research_area_combustion_science.json",
+          "location": "hits.total = 24; 'Project Type' field",
+          "url": "https://psi.nasa.gov/geode-py/ws/repo/search?ffield=Research%20Area&fvalue=combustion%20science"
+        }
+      ],
+      "requires": [
+        "ingest_ground_investigations",
+        "catalog_count"
+      ]
+    },
+    {
+      "id": "G036",
+      "type": "lookup",
+      "question": "Which PSI ground investigation used FLEX flight data to study cool flame dynamics with CFD?",
+      "expected_answer": "PSI-117, 'Effect of External Thermo-Convective Perturbation on Cool Flame Dynamics: A Multidimensional Multi-Physics CFD Analysis' (released 10-Jun-2026).",
+      "must_include": [
+        "PSI-117"
+      ],
+      "expected_accessions": [
+        "PSI-117"
+      ],
+      "source": [
+        {
+          "file": "/workspace/official-resources/psi/PSI-117.json",
+          "location": "fields title, objective, releaseDate",
+          "url": "https://psi.nasa.gov/geode-py/ws/repo/investigations/PSI-117"
+        }
+      ],
+      "requires": [
+        "ingest_ground_investigations"
+      ]
+    },
+    {
+      "id": "G037",
+      "type": "lookup",
+      "question": "What pressure and oxygen are spacesuits filled to, and what is expected for the Moon base?",
+      "expected_answer": "Spacesuits: 100% oxygen at 4.3 psi (Earth sea level is 14.7 psi). Moon base and pressurized rovers: likely 30% O2 or greater, at 10.2 psi or less.",
+      "must_include": [
+        "4.3 psi",
+        "30%",
+        "10.2 psi"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/spaceapps_challenge_details.md",
+          "location": "Potential Considerations > Spacesuits and oxygen concentration",
+          "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/?tab=details"
+        }
+      ],
+      "requires": [
+        "brief_facts"
+      ]
+    },
+    {
+      "id": "G038",
+      "type": "lookup",
+      "question": "What is the volume of the Combustion Integrated Rack chamber and when was the CIR launched?",
+      "expected_answer": "100-liter combustion chamber; launched to the ISS in November 2008 on STS-126.",
+      "must_include": [
+        "100",
+        "November 2008",
+        "STS-126"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "/workspace/official-resources/nasa_combustion_science.txt",
+          "location": "section 'Combustion Integrated Rack'",
+          "url": "https://www.nasa.gov/glenn/glenn-expertise-space-exploration/physical-sciences-program/combustion-science/"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest"
+      ]
+    },
+    {
+      "id": "G039",
+      "type": "lookup",
+      "question": "How many ACME experiments did the 2015 Researcher's Guide list, and which were they?",
+      "expected_answer": "Five: BRE, CLD Flame, E-FIELD Flames, Flame Design and s-Flame (the 2026 brief describes six ACME experiments; CFI-G is the sixth in PSI).",
+      "must_include": [
+        "five",
+        "BRE",
+        "CLD Flame",
+        "E-FIELD",
+        "Flame Design",
+        "s-Flame"
+      ],
+      "expected_accessions": [
+        "PSI-20",
+        "PSI-21",
+        "PSI-22",
+        "PSI-10",
+        "PSI-23"
+      ],
+      "source": [
+        {
+          "file": "data/sources/official/pdf/np-2015-10-034-jsc_combustion_in_reduced_gravity-iss-mini-book-011116-508.pdf",
+          "location": "PDF page 44",
+          "url": "https://www.nasa.gov/wp-content/uploads/2016/05/np-2015-10-034-jsc_combustion_in_reduced_gravity-iss-mini-book-011116-508.pdf"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest"
+      ]
+    },
+    {
+      "id": "G040",
+      "type": "lookup",
+      "question": "What caused the 1997 fire aboard Mir and how many crew were aboard?",
+      "expected_answer": "On Feb. 24, 1997, a solid-fuel oxygen generator (SFOG) canister in the Kvant-1 module ignited; six crew members were aboard.",
+      "must_include": [
+        "1997",
+        "oxygen generator",
+        "Kvant-1",
+        "six"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "/workspace/official-resources/mir_fire.txt",
+          "location": "paragraphs 1-3",
+          "url": "https://www.nasa.gov/history/25-years-ago-fire-aboard-space-station-mir/"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest"
+      ]
+    },
+    {
+      "id": "G041",
+      "type": "lookup",
+      "question": "What was the cabin atmosphere during the Apollo 1 test fire and who was the crew?",
+      "expected_answer": "Cabin pressurized with 100% oxygen during the Jan. 27, 1967 launch-pad test. Crew: Virgil 'Gus' Grissom, Edward White and Roger Chaffee.",
+      "must_include": [
+        "100% oxygen",
+        "Grissom",
+        "White",
+        "Chaffee"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "/workspace/official-resources/apollo1.txt",
+          "location": "sections 'Apollo I Crew', 'Tragedy on the Launchpad'",
+          "url": "https://sma.nasa.gov/sma-disciplines/accllp/apollo-1"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest"
+      ]
+    },
+    {
+      "id": "G042",
+      "type": "lookup",
+      "question": "What NASA spinoff improved smoke detection on Earth, and why does it give fewer false alarms?",
+      "expected_answer": "The Brunswick Incipient Fire Detector (originally used in space shuttle orbiters; spinoff published 1978). It discriminates between combustion particles and extraneous matter such as dust, so it is less susceptible to false alarms; it suits large areas such as mines.",
+      "must_include": [
+        "dust",
+        "false alarms",
+        "1978"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "/workspace/official-resources/spinoff_fire_detector.txt",
+          "location": "full page",
+          "url": "https://spinoff.nasa.gov/node/9407"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest",
+        "earth_applications"
+      ]
+    },
+    {
+      "id": "G043",
+      "type": "lookup",
+      "question": "How light were the NASA-derived firefighter air tanks and at what pressure were they rated?",
+      "expected_answer": "20 pounds for a 30-minute air supply (13 pounds less than conventional tanks), pressurized at 4,500 psi (spinoff originally published 1976).",
+      "must_include": [
+        "20 pounds",
+        "30 minute",
+        "4,500 psi"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "/workspace/official-resources/spinoff_air_tanks.txt",
+          "location": "full page",
+          "url": "https://spinoff.nasa.gov/node/9582"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest",
+        "earth_applications"
+      ]
+    },
+    {
+      "id": "G044",
+      "type": "coverage",
+      "question": "Has any PSI test been run at a lunar-habitat-like atmosphere (O2 >= 30% and pressure <= 10.2 psi)?",
+      "expected_answer": "Yes. ACME CFI-G: 20 normal-flame rows (e.g. 21106A4, 50% butane, XO2 0.3926, 0.507 bar) and 28 inverse-flame rows (e.g. 21196 M1, ethane, XO2 0.30, 0.495 bar). ACME Flame Design inverse: 18 rows (e.g. 21349A1, XO2 0.85, 0.426 atm). FLEX-2's test matrix overlaps (0.3 O2, 0.5 atm) but is a planned matrix, not per-run. FLEX: no row meets both (lowest pressure with O2 >= 0.30 is 534.3 mmHg = 10.33 psi, test 220R001).",
+      "must_include": [
+        "CFI-G",
+        "48",
+        "Flame Design",
+        "FLEX"
+      ],
+      "expected_accessions": [
+        "PSI-159",
+        "PSI-10",
+        "PSI-68",
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-159_Experimental table_CFI-G_Normal Flames.csv",
+          "location": "e.g. CSV record 32"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-159_Experimental table_CFI-G_Inverse Flames.csv",
+          "location": "e.g. CSV record 15"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-10_Experimental table_Flame Design_Inverse Flame.csv",
+          "location": "e.g. CSV record 24"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "CSV record 38 (closest miss)"
+        },
+        {
+          "file": "data/sources/spaceapps_challenge_details.md",
+          "location": "10.2 psi / 30% target"
+        }
+      ],
+      "requires": [
+        "coverage_endpoint",
+        "ingest_PSI-10"
+      ],
+      "notes": "Current /api/coverage returns CFI-G 48 runs + FLEX-2 matrix (verified locally 2026-11-13). Boundary test: 10.2 psi = 70.33 kPa = 527.49 mmHg = 0.7033 bar = 0.6941 atm.",
+      "coverage_params": {
+        "oxygen_min": 30,
+        "pressure_max": 10.2,
+        "pressure_unit": "psi"
+      },
+      "coverage_expected_matches": [
+        "psi-159",
+        "psi-10",
+        "psi-68"
+      ]
+    },
+    {
+      "id": "G045",
+      "type": "coverage",
+      "question": "Have droplet combustion tests been run with helium in the ambient at a pressure below 600 mmHg?",
+      "expected_answer": "Yes. FLEX has 24 such tests (Methanol 14, Heptane 10), CSV records 250-273, at 527.6-534.6 mmHg with helium mole fraction 0.2-0.45 and O2 0.17-0.24 (e.g. H10H101: Heptane, 534 mmHg, O2 0.24, He 0.2). CFI's 14 helium rows are all at 1 atm or 3 atm, so CFI does not match.",
+      "must_include": [
+        "FLEX",
+        "24",
+        "527.6",
+        "0.45"
+      ],
+      "expected_accessions": [
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "CSV records 250-273"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-39_Experimental table_CFI.csv",
+          "location": "Helium > 0 rows (pressures 1 atm and 3 atm)"
+        }
+      ],
+      "requires": [
+        "coverage_endpoint",
+        "diluent_filter"
+      ],
+      "notes": "Needs a new diluent/suppressant (He, CO2) filter on /api/coverage.",
+      "coverage_params": {
+        "fuel_class": "liquid",
+        "diluent": "He",
+        "pressure_max": 600,
+        "pressure_unit": "mmHg"
+      },
+      "coverage_expected_matches": [
+        "psi-69"
+      ]
+    },
+    {
+      "id": "G046",
+      "type": "coverage",
+      "question": "Has SIBAL (cotton-fiberglass) fabric been burned in microgravity at an air flow of 30 cm/s?",
+      "expected_answer": "Yes. Saffire-III samples S1 (concurrent) and S2 (opposed), SIBAL fabric at 30 cm/s.",
+      "must_include": [
+        "SAFFIRE-III",
+        "30 cm/s"
+      ],
+      "expected_accessions": [
+        "PSI-100"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-100_Experimental table_SAFFIRE-3.csv",
+          "location": "CSV records 2-3"
+        }
+      ],
+      "requires": [
+        "coverage_endpoint"
+      ],
+      "coverage_params": {
+        "material": "SIBAL",
+        "airflow_min": 30,
+        "airflow_max": 30,
+        "airflow_unit": "cm/s"
+      },
+      "coverage_expected_matches": [
+        "psi-100"
+      ]
+    },
+    {
+      "id": "G047",
+      "type": "coverage",
+      "question": "Is there any PMMA test in BASS-II at an initial oxygen concentration of 15% or less?",
+      "expected_answer": "Yes. For example O4 (3/8\" clear rod, 14.8%), O5b (1/2\" clear PMMA rod, 14.2%), O12 (3/8\" clear rod, 13.6%), B14 (1 cm wide 200 micron PMMA, 15%). The 'clear rod' rows need a material alias to PMMA (curator rule, flag it).",
+      "must_include": [
+        "BASS-II",
+        "13.6",
+        "14.2"
+      ],
+      "expected_accessions": [
+        "PSI-25"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-25_Experimental table_BASS-II.csv",
+          "location": "CSV records 15, 52, 54, 62"
+        }
+      ],
+      "requires": [
+        "coverage_endpoint",
+        "material_aliases"
+      ],
+      "coverage_params": {
+        "material": "PMMA",
+        "oxygen_max": 15
+      },
+      "coverage_expected_matches": [
+        "psi-25"
+      ]
+    },
+    {
+      "id": "G048",
+      "type": "coverage",
+      "question": "Have gaseous coflow flames been tested with an air co-flow above 80 cm/s?",
+      "expected_answer": "Yes. SPICE CSV record 139: 75% propylene, 0.4064 mm nozzle, air rate 85.28 cm/s (the maximum in the table).",
+      "must_include": [
+        "SPICE",
+        "85.28"
+      ],
+      "expected_accessions": [
+        "PSI-107"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-107_Experimental table_Spice.csv",
+          "location": "CSV record 139"
+        }
+      ],
+      "requires": [
+        "coverage_endpoint"
+      ],
+      "coverage_params": {
+        "fuel_class": "gaseous",
+        "airflow_min": 80,
+        "airflow_unit": "cm/s"
+      },
+      "coverage_expected_matches": [
+        "psi-107"
+      ]
+    },
+    {
+      "id": "G049",
+      "type": "comparison",
+      "question": "Compare FLEX, FLEX-2 and CFI: what hardware did they share and how did their fuels differ?",
+      "expected_answer": "All three burned liquid fuel droplets in the Multi-user Droplet Combustion Apparatus (MDCA) in the Combustion Integrated Rack (brief). FLEX: methanol and heptane. FLEX-2: alkanes, ethanol, propanol/glycerol and heptane/isooctane mixtures. CFI: n-dodecane and n-dodecane/iso-dodecane blends.",
+      "must_include": [
+        "MDCA",
+        "Methanol",
+        "Heptane",
+        "Decane",
+        "dodecane"
+      ],
+      "expected_accessions": [
+        "PSI-69",
+        "PSI-68",
+        "PSI-39"
+      ],
+      "source": [
+        {
+          "file": "data/sources/spaceapps_challenge_details.md",
+          "location": "Hardware bullet"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "Fuel"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-68_Experimental table_Flex2.csv",
+          "location": "Sample (Fuel Type)"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-39_Experimental table_CFI.csv",
+          "location": "Fuel"
+        }
+      ],
+      "requires": [
+        "compare_endpoint",
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G050",
+      "type": "comparison",
+      "question": "Compare sample scale in BASS and Saffire-I.",
+      "expected_answer": "BASS samples are small (e.g. 'SIBAL 2 cm', 'PMMA sphere 2 cm', 1 cm spheres) in the MSG flow duct. Saffire-I burned SIBAL fabric 40.6 x 94 cm in a Cygnus enclosure (fact sheet: 0.4 m wide x 1 m long; the largest earlier space fire was index-card sized).",
+      "must_include": [
+        "2 cm",
+        "94",
+        "40.6",
+        "Cygnus"
+      ],
+      "expected_accessions": [
+        "PSI-26",
+        "PSI-98"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-26_Experimental table_BASS.csv",
+          "location": "Fuel Sample Material"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-98_Experimental table_SAFFIRE-1.csv",
+          "location": "CSV records 2-3"
+        },
+        {
+          "file": "data/sources/official/pdf/spacecraft-fire-safety-demonstration-saffire.pdf",
+          "location": "page 1"
+        }
+      ],
+      "requires": [
+        "compare_endpoint",
+        "official_docs_ingest"
+      ],
+      "notes": "Saffire-I lists Length 40.6 / Width 94 while Saffire-III lists Length 94 / Width 40.6: show verbatim and flag the possible swap."
+    },
+    {
+      "id": "G051",
+      "type": "comparison",
+      "question": "How did the oxygen range planned for FLEX compare with what the FLEX table shows was actually run?",
+      "expected_answer": "Fact sheet: oxygen mole fractions planned from 0.10 to 0.50. FLEX table: 0.12 to 0.34.",
+      "must_include": [
+        "0.10",
+        "0.50",
+        "0.12",
+        "0.34"
+      ],
+      "expected_accessions": [
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/official/pdf/flame-extinguishment-experiment-flex.pdf",
+          "location": "page 1",
+          "url": "https://www.nasa.gov/wp-content/uploads/2025/07/flame-extinguishment-experiment-flex.pdf"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "O column"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest",
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G052",
+      "type": "comparison",
+      "question": "What do SAME and DAFT have in common?",
+      "expected_answer": "DAFT tested the modified P-Trak particle counter planned for SAME (DAFT table D1 lists the modified P-Trak; the brief says one SAME smoke-detection instrument was used to detect dust in DAFT). DAFT sampled Arizona Road Dust; SAME burned spacecraft materials (Teflon, Kapton, silicone rubber, lampwick, dibutyl phthalate).",
+      "must_include": [
+        "P-Trak",
+        "dust",
+        "Teflon"
+      ],
+      "expected_accessions": [
+        "PSI-47",
+        "PSI-102"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-47_Experimental table_DAFT.csv",
+          "location": "record 2"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-102_Experimental table_SAME.csv",
+          "location": "records 2-9"
+        },
+        {
+          "file": "data/sources/official/pdf/dust-and-aerosol-measurement-feasibility-test-daft.pdf",
+          "location": "page 1"
+        }
+      ],
+      "requires": [
+        "compare_endpoint"
+      ]
+    },
+    {
+      "id": "G053",
+      "type": "abstain",
+      "question": "What flame spread rate was measured for materials burned in lunar gravity in PSI?",
+      "expected_answer": "Abstain / not established: the brief states there is currently no partial-gravity combustion data in PSI (LUCI and FM2 are expected in future).",
+      "must_include": [
+        "no partial-gravity"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/spaceapps_challenge_details.md",
+          "location": "Partial-gravity data"
+        }
+      ],
+      "requires": [
+        "abstention"
+      ]
+    },
+    {
+      "id": "G054",
+      "type": "abstain",
+      "question": "Show me the Saffire-V experimental results from PSI.",
+      "expected_answer": "Abstain: PSI's combustion-science listing contains Saffire-I, -II and -III only (PSI-98/99/100). Saffire-IV to -VI are described in the NASA fact sheet but have no PSI record in the catalog.",
+      "must_include": [
+        "not in PSI",
+        "Saffire-I",
+        "III"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/psi/search_research_area_combustion_science.json",
+          "location": "24 hits, no Saffire IV-VI"
+        },
+        {
+          "file": "data/sources/official/pdf/spacecraft-fire-safety-demonstration-saffire.pdf",
+          "location": "page 2"
+        }
+      ],
+      "requires": [
+        "abstention",
+        "scope_registry"
+      ]
+    },
+    {
+      "id": "G055",
+      "type": "abstain",
+      "question": "What was the microgravity flame spread rate of Nomex in Saffire-II sample 2-7?",
+      "expected_answer": "Not reported: the spread-length cell reads 'n/a (Nomex)'; only the PMMA portion burned (note 2).",
+      "must_include": [
+        "n/a",
+        "Nomex"
+      ],
+      "expected_accessions": [
+        "PSI-99"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-99_Experimental table_SAFFIRE-2.csv",
+          "location": "CSV record 8; note row 14"
+        }
+      ],
+      "requires": [
+        "abstention",
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G056",
+      "type": "abstain",
+      "question": "What material was sample 2-6 in Saffire-II?",
+      "expected_answer": "Not reported in the PSI experimental table (the Material cell is blank). Do not infer it from neighbouring rows.",
+      "must_include": [
+        "Not reported"
+      ],
+      "expected_accessions": [
+        "PSI-99"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-99_Experimental table_SAFFIRE-2.csv",
+          "location": "CSV record 7"
+        }
+      ],
+      "requires": [
+        "abstention"
+      ]
+    },
+    {
+      "id": "G057",
+      "type": "abstain",
+      "question": "Which rocket propellant combustion tests in PSI are relevant to launch-pad fire safety?",
+      "expected_answer": "Out of scope: the brief says rocket and propellant fire safety is generally beyond the scope of research available in PSI.",
+      "must_include": [
+        "beyond the scope"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/spaceapps_challenge_details.md",
+          "location": "Objectives footnote *"
+        }
+      ],
+      "requires": [
+        "abstention",
+        "scope_registry"
+      ]
+    },
+    {
+      "id": "G058",
+      "type": "abstain",
+      "question": "What was the ambient pressure in FLEX test 114 (C11M201)?",
+      "expected_answer": "Not usable: the table lists 0 mmHg, which is physically implausible for a burning test. Show the verbatim value, flag it, and exclude it from numeric filters.",
+      "must_include": [
+        "0",
+        "implausible"
+      ],
+      "expected_accessions": [
+        "PSI-69"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-69_Experimental table_FLEX.csv",
+          "location": "CSV record 115"
+        }
+      ],
+      "requires": [
+        "abstention",
+        "data_quality_flags"
+      ]
+    },
+    {
+      "id": "G059",
+      "type": "abstain",
+      "question": "Is NASA-tested material X certified safe for a lunar habitat because it passed a microgravity test?",
+      "expected_answer": "No. This tool is decision support only and is not a materials certification authority. Microgravity results do not directly establish lunar performance, and PSI has no partial-gravity combustion data.",
+      "must_include": [
+        "not",
+        "certif",
+        "partial-gravity"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/spaceapps_challenge_details.md",
+          "location": "Partial-gravity data"
+        },
+        {
+          "file": "docs/PRD.md",
+          "location": "section 14 example evaluation questions"
+        }
+      ],
+      "requires": [
+        "abstention",
+        "policy_notes"
+      ]
+    },
+    {
+      "id": "G060",
+      "type": "lookup",
+      "question": "How many investigations does PSI list under Combustion Science?",
+      "expected_answer": "24 (19 microgravity and 5 ground investigations). This matches the PSI lead's statement in the guidance video.",
+      "must_include": [
+        "24"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/psi/search_research_area_combustion_science.json",
+          "location": "hits.total = 24"
+        },
+        {
+          "file": "/workspace/spaceapps-video/transcript.txt",
+          "location": "[05:54] Shubha Yusen: '24 investigations with 12 terabytes of data'",
+          "url": "https://youtu.be/AVuEiKxOpc0"
+        }
+      ],
+      "requires": [
+        "catalog_count"
+      ]
+    },
+    {
+      "id": "G061",
+      "type": "lookup",
+      "question": "How much data does PSI hold for the Combustion Science investigations?",
+      "expected_answer": "Computed from fetched PSI records: 13.50 TB (decimal), i.e. 12.28 TiB, which is the sum of `totalFileSize` over the 24 records, as of 2026-11-13. The video's '12 terabytes' is consistent with the binary (TiB) figure. The app must show the computed value with its as-of date and must not hardcode '12 TB'.",
+      "must_include": [
+        "13.5",
+        "12.3",
+        "2026-11-13"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "/workspace/official-resources/psi/PSI-*.json (24 Combustion Science records)",
+          "location": "field totalFileSize, summed"
+        },
+        {
+          "file": "/workspace/spaceapps-video/transcript.txt",
+          "location": "[05:54] '24 investigations with 12 terabytes of data'",
+          "url": "https://youtu.be/AVuEiKxOpc0"
+        }
+      ],
+      "requires": [
+        "data_volume_stat"
+      ],
+      "notes": "Tolerate rounding: accept 13.5 TB or 12.3 TiB. Reject '12 TB' if it is not computed."
+    },
+    {
+      "id": "G062",
+      "type": "lookup",
+      "question": "How many physical-science research areas does PSI have, and what are they?",
+      "expected_answer": "Six: Biophysics, Combustion Science, Complex Fluids - Soft Matter, Fluid Physics, Fundamental Physics, Materials Science.",
+      "must_include": [
+        "six",
+        "Combustion Science",
+        "Fluid Physics",
+        "Materials Science"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "/workspace/official-resources/psi_search_q_combustion.json",
+          "location": "distinct 'Research Area' over 133 hits"
+        },
+        {
+          "file": "/workspace/spaceapps-video/transcript.txt",
+          "location": "[05:48] 'six different areas of physical sciences'",
+          "url": "https://youtu.be/AVuEiKxOpc0"
+        }
+      ],
+      "requires": [
+        "catalog_count"
+      ]
+    },
+    {
+      "id": "G063",
+      "type": "lookup",
+      "question": "Which material folders are under Raw Data > Reduced Gravity for SAME-R in PSI?",
+      "expected_answer": "Cotton Lamp wick, Kapton, Pyrell, Silicone, Teflon (5 folders, each with Run NNN subfolders and a 'Videos, Images' folder). PEEK and PVC do not appear in the fetched PSI-101 record or in the video frames checked.",
+      "must_include": [
+        "Cotton Lamp wick",
+        "Kapton",
+        "Pyrell",
+        "Silicone",
+        "Teflon"
+      ],
+      "expected_accessions": [
+        "PSI-101"
+      ],
+      "source": [
+        {
+          "file": "/workspace/official-resources/psi/PSI-101.json",
+          "location": "added[].subcategory values starting 'Reduced Gravity/'"
+        },
+        {
+          "file": "/workspace/spaceapps-video/transcript.txt",
+          "location": "[06:25] data files and documents folder: samples under reduced gravity each with own folder (frame at 06:40 shows the same 5 folders)",
+          "url": "https://youtu.be/AVuEiKxOpc0"
+        }
+      ],
+      "requires": [
+        "file_tree_index"
+      ]
+    },
+    {
+      "id": "G064",
+      "type": "lookup",
+      "question": "What tabs does a PSI investigation page have?",
+      "expected_answer": "Description, Experimental Table, Modeling Table, Hardware, Representative Images, Data files and documents, Publications, Version History.",
+      "must_include": [
+        "Description",
+        "Experimental Table",
+        "Modeling Table",
+        "Hardware",
+        "Representative Images",
+        "Data files and documents",
+        "Publications",
+        "Version History"
+      ],
+      "expected_accessions": [
+        "PSI-101"
+      ],
+      "source": [
+        {
+          "file": "/workspace/spaceapps-video/transcript.txt",
+          "location": "[06:06] PSI-101 page sidebar, frames at 06:10 and 06:40 (visual, not in transcript)",
+          "url": "https://youtu.be/AVuEiKxOpc0"
+        }
+      ],
+      "requires": [
+        "psi_tab_parity"
+      ],
+      "notes": "Visual source only. The record JSON has no Modeling Table field."
+    },
+    {
+      "id": "G065",
+      "type": "lookup",
+      "question": "What version is the SAME-R (PSI-101) record in PSI, and when was it released?",
+      "expected_answer": "Version 4. Release date 18-Sep-2024 (record modified 02-Jun-2025).",
+      "must_include": [
+        "4",
+        "18-Sep-2024"
+      ],
+      "expected_accessions": [
+        "PSI-101"
+      ],
+      "source": [
+        {
+          "file": "/workspace/official-resources/psi/PSI-101.json",
+          "location": "fields version, releaseDate, modifiedDate"
+        },
+        {
+          "file": "/workspace/spaceapps-video/transcript.txt",
+          "location": "[06:10] page badge 'Version 4' (visual)",
+          "url": "https://youtu.be/AVuEiKxOpc0"
+        }
+      ],
+      "requires": [
+        "version_history"
+      ]
+    },
+    {
+      "id": "G066",
+      "type": "lookup",
+      "question": "On what flight platforms were the PSI combustion investigations conducted?",
+      "expected_answer": "Per the PSI search listing: International Space Station 18, Cygnus spacecraft 1 (SAFFIRE-II), and 5 with no flight platform (blank 3, 'Not Applicable' 2; these are the ground investigations). No PSI combustion record lists a drop tower, parabolic flight, sounding rocket or suborbital flight as its platform, although the video names those platforms in general. Note: SAFFIRE-I and -III list ISS as the flight platform while their hardware is a Cygnus enclosure.",
+      "must_include": [
+        "18",
+        "Cygnus",
+        "drop tower"
+      ],
+      "expected_accessions": [
+        "PSI-99",
+        "PSI-98",
+        "PSI-100"
+      ],
+      "source": [
+        {
+          "file": "data/sources/psi/search_research_area_combustion_science.json",
+          "location": "'Flight Platform' field"
+        },
+        {
+          "file": "/workspace/official-resources/psi/PSI-98.json",
+          "location": "experimentHardware 'Saffire 1 enclosure in Cygnus'"
+        },
+        {
+          "file": "/workspace/spaceapps-video/transcript.txt",
+          "location": "[02:25] platforms: drop towers, parabolic flights, sounding rocket, suborbital flights, ISS",
+          "url": "https://youtu.be/AVuEiKxOpc0"
+        }
+      ],
+      "requires": [
+        "platform_field"
+      ]
+    },
+    {
+      "id": "G067",
+      "type": "abstain",
+      "question": "Which PSI combustion investigations were flown on sounding rockets?",
+      "expected_answer": "None listed: no PSI Combustion Science record has a sounding-rocket platform. The video mentions sounding rockets as a general microgravity platform, not as a PSI dataset. PSI-10's approach text mentions drop-tower tests alongside ISS tests.",
+      "must_include": [
+        "None",
+        "sounding"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/psi/search_research_area_combustion_science.json",
+          "location": "'Flight Platform'"
+        },
+        {
+          "file": "/workspace/official-resources/psi/PSI-10.json",
+          "location": "approach: 'Perform spherical diffusion flame tests in drop towers and aboard the International Space Station.'"
+        }
+      ],
+      "requires": [
+        "platform_field",
+        "abstention"
+      ]
+    },
+    {
+      "id": "G068",
+      "type": "lookup",
+      "question": "What burner did ACME BRE use?",
+      "expected_answer": "Porous circular burners of 25 and 50 mm diameter, burning CH4/N2 and C2H4/N2 mixtures (PSI-20 objective). The experimental table lists burner sizes 25 mm and 50 mm.",
+      "must_include": [
+        "porous",
+        "25",
+        "50"
+      ],
+      "expected_accessions": [
+        "PSI-20"
+      ],
+      "source": [
+        {
+          "file": "/workspace/official-resources/psi/PSI-20.json",
+          "location": "objective, flight objective 1"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-20_Experimental table_ACME BRE.csv",
+          "location": "column 'Burner Size (mm)'"
+        },
+        {
+          "file": "/workspace/spaceapps-video/transcript.txt",
+          "location": "[03:53] 'BRE gaseous burner which uses a porous burner'",
+          "url": "https://youtu.be/AVuEiKxOpc0"
+        }
+      ],
+      "requires": [
+        "structured_qa"
+      ]
+    },
+    {
+      "id": "G069",
+      "type": "lookup",
+      "question": "Did BASS-II burn acrylic (PMMA) rods in a forced flow, and what were its primary variables?",
+      "expected_answer": "Yes. BASS-II samples include clear and black rods and '1/2\" clear PMMA rod' (e.g. CSV records 52-63). PSI-25's objective lists the primary variables: forced flow velocity (speed and direction), ambient oxygen concentration (via nitrogen vitiation), and sample geometry (rods, spherical sections, slabs, films, fabric sheets).",
+      "must_include": [
+        "rod",
+        "flow velocity",
+        "oxygen",
+        "geometry"
+      ],
+      "expected_accessions": [
+        "PSI-25"
+      ],
+      "source": [
+        {
+          "file": "/workspace/official-resources/psi/PSI-25.json",
+          "location": "objective, 'The primary variables include'"
+        },
+        {
+          "file": "data/sources/psi/experimental_tables/PSI-25_Experimental table_BASS-II.csv",
+          "location": "Fuel Sample Material, e.g. records 52-63"
+        },
+        {
+          "file": "/workspace/spaceapps-video/transcript.txt",
+          "location": "[03:39] 'acrylic rod burns in a fan-driven flow during the BASS-II experiment'",
+          "url": "https://youtu.be/AVuEiKxOpc0"
+        }
+      ],
+      "requires": [
+        "structured_qa",
+        "variables_view"
+      ]
+    },
+    {
+      "id": "G070",
+      "type": "lookup",
+      "question": "How did the ISS fine water-mist extinguishers come about, according to official sources?",
+      "expected_answer": "The Researcher's Guide (p.26) describes the Water Mist Fire Suppression experiment (Mist) on STS-107 in 2003. After further research, non-toxic water-mist portable fire extinguishers were certified for spaceflight; the first two of nine were sent to the ISS in December 2015 to replace CO2 units. Mist is not a PSI investigation. Any link to FLEX (gaseous suppressants) is an inferred thematic link.",
+      "must_include": [
+        "Mist",
+        "STS-107",
+        "December 2015",
+        "CO2"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/official/pdf/np-2015-10-034-jsc_combustion_in_reduced_gravity-iss-mini-book-011116-508.pdf",
+          "location": "PDF page 26"
+        },
+        {
+          "file": "/workspace/spaceapps-video/transcript.txt",
+          "location": "[08:07] fine water mist extinguishers originally developed for use on the ISS",
+          "url": "https://youtu.be/AVuEiKxOpc0"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest",
+        "earth_applications"
+      ]
+    },
+    {
+      "id": "G071",
+      "type": "lookup",
+      "question": "Which PSI investigations do official sources link to spacecraft smoke-detector design?",
+      "expected_answer": "DAFT (PSI-47) and SAME (PSI-102): the Researcher's Guide p.26 says DAFT examined background aerosol levels on the ISS and SAME the particle-size distribution of smoke from spacecraft materials, giving guidance for future spacecraft smoke-detector designers. SAME-R (PSI-101) is the SAME reflight.",
+      "must_include": [
+        "DAFT",
+        "SAME"
+      ],
+      "expected_accessions": [
+        "PSI-47",
+        "PSI-102",
+        "PSI-101"
+      ],
+      "source": [
+        {
+          "file": "data/sources/official/pdf/np-2015-10-034-jsc_combustion_in_reduced_gravity-iss-mini-book-011116-508.pdf",
+          "location": "PDF page 26"
+        },
+        {
+          "file": "data/sources/official/pdf/smoke-aerosol-measurement-experiment-same.pdf",
+          "location": "page 1"
+        }
+      ],
+      "requires": [
+        "earth_applications",
+        "insight_lenses"
+      ]
+    },
+    {
+      "id": "G072",
+      "type": "lookup",
+      "question": "Why do NASA's planned lunar habitats have raised oxygen, and what does that imply for fire?",
+      "expected_answer": "Raised oxygen mitigates the risk of decompression sickness (the bends) and enables more frequent spacesuit activity. That raised oxygen, combined with partial gravity, has implications for material flammability. The brief quantifies it as likely 30% O2 or greater at 10.2 psi or less.",
+      "must_include": [
+        "decompression",
+        "flammab",
+        "30%",
+        "10.2"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "/workspace/spaceapps-video/transcript.txt",
+          "location": "[01:10] Tracy Prater on lunar habitats",
+          "url": "https://youtu.be/AVuEiKxOpc0"
+        },
+        {
+          "file": "data/sources/spaceapps_challenge_details.md",
+          "location": "Spacesuits and oxygen concentration"
+        }
+      ],
+      "requires": [
+        "lunar_lead_flow",
+        "brief_facts"
+      ]
+    },
+    {
+      "id": "G073",
+      "type": "lookup",
+      "question": "When was Saffire-IV ignited and what did it burn?",
+      "expected_answer": "Saffire-IV (not in PSI) was ignited May 11, 2020 when Cygnus departed the ISS; it burned the same materials as Saffire II at different pressures and oxygen saturation.",
+      "must_include": [
+        "May 11, 2020",
+        "Saffire II",
+        "pressures"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/official/pdf/spacecraft-fire-safety-demonstration-saffire.pdf",
+          "location": "page 2"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest"
+      ]
+    },
+    {
+      "id": "G074",
+      "type": "lookup",
+      "question": "How large was the Saffire-I burn sample, and what was the largest earlier space fire experiment?",
+      "expected_answer": "The cotton-fiberglass blend burn sample measured 0.4 m wide by 1 meter long; the largest earlier space fire experiment was about the size of an index card.",
+      "must_include": [
+        "0.4 m",
+        "1 meter",
+        "index card"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/official/pdf/spacecraft-fire-safety-demonstration-saffire.pdf",
+          "location": "page 1"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest"
+      ]
+    },
+    {
+      "id": "G075",
+      "type": "lookup",
+      "question": "According to the Researcher's Guide, what kind of flames are the ACME experiments?",
+      "expected_answer": "All laminar diffusion flames (Guide p. 44).",
+      "must_include": [
+        "laminar diffusion flames"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/official/pdf/np-2015-10-034-jsc_combustion_in_reduced_gravity-iss-mini-book-011116-508.pdf",
+          "location": "page 44"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest"
+      ]
+    },
+    {
+      "id": "G076",
+      "type": "lookup",
+      "question": "What will SPICE determine, according to its NASA fact sheet?",
+      "expected_answer": "The laminar smoke point properties of non-buoyant jet diffusion flames (fact sheet p. 1).",
+      "must_include": [
+        "smoke point",
+        "non-buoyant jet diffusion"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/official/pdf/smoke-point-in-co-flow-experiment-spice.pdf",
+          "location": "page 1"
+        }
+      ],
+      "requires": [
+        "official_docs_ingest"
+      ]
+    },
+    {
+      "id": "G077",
+      "type": "lookup",
+      "question": "How does a candle flame look in microgravity, according to the challenge video?",
+      "expected_answer": "More spherical, soot-free and blue ([02:58], auto-captions).",
+      "must_include": [
+        "spherical",
+        "soot-free",
+        "blue",
+        "[02:58]"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/official/video/transcript.txt",
+          "location": "[02:58]",
+          "url": "https://www.youtube.com/watch?v=AVuEiKxOpc0&t=178s"
+        }
+      ],
+      "requires": [
+        "transcript_ingest"
+      ]
+    },
+    {
+      "id": "G078",
+      "type": "lookup",
+      "question": "What does the challenge video ask teams to build?",
+      "expected_answer": "An SI-powered web-based dashboard that summarizes, ranks and interprets combustion investigation results to deliver fire safety insights ([07:16]).",
+      "must_include": [
+        "dashboard",
+        "ranks",
+        "interprets",
+        "[07:16]"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/official/video/transcript.txt",
+          "location": "[07:16]",
+          "url": "https://www.youtube.com/watch?v=AVuEiKxOpc0&t=436s"
+        }
+      ],
+      "requires": [
+        "transcript_ingest"
+      ]
+    },
+    {
+      "id": "G079",
+      "type": "lookup",
+      "question": "Which NASA technologies does the challenge video mention for fire safety on Earth?",
+      "expected_answer": "Fine water mist extinguishers ([08:07]); smoke detection and firefighter gear including protective clothing and air tanks ([08:17]).",
+      "must_include": [
+        "water mist",
+        "smoke detection",
+        "air tank",
+        "[08:07]",
+        "[08:17]"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/official/video/transcript.txt",
+          "location": "[08:07], [08:17]"
+        }
+      ],
+      "requires": [
+        "transcript_ingest",
+        "earth_applications"
+      ]
+    },
+    {
+      "id": "G080",
+      "type": "abstain",
+      "question": "What is the boiling point of heptane?",
+      "expected_answer": "Not in the official resources: no indexed resource gives a boiling point; outside facts are not used.",
+      "must_include": [
+        "Not in the official resources"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "(whole corpus)",
+          "location": "phrase 'boiling point' absent"
+        }
+      ],
+      "requires": [
+        "abstention",
+        "scope_rule"
+      ]
+    },
+    {
+      "id": "G081",
+      "type": "lookup",
+      "question": "Why do flames behave differently in microgravity, according to the challenge video?",
+      "expected_answer": "In microgravity there is no buoyancy-driven convection ([00:38]).",
+      "must_include": [
+        "buoyancy-driven convection",
+        "[00:38]"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/official/video/transcript.txt",
+          "location": "[00:38]"
+        }
+      ],
+      "requires": [
+        "transcript_ingest"
+      ]
+    },
+    {
+      "id": "G082",
+      "type": "lookup",
+      "question": "Where is NASA's fire-in-space research data housed, according to the challenge video?",
+      "expected_answer": "In the Physical Sciences Informatics (PSI) database ([00:26]).",
+      "must_include": [
+        "Physical Sciences Informatics",
+        "[00:26]"
+      ],
+      "expected_accessions": [],
+      "source": [
+        {
+          "file": "data/sources/official/video/transcript.txt",
+          "location": "[00:26]"
+        }
+      ],
+      "requires": [
+        "transcript_ingest"
+      ]
+    }
+  ]
+}

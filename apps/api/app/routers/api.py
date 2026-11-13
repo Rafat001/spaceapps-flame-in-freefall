@@ -207,6 +207,20 @@ def ask(body: AskIn, request: Request, s: Session = Depends(get_session)):
                        investigation_ids=[i.lower() for i in body.investigation_ids] if body.investigation_ids else None)
 
 
+class QAIn(BaseModel):
+    question: str = Field(min_length=3, max_length=1000)
+
+
+@router.post("/qa")
+def qa(body: QAIn, s: Session = Depends(get_session)):
+    """Structured answer only (no retrieval, no LLM). Returns answer_kind 'none' when no computed answer applies."""
+    from app.qa.engine import answer
+
+    out = answer(s, body.question)
+    return out or {"question": body.question.strip(), "answer_kind": "none", "answer": None, "citations": [],
+                   "message": "No computed answer for this question; use /api/ask for retrieval over the official sources."}
+
+
 @router.get("/settings/ai")
 def ai_settings():
     return state.status()

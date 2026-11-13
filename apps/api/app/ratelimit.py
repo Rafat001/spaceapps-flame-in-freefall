@@ -51,6 +51,31 @@ def allow(ip: str, per_min: int, per_day: int, global_min: int, global_day: int,
     return True, None
 
 
+def _windows(ip: str, per_min: int, per_day: int, global_min: int, global_day: int):
+    return {"you": {"minute": (f"ip-m:{ip}", per_min, 60.0), "day": (f"ip-d:{ip}", per_day, 86400.0)},
+            "site": {"minute": ("g-m", global_min, 60.0), "day": ("g-d", global_day, 86400.0)}}
+
+
+def peek(ip: str, per_min: int, per_day: int, global_min: int, global_day: int, now: float | None = None) -> dict:
+    """Remaining server-key AI answers per window, WITHOUT recording a use. resets_at = when the oldest counted use expires."""
+    now = time.time() if now is None else now
+    out: dict = {}
+    with _lock:
+        for who, wins in _windows(ip, per_min, per_day, global_min, global_day).items():
+            out[who] = {}
+            for name, (key, limit, window) in wins.items():
+                q = _hits.get(key) or deque()
+                live = [t for t in q if t > now - window]
+                used = len(live)
+                out[who][name] = {"limit": limit, "used": used, "remaining": max(limit - used, 0) if limit > 0 else None,
+                                  "resets_at": (min(live) + window) if live else None, "window_s": int(window)}
+    out["you"]["remaining"] = min(x for x in (out["you"]["minute"]["remaining"], out["you"]["day"]["remaining"],
+                                                out["site"]["minute"]["remaining"], out["site"]["day"]["remaining"]) if x is not None) \
+        if any(out[w][n]["remaining"] is not None for w in ("you", "site") for n in ("minute", "day")) else None
+    out["now"] = now
+    return out
+
+
 def reset() -> None:
     with _lock:
         _hits.clear()

@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { API_BASE, api } from "@/lib/api";
 import { assistantHeaders } from "@/lib/byok";
 import { ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
 import { Citations, Flags } from "@/components/Citations";
+import { AskQuota, type Quota } from "@/components/AskQuota";
 
 const EXAMPLES = [
   "Has any PSI test been run at a lunar-habitat-like atmosphere (O2 >= 30% and pressure <= 10.2 psi)?",
@@ -25,10 +26,16 @@ export default function Assistant() {
   const [hist, setHist] = useState<any[]>([]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<unknown>(null);
+  const [quota, setQuota] = useState<Quota | null>(null);
+  const [ownKey, setOwnKey] = useState(false);
+  useEffect(() => {
+    setOwnKey(Object.keys(assistantHeaders(API_BASE)).length > 0);
+    api("/api/ask/quota").then(setQuota).catch(() => setQuota(null));
+  }, []);
   async function ask(question: string) {
     if (question.trim().length < 3) return;
     setBusy(true); setErr(null);
-    try { const r = await api("/api/ask", { method: "POST", body: JSON.stringify({ question }), headers: assistantHeaders(API_BASE) }); setHist((h) => [r, ...h]); setQ(""); }
+    try { const r = await api("/api/ask", { method: "POST", body: JSON.stringify({ question }), headers: assistantHeaders(API_BASE) }); setHist((h) => [r, ...h]); setQ(""); if (r.quota) setQuota(r.quota); }
     catch (x) { setErr(x); }
     setBusy(false);
   }
@@ -43,6 +50,7 @@ export default function Assistant() {
         <label htmlFor="question">Question</label>
         <textarea id="question" rows={3} maxLength={1000} value={q} onChange={(e) => setQ(e.target.value)} placeholder="What has been measured about…" />
         <div className="actions"><button type="submit" disabled={busy}>{busy ? "Retrieving…" : "Ask"}</button></div>
+        <AskQuota quota={quota} ownKey={ownKey} />
         <p className="prompts-title">Try:</p>
         <ol className="prompts">{EXAMPLES.map((x) => <li key={x}><button type="button" onClick={() => ask(x)}>{x}</button></li>)}</ol>
       </form>

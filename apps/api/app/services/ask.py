@@ -13,7 +13,7 @@ import re
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.ai.providers.llm import LLMProvider, LLMRateLimited, LLMUnavailable
+from app.ai.providers.llm import LLMProvider, LLMQuotaExceeded, LLMRateLimited, LLMUnavailable
 from app.security import redact
 from app.labels import NOT_CERTIFICATION, PARTIAL_GRAVITY_WARNING, label
 from app.models import Investigation, Measurement
@@ -169,6 +169,9 @@ def _ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: 
             "Answer with [S#] citations, then a line 'Limitations:' with what the sources do not establish.")
     try:
         raw = llm.chat(SYSTEM_PROMPT, user)
+    except LLMQuotaExceeded as e:
+        return {**base, "mode": "retrieval_only", "abstained": False, "answer": None, "llm_notice": e.notice,
+                "template_summary": template_summary(cites)}
     except LLMRateLimited as e:
         return {**base, "mode": "retrieval_only", "abstained": False, "answer": None, "llm_notice": rate_limit_notice(e),
                 "template_summary": template_summary(cites)}
@@ -220,6 +223,8 @@ def _llm_summary(llm: LLMProvider, q: str, direct: dict, cites: list[dict]) -> d
             "not in S0. Cite [S0] and any other [S#] you use.")
     try:
         raw = llm.chat(SYSTEM_PROMPT, user)
+    except LLMQuotaExceeded as e:
+        return {"ai_summary": None, "llm_notice": e.notice}
     except LLMRateLimited as e:
         return {"ai_summary": None, "llm_notice": rate_limit_notice(e)}
     except LLMUnavailable as e:

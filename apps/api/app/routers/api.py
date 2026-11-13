@@ -200,12 +200,12 @@ def ask(body: AskIn, request: Request, s: Session = Depends(get_session)):
     from app.ai.providers.llm import build_byok_llm
     from app.security import byok_from_request
 
-    from app.ai.providers.llm import GROQ_FREE_MODELS, NoLLM
+    from app.ai.providers.llm import GROQ_FREE_MODELS, QuotaGuardLLM
     from app.ratelimit import allow, client_ip
 
     emb, _ = state.embedder
     byok = byok_from_request(request)
-    notice = None
+    ip = client_ip(request)
     if byok:
         try:
             llm = build_byok_llm(state.cfg, byok.provider, byok.key, byok.model)
@@ -214,16 +214,40 @@ def ask(body: AskIn, request: Request, s: Session = Depends(get_session)):
                                      "The key was not used or stored.") from None
     else:
         llm = state.llm
-        if llm.name not in ("none", "local") and llm.health().get("ok"):
+        if _server_ai_on():
             c = state.cfg
-            ok, why = allow(client_ip(request), c.ask_rate_per_min, c.ask_rate_per_day, c.ask_global_per_min, c.ask_global_per_day)
-            if not ok:
-                llm = NoLLM()
-                notice = (f"AI summary skipped: this site's shared AI key is limited to {why}. The computed answer and "
-                          "sources below are unaffected. Try again later, or add your own free Groq key in Settings.")
-    return ask_svc.ask(s, body.question, llm, emb, state.index, k=body.k,
-                       investigation_ids=[i.lower() for i in body.investigation_ids] if body.investigation_ids else None,
-                       notice=notice)
+            llm = QuotaGuardLLM(llm, lambda: allow(ip, c.ask_rate_per_min, c.ask_rate_per_day, c.ask_global_per_min, c.ask_global_per_day))
+    out = ask_svc.ask(s, body.question, llm, emb, state.index, k=body.k,
+                      investigation_ids=[i.lower() for i in body.investigation_ids] if body.investigation_ids else None)
+    out["quota"] = {"own_key": True, "message": "Using your own key: no site limit applies."} if byok else _quota(ip)
+    return out
+
+
+def _server_ai_on() -> bool:
+    llm = state.llm
+    return llm.name not in ("none", "local") and bool(llm.health().get("ok"))
+
+
+def _quota(ip: str) -> dict:
+    from app.ratelimit import peek
+
+    c = state.cfg
+    on = _server_ai_on()
+    q = peek(ip, c.ask_rate_per_min, c.ask_rate_per_day, c.ask_global_per_min, c.ask_global_per_day)
+    llm = state.llm
+    return {"own_key": False, "server_ai": on, "provider": llm.name if on else None, "model": llm.model if on else None,
+            "server_key_configured": bool(getattr(llm, "_key", None)) and llm.name != "none",
+            "you": q["you"], "site": q["site"], "now": q["now"],
+            "counts": "Only AI summaries made with the shared server key count. Computed answers and citations are unlimited.",
+            "settings_path": "/settings"}
+
+
+@router.get("/ask/quota")
+def ask_quota(request: Request):
+    """Read-only: the caller's and the site's remaining server-key AI answers. Does not consume quota."""
+    from app.ratelimit import client_ip
+
+    return _quota(client_ip(request))
 
 
 @router.get("/earth")

@@ -83,7 +83,11 @@ Requests use `reasoning_effort=low`, `include_reasoning=false` and at most 700 o
 assistant returns the computed, templated answer with a notice instead of failing. Because one server key is shared by
 every visitor, AI summaries that use it are limited per IP (`ASK_RATE_PER_MIN=10`, `ASK_RATE_PER_DAY=200`) and site-wide
 (`ASK_GLOBAL_PER_MIN=25`, `ASK_GLOBAL_PER_DAY=900`, under Groq's free 30 RPM / 1K RPD). Over the limit, the visitor still gets the
-computed answer and sources, with a notice. Counters are in memory and reset on restart.
+computed answer and sources, with a notice. Only real AI calls with the server key count (abstentions and computed-only
+answers do not). Counters are in memory and reset on restart. `GET /api/ask/quota` returns the caller's and the site's
+limits, remaining answers and reset times without using any quota; `POST /api/ask` returns the same `quota` object, and the
+Ask page shows it as a live counter with a note that this prototype runs on Groq's free plan and that a visitor's own key
+(Settings) is not limited by the site.
 
 ## Docker
 

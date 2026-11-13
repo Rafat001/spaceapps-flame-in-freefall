@@ -21,6 +21,14 @@ class LLMRateLimited(LLMUnavailable):
         super().__init__(f"{provider} rate limit reached (HTTP 429)" + (f"; retry after {retry_after}s" if retry_after else ""))
 
 
+class LLMQuotaExceeded(LLMUnavailable):
+    """This site's own limit on the shared server key was reached (no provider call was made)."""
+
+    def __init__(self, notice: str):
+        self.notice = notice
+        super().__init__("site AI quota reached")
+
+
 # Groq free plan, production chat models only. Source (checked 2026-11-13):
 #   https://console.groq.com/docs/models  (Production Models)
 #   https://console.groq.com/docs/rate-limits  (Free Plan Limits)
@@ -46,6 +54,28 @@ class LLMProvider:
 
 class NoLLM(LLMProvider):
     pass
+
+
+class QuotaGuardLLM(LLMProvider):
+    """Wraps the shared server-key provider: each real chat() call first takes one unit of the visitor's quota.
+    Questions answered without the LLM (abstentions, no-summary paths) never consume quota."""
+
+    def __init__(self, inner: LLMProvider, take):
+        self.inner, self._take = inner, take
+        self.name, self.model = inner.name, inner.model
+
+    def __repr__(self) -> str:
+        return f"<QuotaGuardLLM {self.inner!r}>"
+
+    def health(self) -> dict:
+        return self.inner.health()
+
+    def chat(self, system: str, user: str) -> str:
+        ok, why = self._take()
+        if not ok:
+            raise LLMQuotaExceeded(f"AI summary skipped: this site's shared AI key is limited to {why}. The computed answer and "
+                                   "sources are unaffected. Try again later, or add your own free Groq key in Settings.")
+        return self.inner.chat(system, user)
 
 
 class OllamaLLM(LLMProvider):

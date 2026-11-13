@@ -64,3 +64,48 @@ def test_own_key_not_counted_against_server_limit(client, server_groq):
     for _ in range(4):
         d = client.post("/api/ask", json=Q, headers=h).json()
         assert d["ai_summary"] and "llm_notice" not in d
+
+
+def test_peek_does_not_consume():
+    ratelimit.reset()
+    t = 2_000_000.0
+    for _ in range(5):
+        q = ratelimit.peek("9.9.9.9", 10, 200, 25, 900, now=t)
+    assert q["you"]["minute"]["remaining"] == 10 and q["site"]["day"]["remaining"] == 900 and q["you"]["minute"]["resets_at"] is None
+    ratelimit.allow("9.9.9.9", 10, 200, 25, 900, now=t)
+    q = ratelimit.peek("9.9.9.9", 10, 200, 25, 900, now=t + 1)
+    assert q["you"]["minute"]["remaining"] == 9 and q["you"]["day"]["remaining"] == 199 and q["site"]["day"]["remaining"] == 899
+    assert q["you"]["minute"]["resets_at"] == t + 60 and q["you"]["remaining"] == 9
+    assert ratelimit.peek("9.9.9.9", 10, 200, 25, 900, now=t + 61)["you"]["minute"]["remaining"] == 10
+    ratelimit.reset()
+
+
+def test_quota_endpoint_read_only_and_decreases_after_asks(client, server_groq):
+    h = {"X-Forwarded-For": "203.0.113.20"}
+    a = client.get("/api/ask/quota", headers=h).json()
+    b = client.get("/api/ask/quota", headers=h).json()
+    assert a["server_ai"] and a["provider"] == "groq" and a["server_key_configured"]
+    assert a["you"]["minute"] == b["you"]["minute"] and a["you"]["minute"]["remaining"] == 2  # limit from config, not hardcoded
+    assert "gsk_server" not in str(a)
+    d = client.post("/api/ask", json=Q, headers=h).json()
+    assert d["quota"]["you"]["minute"]["remaining"] == 1 and d["quota"]["site"]["day"]["remaining"] == 899
+    c = client.get("/api/ask/quota", headers=h).json()
+    assert c["you"]["minute"]["remaining"] == 1 and c["you"]["day"]["remaining"] == 199
+    other = client.get("/api/ask/quota", headers={"X-Forwarded-For": "198.51.100.20"}).json()
+    assert other["you"]["minute"]["remaining"] == 2 and other["site"]["day"]["remaining"] == 899
+
+
+def test_abstained_questions_do_not_consume_quota(client, server_groq):
+    h = {"X-Forwarded-For": "203.0.113.21"}
+    d = client.post("/api/ask", json={"question": "What is the boiling point of water on Mars?"}, headers=h).json()
+    assert d["mode"] == "abstained" and d["quota"]["you"]["minute"]["remaining"] == 2 and server_groq == []
+
+
+def test_quota_with_own_key_and_without_server_key(client, server_groq, monkeypatch):
+    h = {"X-LLM-Provider": "groq", "X-LLM-Key": "gsk_mine" + "F" * 40}
+    d = client.post("/api/ask", json=Q, headers=h).json()
+    assert d["quota"]["own_key"] is True and "gsk_mine" not in str(d)
+    monkeypatch.setattr(state, "cfg", state.cfg.model_copy(update={"ai_llm_provider": "none", "groq_api_key": None}))
+    monkeypatch.setattr(state, "_llm", None)
+    q = client.get("/api/ask/quota").json()
+    assert q["server_ai"] is False and q["server_key_configured"] is False

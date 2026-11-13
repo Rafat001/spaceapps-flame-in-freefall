@@ -500,3 +500,9 @@ h2 .label, h3 .label { margin-left: 8px; }
 .lead-card { border: 1px solid var(--neon-yellow); padding: 18px 22px; margin: 24px 0; }
 .lead-card .answer { margin: 8px 0 12px; }
 .computation { color: var(--ash); font-size: 0.85rem; }
+
+/* ---------- ask: AI quota counter ---------- */
+.quota { margin: 10px 0 4px; padding: 10px 14px; border-left: 2px solid var(--rule-strong); max-width: 980px; }
+.quota-count { margin: 0 0 4px; font-family: var(--f-mono); font-size: .8rem; color: var(--white); }
+.quota-note { margin: 0; font-size: .82rem; color: var(--ash); line-height: 1.5; }
+.quota-note a { color: var(--blue-yonder); }

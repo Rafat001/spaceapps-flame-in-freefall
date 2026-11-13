@@ -36,7 +36,7 @@ _current_secrets: contextvars.ContextVar[tuple[str, ...]] = contextvars.ContextV
 _KEY_PATTERNS = [
     re.compile(r"sk-ant-[A-Za-z0-9_\-]{8,}"),
     re.compile(r"sk-[A-Za-z0-9_\-]{8,}"),
-    re.compile(r"xai-[A-Za-z0-9_\-]{8,}"),
+    re.compile(r"gsk_[A-Za-z0-9]{8,}"),
     re.compile(r"(?i)(bearer\s+)[A-Za-z0-9._\-]{8,}"),
     re.compile(r"(?i)(x-llm-key|x-api-key|x-admin-token|authorization)(['\"]?\s*[:=]\s*['\"]?)[^\s'\",}]+"),
 ]

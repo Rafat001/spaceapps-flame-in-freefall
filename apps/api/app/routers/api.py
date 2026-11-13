@@ -200,11 +200,30 @@ def ask(body: AskIn, request: Request, s: Session = Depends(get_session)):
     from app.ai.providers.llm import build_byok_llm
     from app.security import byok_from_request
 
+    from app.ai.providers.llm import GROQ_FREE_MODELS, NoLLM
+    from app.ratelimit import allow, client_ip
+
     emb, _ = state.embedder
     byok = byok_from_request(request)
-    llm = build_byok_llm(state.cfg, byok.provider, byok.key, byok.model) if byok else state.llm
+    notice = None
+    if byok:
+        try:
+            llm = build_byok_llm(state.cfg, byok.provider, byok.key, byok.model)
+        except ValueError:
+            raise HTTPException(400, f"Model not allowed for {byok.provider}. Free Groq models: {', '.join(GROQ_FREE_MODELS)}. "
+                                     "The key was not used or stored.") from None
+    else:
+        llm = state.llm
+        if llm.name not in ("none", "local") and llm.health().get("ok"):
+            c = state.cfg
+            ok, why = allow(client_ip(request), c.ask_rate_per_min, c.ask_rate_per_day, c.ask_global_per_min, c.ask_global_per_day)
+            if not ok:
+                llm = NoLLM()
+                notice = (f"AI summary skipped: this site's shared AI key is limited to {why}. The computed answer and "
+                          "sources below are unaffected. Try again later, or add your own free Groq key in Settings.")
     return ask_svc.ask(s, body.question, llm, emb, state.index, k=body.k,
-                       investigation_ids=[i.lower() for i in body.investigation_ids] if body.investigation_ids else None)
+                       investigation_ids=[i.lower() for i in body.investigation_ids] if body.investigation_ids else None,
+                       notice=notice)
 
 
 @router.get("/earth")
@@ -259,17 +278,21 @@ def ai_settings():
 
 
 class AISettingsIn(BaseModel):
-    ai_llm_provider: Literal["local", "openai", "anthropic", "xai", "none"] | None = None
+    ai_llm_provider: Literal["local", "openai", "anthropic", "groq", "none"] | None = None
     ai_embedding_provider: Literal["local", "openai", "hash"] | None = None
     ollama_model: str | None = Field(None, max_length=100)
     openai_model: str | None = Field(None, max_length=100)
     anthropic_model: str | None = Field(None, max_length=100)
-    xai_model: str | None = Field(None, max_length=100)
+    groq_model: str | None = Field(None, max_length=100)
 
 
 @router.put("/settings/ai", dependencies=[Depends(require_admin)])
 def update_ai_settings(body: AISettingsIn):
     """Switch providers/models at runtime (in-memory; .env stays the default). API keys are env-only by design."""
+    from app.ai.providers.llm import GROQ_FREE_MODELS
+
+    if body.groq_model and body.groq_model not in GROQ_FREE_MODELS:
+        raise HTTPException(400, f"groq_model must be a free-plan model: {', '.join(GROQ_FREE_MODELS)}")
     state.reset(**body.model_dump())
     return state.status()
 

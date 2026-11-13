@@ -8,13 +8,13 @@ from app.ai.providers import llm as llm_mod
 from app.ai.registry import state
 from app.security import redact
 
-FAKE = {"openai": "sk-test-" + "A" * 40, "anthropic": "sk-ant-test-" + "B" * 40, "xai": "xai-test-" + "C" * 40}
+FAKE = {"openai": "sk-test-" + "A" * 40, "anthropic": "sk-ant-test-" + "B" * 40, "groq": "gsk_test" + "C" * 44}
 Q = {"question": "How many tests were run in SAFFIRE-II?"}
 
 
 class Recorder:
-    def __init__(self, status=200, echo_key=False):
-        self.calls, self.status, self.echo = [], status, echo_key
+    def __init__(self, status=200, echo_key=False, headers=None):
+        self.calls, self.status, self.echo, self.headers = [], status, echo_key, headers or {}
 
     def __call__(self, url, headers=None, json=None, timeout=None):
         self.calls.append({"url": url, "headers": dict(headers or {}), "json": json})
@@ -22,7 +22,7 @@ class Recorder:
         req = httpx.Request("POST", url)
         if self.status != 200:
             body = {"error": f"invalid key {auth}"} if self.echo else {"error": "bad"}
-            return httpx.Response(self.status, json=body, request=req)
+            return httpx.Response(self.status, json=body, headers=self.headers, request=req)
         if "anthropic" in url:
             return httpx.Response(200, json={"content": [{"type": "text", "text": "Nine tests [S1]."}]}, request=req)
         return httpx.Response(200, json={"choices": [{"message": {"content": "Nine tests [S1]."}}]}, request=req)
@@ -45,7 +45,7 @@ def _hdr(p, key=None, model=None):
 @pytest.mark.parametrize("provider,url,auth", [
     ("openai", "https://api.openai.com/v1/chat/completions", "Authorization"),
     ("anthropic", "https://api.anthropic.com/v1/messages", "x-api-key"),
-    ("xai", "https://api.x.ai/v1/chat/completions", "Authorization"),
+    ("groq", "https://api.groq.com/openai/v1/chat/completions", "Authorization"),
 ])
 def test_byok_used_for_that_request_only_and_never_echoed(client, rec, caplog, provider, url, auth):
     caplog.set_level(logging.DEBUG)
@@ -58,30 +58,73 @@ def test_byok_used_for_that_request_only_and_never_echoed(client, rec, caplog, p
     # next request without the header falls back to the server default (none) -> no provider call
     r2 = client.post("/api/ask", json=Q)
     assert len(rec.calls) == 1 and FAKE[provider] not in r2.text
-    assert state.cfg.openai_api_key is None and state.cfg.xai_api_key is None and state.cfg.anthropic_api_key is None
+    assert state.cfg.openai_api_key is None and state.cfg.groq_api_key is None and state.cfg.anthropic_api_key is None
 
 
-def test_xai_default_model_and_override(client, rec):
-    client.post("/api/ask", json=Q, headers=_hdr("xai"))
-    assert rec.calls[-1]["json"]["model"] == "grok-4.7"
-    client.post("/api/ask", json=Q, headers=_hdr("xai", model="grok-4.7-mini"))
-    assert rec.calls[-1]["json"]["model"] == "grok-4.7-mini"
+def test_groq_default_model_allowlist_and_free_params(client, rec):
+    client.post("/api/ask", json=Q, headers=_hdr("groq"))
+    body = rec.calls[-1]["json"]
+    assert body["model"] == "openai/gpt-oss-120b"
+    assert body["reasoning_effort"] == "low" and body["include_reasoning"] is False and body["max_completion_tokens"] <= 1000
+    client.post("/api/ask", json=Q, headers=_hdr("groq", model="openai/gpt-oss-20b"))
+    assert rec.calls[-1]["json"]["model"] == "openai/gpt-oss-20b"
+    n = len(rec.calls)
+    for paid in ("llama-3.3-70b-versatile", "qwen/qwen3.8-27b", "gpt-4o"):
+        r = client.post("/api/ask", json=Q, headers=_hdr("groq", model=paid))
+        assert r.status_code == 400 and FAKE["groq"] not in r.text
+    assert len(rec.calls) == n
 
 
-def test_xai_server_env_provider(monkeypatch, rec):
-    cfg = state.cfg.model_copy(update={"ai_llm_provider": "xai", "xai_api_key": "xai-env-" + "D" * 30, "xai_model": "grok-4.7"})
+def test_groq_server_env_provider(rec):
+    cfg = state.cfg.model_copy(update={"ai_llm_provider": "groq", "groq_api_key": "gsk_env" + "D" * 40})
     p = llm_mod.build_llm(cfg)
-    assert isinstance(p, llm_mod.XaiLLM) and p.base_url == "https://api.x.ai/v1"
-    assert p.health()["ok"] and "xai-env" not in str(p.health()) and "xai-env" not in repr(p)
+    assert isinstance(p, llm_mod.GroqLLM) and p.base_url == "https://api.groq.com/openai/v1"
+    assert p.model == "openai/gpt-oss-120b"
+    h = p.health()
+    assert h["ok"] and "gsk_env" not in str(h) and "gsk_env" not in repr(p) and "30 RPM" in h["free_limits"]
     assert p.chat("s", "u").startswith("Nine")
-    assert rec.calls[-1]["url"] == "https://api.x.ai/v1/chat/completions"
+    assert rec.calls[-1]["url"] == "https://api.groq.com/openai/v1/chat/completions"
+
+
+def test_groq_env_model_outside_allowlist_is_refused(rec):
+    cfg = state.cfg.model_copy(update={"ai_llm_provider": "groq", "groq_api_key": "gsk_env" + "D" * 40,
+                                       "groq_model": "llama-3.3-70b-versatile"})
+    p = llm_mod.build_llm(cfg)
+    assert not p.health()["ok"] and "openai/gpt-oss-120b" in p.health()["message"]
+    with pytest.raises(llm_mod.LLMUnavailable):
+        p.chat("s", "u")
+    assert rec.calls == []
+
+
+def test_admin_cannot_switch_to_paid_groq_model(client, monkeypatch):
+    from app import security
+
+    monkeypatch.setattr(security.settings, "app_env", "development")
+    monkeypatch.setattr(state, "cfg", state.cfg.model_copy(update={"admin_token": None}))
+    assert client.put("/api/settings/ai", json={"groq_model": "llama-3.3-70b-versatile"}).status_code == 400
+
+
+def test_groq_429_falls_back_to_template_with_notice(client, monkeypatch, caplog):
+    caplog.set_level(logging.DEBUG)
+    r = Recorder(status=429, echo_key=True, headers={"retry-after": "7"})
+    monkeypatch.setattr(llm_mod.httpx, "post", r)
+    # direct-answer question: computed answer kept, AI summary skipped with a notice
+    d = client.post("/api/ask", json=Q, headers=_hdr("groq")).json()
+    assert d["mode"] == "direct" and d["answer"] and d["ai_summary"] is None
+    assert "HTTP 429" in d["llm_notice"] and "7 s" in d["llm_notice"]
+    # retrieval question: templated summary plus the notice
+    d = client.post("/api/ask", json={"question": "What do the sources say about smoke particle size in microgravity?"},
+                    headers=_hdr("groq")).json()
+    if d["mode"] == "retrieval_only":
+        assert "HTTP 429" in d["llm_notice"] and d["template_summary"]
+    assert FAKE["groq"] not in str(d) and FAKE["groq"] not in caplog.text
 
 
 def test_provider_error_echoing_key_is_redacted(client, monkeypatch, caplog):
     caplog.set_level(logging.DEBUG)
     r = Recorder(status=401, echo_key=True)
     monkeypatch.setattr(llm_mod.httpx, "post", r)
-    for p in ("openai", "xai", "anthropic"):
+    for p in ("openai", "groq", "anthropic"):
         resp = client.post("/api/ask", json=Q, headers=_hdr(p))
         assert resp.status_code == 200
         assert FAKE[p] not in resp.text and FAKE[p] not in caplog.text
@@ -117,12 +160,12 @@ def test_https_required_in_production(client, rec, monkeypatch):
 
 
 def test_client_cannot_redirect_key_to_another_host(client, rec):
-    client.post("/api/ask", json=Q, headers={**_hdr("xai"), "X-LLM-Base-Url": "https://evil.example"})
-    assert all(c["url"].startswith("https://api.x.ai/") for c in rec.calls)
+    client.post("/api/ask", json=Q, headers={**_hdr("groq"), "X-LLM-Base-Url": "https://evil.example"})
+    assert rec.calls and all(c["url"].startswith("https://api.groq.com/openai/v1/") for c in rec.calls)
 
 
 def test_redact_patterns():
-    s = f"Authorization: Bearer {FAKE['openai']} x-api-key={FAKE['anthropic']} {FAKE['xai']}"
+    s = f"Authorization: Bearer {FAKE['openai']} x-api-key={FAKE['anthropic']} {FAKE['groq']}"
     out = redact(s)
     assert all(v not in out for v in FAKE.values())
 

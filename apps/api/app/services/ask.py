@@ -13,7 +13,7 @@ import re
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.ai.providers.llm import LLMProvider, LLMUnavailable
+from app.ai.providers.llm import LLMProvider, LLMRateLimited, LLMUnavailable
 from app.security import redact
 from app.labels import NOT_CERTIFICATION, PARTIAL_GRAVITY_WARNING, label
 from app.models import Investigation, Measurement
@@ -105,14 +105,28 @@ def _citation(n: int, h: Hit, inv_map: dict) -> dict:
 
 def setup_message(health: dict) -> str:
     return ("No LLM is available, so the answer above is the templated, computed interpretation and the snippets below "
-            "are the best-matching sources, with no AI-written text. To add an AI summary: paste your own OpenAI, Anthropic "
-            "or xAI (Grok) key in Settings (kept only in this browser tab, used for one request at a time), or set "
-            "AI_LLM_PROVIDER=local|openai|anthropic|xai with the matching key in the server env. "
+            "are the best-matching sources, with no AI-written text. To add an AI summary: paste your own key in Settings "
+            "(Groq is free; OpenAI and Anthropic also work; the key is kept only in this browser tab and used for one request at a "
+            "time), or set AI_LLM_PROVIDER=groq|local|openai|anthropic with the matching key in the server env. "
             f"Provider status: {health.get('message', 'unknown')}")
 
 
+def rate_limit_notice(e: LLMRateLimited) -> str:
+    return (f"AI summary skipped: {e.provider} returned a rate-limit response (HTTP 429)"
+            + (f"; it suggests retrying in {e.retry_after} s" if e.retry_after else "")
+            + ". Showing the computed, templated answer instead (no AI). Free-plan limits: https://console.groq.com/docs/rate-limits")
+
+
 def ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: int = 6,
-        investigation_ids: list[str] | None = None) -> dict:
+        investigation_ids: list[str] | None = None, notice: str | None = None) -> dict:
+    out = _ask(session, question, llm, embedder, index, k, investigation_ids)
+    if notice and not out.get("llm_notice"):
+        out["llm_notice"] = notice
+    return out
+
+
+def _ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: int = 6,
+         investigation_ids: list[str] | None = None) -> dict:
     q = question.strip()
     hits = retrieve(session, q, embedder, index, k=k, investigation_ids=investigation_ids)
     inv_map = {i.id: i for i in session.scalars(select(Investigation)).all()}
@@ -155,9 +169,12 @@ def ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: i
             "Answer with [S#] citations, then a line 'Limitations:' with what the sources do not establish.")
     try:
         raw = llm.chat(SYSTEM_PROMPT, user)
+    except LLMRateLimited as e:
+        return {**base, "mode": "retrieval_only", "abstained": False, "answer": None, "llm_notice": rate_limit_notice(e),
+                "template_summary": template_summary(cites)}
     except LLMUnavailable as e:
         return {**base, "mode": "retrieval_only", "abstained": False, "answer": None,
-                "setup_message": setup_message({"message": redact(str(e))})}
+                "setup_message": setup_message({"message": redact(str(e))}), "template_summary": template_summary(cites)}
     valid = {c["ref"] for c in cites}
     used = set(re.findall(r"\[(S\d+)\]", raw))
     bogus = used - valid
@@ -203,6 +220,8 @@ def _llm_summary(llm: LLMProvider, q: str, direct: dict, cites: list[dict]) -> d
             "not in S0. Cite [S0] and any other [S#] you use.")
     try:
         raw = llm.chat(SYSTEM_PROMPT, user)
+    except LLMRateLimited as e:
+        return {"ai_summary": None, "llm_notice": rate_limit_notice(e)}
     except LLMUnavailable as e:
         return {"ai_summary": None, "setup_message": setup_message({"message": redact(str(e))})}
     nums_s0 = set(re.findall(r"\d+(?:\.\d+)?", direct["answer"]))

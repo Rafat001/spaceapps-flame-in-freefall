@@ -1,4 +1,4 @@
-"""LLM providers: local (Ollama, free) | openai | anthropic | xai (Grok) | none.
+"""LLM providers: local (Ollama, free) | groq (free plan) | openai | anthropic | none.
 
 All providers implement ``chat(system, user) -> str``. ``health()`` never raises.
 """
@@ -11,6 +11,26 @@ from app.config import Settings
 
 class LLMUnavailable(RuntimeError):
     pass
+
+
+class LLMRateLimited(LLMUnavailable):
+    """The provider answered 429 (rate limit). Carries only the provider name and retry-after seconds."""
+
+    def __init__(self, provider: str, retry_after: str | None = None):
+        self.provider, self.retry_after = provider, retry_after
+        super().__init__(f"{provider} rate limit reached (HTTP 429)" + (f"; retry after {retry_after}s" if retry_after else ""))
+
+
+# Groq free plan, production chat models only. Source (checked 2026-11-13):
+#   https://console.groq.com/docs/models  (Production Models)
+#   https://console.groq.com/docs/rate-limits  (Free Plan Limits)
+# llama-3.1-8b-instant / llama-3.3-70b-versatile are listed as Enterprise ("Contact Sales"); preview models are excluded.
+GROQ_BASE_URL = "https://api.groq.com/openai/v1"
+GROQ_FREE_MODELS = {
+    "openai/gpt-oss-120b": {"label": "GPT OSS 120B", "free_limits": "30 RPM · 1K RPD · 8K TPM · 200K TPD"},
+    "openai/gpt-oss-20b": {"label": "GPT OSS 20B", "free_limits": "30 RPM · 1K RPD · 8K TPM · 200K TPD"},
+}
+GROQ_DEFAULT_MODEL = "openai/gpt-oss-120b"
 
 
 class LLMProvider:
@@ -67,7 +87,7 @@ def _redact_error(name: str, e: Exception) -> LLMUnavailable:
 
 
 class OpenAICompatLLM(LLMProvider):
-    """OpenAI Chat Completions over plain HTTPS (also used for xAI, which is OpenAI-compatible).
+    """OpenAI Chat Completions over plain HTTPS (also used for Groq, which is OpenAI-compatible).
 
     ``byok`` marks a key that came from the browser for this one request: it is held only on this
     object (created per request), never logged, never returned, and never sent anywhere but base_url."""
@@ -90,22 +110,30 @@ class OpenAICompatLLM(LLMProvider):
         return {"ok": True, "provider": self.name, "model": self.model, "byok": self.byok,
                 "message": f"Key from {src} present (not validated until first call)."}
 
+    def _body(self, system: str, user: str) -> dict:
+        return {"model": self.model, "temperature": 0,
+                "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
+
     def chat(self, system: str, user: str) -> str:
         if not self._key:
             raise LLMUnavailable(f"{self.env_var} missing")
         try:
             r = httpx.post(f"{self.base_url}/chat/completions", timeout=self.timeout,
                            headers={"Authorization": f"Bearer {self._key}", "Content-Type": "application/json"},
-                           json={"model": self.model, "temperature": 0,
-                                 "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]})
+                           json=self._body(system, user))
+            if r.status_code == 429:
+                ra = r.headers.get("retry-after")
+                raise LLMRateLimited(self.label, ra if ra and ra.replace(".", "", 1).isdigit() else None)
             r.raise_for_status()
             return r.json()["choices"][0]["message"]["content"] or ""
+        except LLMRateLimited:
+            raise
         except Exception as e:  # noqa: BLE001
             raise _redact_error(self.label, e) from None
 
     @property
     def label(self) -> str:
-        return {"openai": "OpenAI", "xai": "xAI"}.get(self.name, self.name)
+        return {"openai": "OpenAI", "groq": "Groq"}.get(self.name, self.name)
 
 
 class OpenAILLM(OpenAICompatLLM):
@@ -113,15 +141,34 @@ class OpenAILLM(OpenAICompatLLM):
     env_var = "OPENAI_API_KEY"
 
 
-class XaiLLM(OpenAICompatLLM):
-    """xAI Grok via its OpenAI-compatible API (https://api.x.ai/v1)."""
+class GroqLLM(OpenAICompatLLM):
+    """Groq via its OpenAI-compatible API (https://api.groq.com/openai/v1), free-plan production models only."""
 
-    name = "xai"
-    env_var = "XAI_API_KEY"
+    name = "groq"
+    env_var = "GROQ_API_KEY"
 
-    def __init__(self, api_key: str | None, model: str, timeout: float, base_url: str = "https://api.x.ai/v1",
-                 byok: bool = False):
-        super().__init__(api_key, model, timeout, base_url, byok)
+    def __init__(self, api_key: str | None, model: str, timeout: float, byok: bool = False):
+        super().__init__(api_key, model, timeout, GROQ_BASE_URL, byok)
+
+    def health(self) -> dict:
+        if self.model not in GROQ_FREE_MODELS:
+            return {"ok": False, "provider": self.name, "model": self.model, "byok": self.byok,
+                    "message": f"GROQ_MODEL '{self.model}' is not an allowed free-plan model. Use one of: "
+                               + ", ".join(GROQ_FREE_MODELS)}
+        h = super().health()
+        return {**h, "free_limits": GROQ_FREE_MODELS[self.model]["free_limits"]}
+
+    def _body(self, system: str, user: str) -> dict:
+        body = super()._body(system, user)
+        # GPT-OSS are reasoning models: keep reasoning short and out of the reply (console.groq.com/docs/reasoning),
+        # and cap output so a request stays well inside the free plan's 8K tokens per minute.
+        body.update(reasoning_effort="low", include_reasoning=False, max_completion_tokens=700)
+        return body
+
+    def chat(self, system: str, user: str) -> str:
+        if self.model not in GROQ_FREE_MODELS:
+            raise LLMUnavailable("Groq model is not on the free-plan allowlist")
+        return super().chat(system, user)
 
 
 class AnthropicLLM(LLMProvider):
@@ -157,7 +204,7 @@ class AnthropicLLM(LLMProvider):
             raise _redact_error("Anthropic", e) from None
 
 
-BYOK_PROVIDERS = ("openai", "anthropic", "xai")
+BYOK_PROVIDERS = ("groq", "openai", "anthropic")
 
 
 def build_byok_llm(cfg: Settings, provider: str, key: str, model: str | None = None) -> LLMProvider:
@@ -167,8 +214,11 @@ def build_byok_llm(cfg: Settings, provider: str, key: str, model: str | None = N
         return OpenAILLM(key, model or cfg.openai_model, cfg.llm_timeout_s, byok=True)
     if provider == "anthropic":
         return AnthropicLLM(key, model or cfg.anthropic_model, cfg.llm_timeout_s, byok=True)
-    if provider == "xai":
-        return XaiLLM(key, model or cfg.xai_model, cfg.llm_timeout_s, cfg.xai_base_url, byok=True)
+    if provider == "groq":
+        m = model or cfg.groq_model
+        if m not in GROQ_FREE_MODELS:
+            raise ValueError("model not allowed")
+        return GroqLLM(key, m, cfg.llm_timeout_s, byok=True)
     raise ValueError("unsupported provider")
 
 
@@ -180,6 +230,6 @@ def build_llm(cfg: Settings) -> LLMProvider:
         return OpenAILLM(cfg.openai_api_key, cfg.openai_model, cfg.llm_timeout_s)
     if p == "anthropic":
         return AnthropicLLM(cfg.anthropic_api_key, cfg.anthropic_model, cfg.llm_timeout_s)
-    if p == "xai":
-        return XaiLLM(cfg.xai_api_key, cfg.xai_model, cfg.llm_timeout_s, cfg.xai_base_url)
+    if p == "groq":
+        return GroqLLM(cfg.groq_api_key, cfg.groq_model, cfg.llm_timeout_s)
     return NoLLM()

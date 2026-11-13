@@ -3,9 +3,12 @@
 // - It is attached only to assistant requests (POST /api/ask), only over HTTPS (or to a local dev API).
 // - The server uses it for that one request and never stores, logs or returns it.
 
-export type Provider = "openai" | "anthropic" | "xai";
-export const PROVIDERS: { id: Provider; label: string; defaultModel: string }[] = [
-  { id: "xai", label: "xAI (Grok)", defaultModel: "grok-4.7" },
+export type Provider = "groq" | "openai" | "anthropic";
+/** Groq free-plan production chat models (console.groq.com/docs/models + /docs/rate-limits, checked 2026-11-13).
+ *  The API enforces the same allowlist. */
+export const GROQ_FREE_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b"] as const;
+export const PROVIDERS: { id: Provider; label: string; defaultModel: string; models?: readonly string[] }[] = [
+  { id: "groq", label: "Groq (free plan, recommended)", defaultModel: "openai/gpt-oss-120b", models: GROQ_FREE_MODELS },
   { id: "openai", label: "OpenAI", defaultModel: "gpt-4o-mini" },
   { id: "anthropic", label: "Anthropic", defaultModel: "claude-3-5-haiku-latest" },
 ];

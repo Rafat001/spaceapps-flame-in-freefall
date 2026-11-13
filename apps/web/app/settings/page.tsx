@@ -6,17 +6,22 @@ import { ErrorBox, Loading, Notice, PageHead } from "@/components/ui";
 
 function ByokPanel() {
   const [cur, setCur] = useState<ReturnType<typeof getByok>>(null);
-  const [provider, setProvider] = useState<Provider>("xai");
+  const [provider, setProvider] = useState<Provider>("groq");
   const [model, setModel] = useState("");
   const [key, setKey] = useState("");
   useEffect(() => { const b = getByok(); setCur(b); if (b) { setProvider(b.provider); setModel(b.model || ""); } }, []);
-  const def = PROVIDERS.find((p) => p.id === provider)!.defaultModel;
+  const prov = PROVIDERS.find((p) => p.id === provider)!;
+  const def = prov.defaultModel;
   const transportOk = safeTransport(API_BASE);
   return (
     <section className="console">
       <p className="console-title" aria-hidden="true"><span>Assistant</span><span>Your key</span></p>
       <h2>Use your own API key (optional)</h2>
       <p>Without a key the assistant still answers: the direct answer and interpretation are computed from the data. A key only adds an AI-written summary.</p>
+      <Notice><b>Recommended free option: Groq.</b> Create a free key at <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer">console.groq.com/keys</a>.
+        Only Groq&apos;s free-plan production models are allowed (GPT OSS 120B, GPT OSS 20B; free plan 30 requests/min, 1,000/day,
+        8K tokens/min — <a href="https://console.groq.com/docs/rate-limits" target="_blank" rel="noreferrer">Groq rate limits</a>).
+        If Groq says the limit is reached, you get the computed answer without the AI summary.</Notice>
       <ul className="kv">
         <li>Kept only in this browser tab (sessionStorage). Closing the tab removes it.</li>
         <li>Sent over HTTPS in a request header, only with assistant questions.</li>
@@ -31,11 +36,17 @@ function ByokPanel() {
       ) : (
         <form onSubmit={(e) => { e.preventDefault(); if (key.trim().length < 16) return; setByok({ provider, key, model }); setCur(getByok()); setKey(""); }}>
           <label htmlFor="byok-provider">Provider</label>
-          <select id="byok-provider" value={provider} onChange={(e) => setProvider(e.target.value as Provider)}>
+          <select id="byok-provider" value={provider} onChange={(e) => { setProvider(e.target.value as Provider); setModel(""); }}>
             {PROVIDERS.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
           </select>
-          <label htmlFor="byok-model">Model (optional)</label>
-          <input id="byok-model" value={model} onChange={(e) => setModel(e.target.value)} placeholder={def} maxLength={100} autoComplete="off" />
+          <label htmlFor="byok-model">Model{prov.models ? "" : " (optional)"}</label>
+          {prov.models ? (
+            <select id="byok-model" value={model || def} onChange={(e) => setModel(e.target.value)}>
+              {prov.models.map((m) => <option key={m} value={m}>{m}{m === def ? " (default)" : ""}</option>)}
+            </select>
+          ) : (
+            <input id="byok-model" value={model} onChange={(e) => setModel(e.target.value)} placeholder={def} maxLength={100} autoComplete="off" />
+          )}
           <label htmlFor="byok-key">API key</label>
           <input id="byok-key" type="password" value={key} onChange={(e) => setKey(e.target.value)} autoComplete="off" spellCheck={false} />
           <div className="actions"><button type="submit" disabled={key.trim().length < 16}>Use in this tab</button></div>
@@ -77,14 +88,16 @@ export default function Settings() {
         <input id="admin" type="password" value={admin} onChange={(e) => setAdmin(e.target.value)} autoComplete="off" disabled={locked} />
         <label htmlFor="llm">Provider</label>
         <select id="llm" disabled={busy || locked} value={s.llm.configured_provider} onChange={(e) => update({ ai_llm_provider: e.target.value })}>
+          <option value="groq">Groq, free plan — recommended ({s.models.groq}) — needs GROQ_API_KEY</option>
           <option value="local">Local / free — Ollama ({s.models.ollama})</option>
-          <option value="xai">xAI Grok ({s.models.xai}) — needs XAI_API_KEY</option>
           <option value="openai">OpenAI ({s.models.openai}) — needs OPENAI_API_KEY</option>
           <option value="anthropic">Anthropic ({s.models.anthropic}) — needs ANTHROPIC_API_KEY</option>
           <option value="none">None — computed answers only</option>
         </select>
         <Notice kind={s.llm.ok ? "info" : "warn"}>{s.llm.ok ? "Ready: " : "Not ready: "}{s.llm.message}</Notice>
-        <p className="kv">Server keys present: xAI <b>{s.keys_present.xai ? "yes" : "no"}</b> · OpenAI <b>{s.keys_present.openai ? "yes" : "no"}</b> · Anthropic <b>{s.keys_present.anthropic ? "yes" : "no"}</b></p>
+        <p className="kv">Server keys present: Groq <b>{s.keys_present.groq ? "yes" : "no"}</b> · OpenAI <b>{s.keys_present.openai ? "yes" : "no"}</b> · Anthropic <b>{s.keys_present.anthropic ? "yes" : "no"}</b></p>
+        {s.ask_limits && <p className="small muted">Shared server key limits for AI summaries: {s.ask_limits.per_ip_per_min}/min and {s.ask_limits.per_ip_per_day}/day per visitor;
+          site-wide {s.ask_limits.global_per_min}/min and {s.ask_limits.global_per_day}/day. Your own key is not counted.</p>}
       </section>
       <section className="console">
         <p className="console-title" aria-hidden="true"><span>Retrieval</span><span>Vectors</span></p>

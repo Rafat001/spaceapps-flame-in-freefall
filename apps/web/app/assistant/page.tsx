@@ -63,6 +63,7 @@ export default function Assistant() {
               <Citations items={r.direct.citations} />
             </div>
           )}
+          {r.llm_notice && <Notice kind="warn">{r.llm_notice}</Notice>}
           {r.ai_summary && (<>
             <p className="answer-meta"><EvidenceLabel text={r.ai_label} /> <span>{r.llm.provider} · {r.llm.model}{r.llm.byok ? " · your key (this request only)" : ""}</span></p>
             <div className="answer">{r.ai_summary}</div>

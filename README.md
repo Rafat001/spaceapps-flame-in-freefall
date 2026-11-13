@@ -58,7 +58,8 @@ interpretation, plus retrieved sources.
 
 ## Bring your own key (optional AI summary)
 
-On **Settings** a user can paste an OpenAI, Anthropic or **xAI (Grok)** key. Rules (decision D3):
+On **Settings** a user can paste a **Groq** key (recommended: free plan, key at https://console.groq.com/keys), or an
+OpenAI or Anthropic key. Rules (decision D3):
 - kept only in `sessionStorage` in that browser tab (cleared when the tab closes);
 - sent over HTTPS in the `X-LLM-Key` header (plus `X-LLM-Provider`, optional `X-LLM-Model`) **only** with assistant
   requests (`POST /api/ask`); the API refuses the header on every other endpoint;
@@ -66,6 +67,23 @@ On **Settings** a user can paste an OpenAI, Anthropic or **xAI (Grok)** key. Rul
   redacted; provider base URLs are fixed server-side, so a key cannot be redirected to another host.
 The templated, no-key answer is always the default. `PUT /api/settings/ai` and `POST /api/ingest/rebuild` need
 `X-Admin-Token` = `ADMIN_TOKEN`; with no `ADMIN_TOKEN` they are disabled in production (`APP_ENV=production` or on Render).
+
+### Groq (free) on the server
+
+Set `AI_LLM_PROVIDER=groq` and `GROQ_API_KEY` (optional `GROQ_MODEL`). Groq is called through its OpenAI-compatible API at
+`https://api.groq.com/openai/v1`. Only free-plan production chat models are allowed, for both the server and user keys
+(source: [models](https://console.groq.com/docs/models), [rate limits](https://console.groq.com/docs/rate-limits), checked 2026-11-13):
+
+| `GROQ_MODEL` | Free plan limits |
+| --- | --- |
+| `openai/gpt-oss-120b` (default) | 30 RPM · 1K requests/day · 8K tokens/min · 200K tokens/day |
+| `openai/gpt-oss-20b` | 30 RPM · 1K requests/day · 8K tokens/min · 200K tokens/day |
+
+Requests use `reasoning_effort=low`, `include_reasoning=false` and at most 700 output tokens. If Groq answers 429, the
+assistant returns the computed, templated answer with a notice instead of failing. Because one server key is shared by
+every visitor, AI summaries that use it are limited per IP (`ASK_RATE_PER_MIN=10`, `ASK_RATE_PER_DAY=200`) and site-wide
+(`ASK_GLOBAL_PER_MIN=25`, `ASK_GLOBAL_PER_DAY=900`, under Groq's free 30 RPM / 1K RPD). Over the limit, the visitor still gets the
+computed answer and sources, with a notice. Counters are in memory and reset on restart.
 
 ## Docker
 
@@ -82,7 +100,7 @@ Switch in `.env` (or at runtime on the **AI settings** page / `PUT /api/settings
 
 | Purpose | Free / local | Paid |
 | --- | --- | --- |
-| LLM for `/api/ask` | `AI_LLM_PROVIDER=local` → Ollama (`OLLAMA_MODEL=llama3.2`, `OLLAMA_BASE_URL`) | `openai` + `OPENAI_API_KEY` (`OPENAI_MODEL`), `anthropic` + `ANTHROPIC_API_KEY` (`ANTHROPIC_MODEL`), or `xai` + `XAI_API_KEY` (`XAI_MODEL`, default `grok-4.7`; OpenAI-compatible API at `https://api.x.ai/v1`) |
+| LLM for `/api/ask` | `AI_LLM_PROVIDER=groq` + `GROQ_API_KEY` (free plan, recommended; see above) or `local` → Ollama (`OLLAMA_MODEL=llama3.2`, `OLLAMA_BASE_URL`) | `openai` + `OPENAI_API_KEY` (`OPENAI_MODEL`) or `anthropic` + `ANTHROPIC_API_KEY` (`ANTHROPIC_MODEL`) |
 | Embeddings | `AI_EMBEDDING_PROVIDER=local` → sentence-transformers `all-MiniLM-L6-v2`; or `hash` (offline fallback) | `AI_EMBEDDING_PROVIDER=openai` (`text-embedding-3-small`) |
 | No AI at all | `AI_LLM_PROVIDER=none` | — |
 

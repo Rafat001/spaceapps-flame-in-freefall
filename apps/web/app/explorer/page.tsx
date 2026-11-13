@@ -102,6 +102,7 @@ function Explorer() {
             <button type="button" className="secondary" onClick={() => { setF({}); router.push("/explorer"); }}>Reset</button>
           </div>
           <p className="field-hint">Numeric filters only match values listed in PSI experimental tables. “Not reported” never passes a numeric filter.</p>
+          <p className="field-hint">For modeling: <a href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/export/modeling.csv`}>every countable table row as CSV</a> (SI units, verbatim cells, flags, source row) · <a href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/export/dictionary`} target="_blank" rel="noreferrer">data dictionary</a></p>
         </form>
         <section aria-live="polite" aria-label="Results">
           <ErrorBox error={err} />

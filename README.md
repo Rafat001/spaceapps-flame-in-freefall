@@ -102,6 +102,7 @@ rebuild vectors (`make ingest` or the button in AI settings) — the API detects
 | **Compare** — 2–3 investigations side by side with labels and Not reported cells | `POST /api/compare` |
 | **Relevance ranking** — PRD §9 weighted score with per-criterion citations and flags | `GET /api/rank?scenario=lunar_habitat` |
 | **Ask the evidence** — direct computed answers (counts, ranges, maxima, row lookups, official quotes) with CSV-row / page / `[mm:ss]` citations, abstention, hybrid-RAG passages, optional AI summary | `POST /api/ask`, `POST /api/qa` |
+| **Modeling export** — every countable row with SI units, verbatim cells, flags, source row; data dictionary | `GET /api/export/modeling.csv`, `GET /api/export/dictionary` |
 | **AI settings** — provider status and switch, index status, rebuild | `GET/PUT /api/settings/ai`, `POST /api/ingest/rebuild` |
 
 ### Architecture

@@ -302,3 +302,52 @@ def export_csv(ids: str = Query(..., description="comma-separated investigation 
                     "Ranges aggregate PSI table rows; research discovery only, not a safety certification."])
     return StreamingResponse(iter([buf.getvalue()]), media_type="text/csv",
                              headers={"Content-Disposition": "attachment; filename=flame-in-freefall-export.csv"})
+
+
+MODELING_DICTIONARY = [
+    ("accession", "PSI accession (e.g. PSI-159)", ""), ("acronym", "Investigation acronym", ""),
+    ("platform", "Platform as listed in the PSI record", ""), ("is_ground", "Ground lab / modeling study (true) or flight", ""),
+    ("subtable", "Experimental table within the investigation", ""), ("row_kind", "test | session | test_matrix (only countable rows exported)", ""),
+    ("source_file", "PSI experimental table CSV file", ""), ("source_row", "CSV record number in that file (1 = first data record)", ""),
+    ("material", "Material / fuel as written in PSI", ""), ("material_normalized", "Curator alias for material (rule-based)", ""),
+    ("oxygen_pct_min", "Oxygen, lower bound of the row", "% by volume"), ("oxygen_pct_max", "Oxygen, upper bound of the row", "% by volume"),
+    ("oxygen_is_stream", "O2 is the burner oxidizer stream (inverse flames), not ambient (decision D5)", ""),
+    ("oxygen_source_text", "Oxygen cell verbatim", ""),
+    ("pressure_kpa_min", "Pressure, lower bound", "kPa"), ("pressure_kpa_max", "Pressure, upper bound", "kPa"),
+    ("pressure_source_text", "Pressure cell verbatim", ""),
+    ("airflow_m_s_min", "Air / oxidizer flow speed, lower bound", "m/s"), ("airflow_m_s_max", "Air / oxidizer flow speed, upper bound", "m/s"),
+    ("airflow_source_text", "Flow cell verbatim", ""), ("diluents", "Diluent mole fractions where the table lists them", "JSON"),
+    ("flags", "Data-quality flags; values are never silently corrected (decision D4)", "; separated"),
+    ("source_url", "PSI record URL", ""),
+]
+
+
+@router.get("/export/modeling.csv")
+def export_modeling(s: Session = Depends(get_session)):
+    """T8: every countable PSI table row with SI-normalised numbers, verbatim cells, flags and source row (data dictionary below)."""
+    import json as _json
+
+    from app.ingest.table_specs import COUNTABLE_KINDS
+
+    invs = {i.id: i for i in s.scalars(select(Investigation)).all()}
+    runs = s.scalars(select(TestRun).where(TestRun.row_kind.in_(COUNTABLE_KINDS))
+                     .order_by(TestRun.investigation_id, TestRun.source_file, TestRun.source_row)).all()
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow([k for k, _, _ in MODELING_DICTIONARY])
+    for r in runs:
+        inv = invs[r.investigation_id]
+        vals = {"accession": inv.accession, "acronym": inv.acronym, "platform": inv.platform, "is_ground": inv.is_ground,
+                "diluents": _json.dumps(r.diluents or {}, sort_keys=True) if r.diluents else "",
+                "flags": "; ".join(f if isinstance(f, str) else f.get("code", str(f)) for f in (r.flags or [])),
+                "source_url": inv.source_url}
+        w.writerow([vals[k] if k in vals else ("" if getattr(r, k) is None else getattr(r, k)) for k, _, _ in MODELING_DICTIONARY])
+    return StreamingResponse(iter([buf.getvalue()]), media_type="text/csv",
+                             headers={"Content-Disposition": "attachment; filename=flame-in-freefall-modeling.csv"})
+
+
+@router.get("/export/dictionary")
+def export_dictionary():
+    return {"columns": [{"name": k, "description": d, "unit": u} for k, d, u in MODELING_DICTIONARY],
+            "note": "Rows are PSI experimental-table rows (row kinds test, session, test_matrix). Notes, pre-test and continuation rows "
+                    "are excluded. Unknown values are blank, never guessed. Research discovery only, not a safety certification."}

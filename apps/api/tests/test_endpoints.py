@@ -33,3 +33,19 @@ def test_redaction_keeps_uvicorn_access_log_shape():
     RedactingFilter().filter(rec)
     assert isinstance(rec.args, tuple) and len(rec.args) == 5
     assert "abcdefghijklmnop" not in rec.getMessage()
+
+
+def test_modeling_export_has_every_countable_row(client):
+    import csv
+    import io
+
+    r = client.get("/api/export/modeling.csv")
+    assert r.status_code == 200
+    rows = list(csv.DictReader(io.StringIO(r.text)))
+    assert len(rows) == 1982
+    assert all(x["source_row"] and x["accession"] for x in rows)
+    d = client.get("/api/export/dictionary").json()["columns"]
+    assert [c["name"] for c in d] == list(rows[0].keys())
+    lunar = [x for x in rows if x["oxygen_pct_max"] and x["pressure_kpa_min"]
+             and float(x["oxygen_pct_max"]) >= 30 and float(x["pressure_kpa_min"]) <= 10.2 * 6.894757]
+    assert len(lunar) == 74

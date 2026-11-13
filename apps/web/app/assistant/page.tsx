@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { api } from "@/lib/api";
+import { API_BASE, api } from "@/lib/api";
+import { assistantHeaders } from "@/lib/byok";
 import { ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
 
 const EXAMPLES = [
@@ -22,7 +23,7 @@ export default function Assistant() {
   async function ask(question: string) {
     if (question.trim().length < 3) return;
     setBusy(true); setErr(null);
-    try { const r = await api("/api/ask", { method: "POST", body: JSON.stringify({ question }) }); setHist((h) => [r, ...h]); setQ(""); }
+    try { const r = await api("/api/ask", { method: "POST", body: JSON.stringify({ question }), headers: assistantHeaders(API_BASE) }); setHist((h) => [r, ...h]); setQ(""); }
     catch (x) { setErr(x); }
     setBusy(false);
   }

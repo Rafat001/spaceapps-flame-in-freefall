@@ -25,7 +25,7 @@ def _ask(session, q, llm):
 def test_no_llm_returns_snippets_and_setup_message(client):
     j = client.post("/api/ask", json={"question": "What does BASS tell us about airflow?"}).json()
     assert j["mode"] == "retrieval_only"
-    assert j["answer"] is None and "Ollama" in j["setup_message"] and "OPENAI_API_KEY" in j["setup_message"]
+    assert j["answer"] is None and "Settings" in j["setup_message"] and "AI_LLM_PROVIDER" in j["setup_message"]
     assert j["citations"] and any(c["acronym"] == "BASS" for c in j["citations"])
     assert all(c["source_url"] for c in j["citations"])
 

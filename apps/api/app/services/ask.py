@@ -14,6 +14,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.ai.providers.llm import LLMProvider, LLMUnavailable
+from app.security import redact
 from app.labels import NOT_CERTIFICATION, PARTIAL_GRAVITY_WARNING, label
 from app.models import Investigation, Measurement
 from app.retrieval import lexical
@@ -102,10 +103,10 @@ def _citation(n: int, h: Hit, inv_map: dict) -> dict:
 
 
 def setup_message(health: dict) -> str:
-    return ("No LLM is available, so this is retrieval-only mode: the snippets below are the best-matching sources, "
-            "with no AI-written answer. To enable answers: (free/local) install Ollama from https://ollama.com, run "
-            "`ollama pull llama3.2` and set AI_LLM_PROVIDER=local; or (paid) set AI_LLM_PROVIDER=openai with OPENAI_API_KEY, "
-            "or AI_LLM_PROVIDER=anthropic with ANTHROPIC_API_KEY in .env, then restart the API. "
+    return ("No LLM is available, so the answer above is the templated, computed interpretation and the snippets below "
+            "are the best-matching sources, with no AI-written text. To add an AI summary: paste your own OpenAI, Anthropic "
+            "or xAI (Grok) key in Settings (kept only in this browser tab, used for one request at a time), or set "
+            "AI_LLM_PROVIDER=local|openai|anthropic|xai with the matching key in the server env. "
             f"Provider status: {health.get('message', 'unknown')}")
 
 
@@ -143,7 +144,7 @@ def ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: i
         raw = llm.chat(SYSTEM_PROMPT, user)
     except LLMUnavailable as e:
         return {**base, "mode": "retrieval_only", "abstained": False, "answer": None,
-                "setup_message": setup_message({"message": str(e)})}
+                "setup_message": setup_message({"message": redact(str(e))})}
     valid = {c["ref"] for c in cites}
     used = set(re.findall(r"\[(S\d+)\]", raw))
     bogus = used - valid

@@ -4,13 +4,14 @@ import csv
 import io
 from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.ai.registry import state
+from app.security import require_admin
 from app.db import get_session
 from app.labels import NOT_CERTIFICATION, PARTIAL_GRAVITY_WARNING, RELEVANCE_DISCLAIMER
 from app.models import Chunk, Investigation, Measurement, TestRun
@@ -194,9 +195,15 @@ class AskIn(BaseModel):
 
 
 @router.post("/ask")
-def ask(body: AskIn, s: Session = Depends(get_session)):
+def ask(body: AskIn, request: Request, s: Session = Depends(get_session)):
+    """Assistant. Optional BYOK headers (X-LLM-Provider, X-LLM-Key, X-LLM-Model) are used for this request only."""
+    from app.ai.providers.llm import build_byok_llm
+    from app.security import byok_from_request
+
     emb, _ = state.embedder
-    return ask_svc.ask(s, body.question, state.llm, emb, state.index, k=body.k,
+    byok = byok_from_request(request)
+    llm = build_byok_llm(state.cfg, byok.provider, byok.key, byok.model) if byok else state.llm
+    return ask_svc.ask(s, body.question, llm, emb, state.index, k=body.k,
                        investigation_ids=[i.lower() for i in body.investigation_ids] if body.investigation_ids else None)
 
 
@@ -206,21 +213,22 @@ def ai_settings():
 
 
 class AISettingsIn(BaseModel):
-    ai_llm_provider: Literal["local", "openai", "anthropic", "none"] | None = None
+    ai_llm_provider: Literal["local", "openai", "anthropic", "xai", "none"] | None = None
     ai_embedding_provider: Literal["local", "openai", "hash"] | None = None
     ollama_model: str | None = Field(None, max_length=100)
     openai_model: str | None = Field(None, max_length=100)
     anthropic_model: str | None = Field(None, max_length=100)
+    xai_model: str | None = Field(None, max_length=100)
 
 
-@router.put("/settings/ai")
+@router.put("/settings/ai", dependencies=[Depends(require_admin)])
 def update_ai_settings(body: AISettingsIn):
     """Switch providers/models at runtime (in-memory; .env stays the default). API keys are env-only by design."""
     state.reset(**body.model_dump())
     return state.status()
 
 
-@router.post("/ingest/rebuild")
+@router.post("/ingest/rebuild", dependencies=[Depends(require_admin)])
 def ingest_rebuild():
     """Re-load data/seed/*.json into SQLite and rebuild FTS + vector indexes with the active embedder."""
     from app.ingest.load import load

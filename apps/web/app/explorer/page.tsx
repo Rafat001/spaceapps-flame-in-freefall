@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import { api, qs, API_BASE } from "@/lib/api";
 import { humanize, readCompare, toggleCompare } from "@/lib/format";
 import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
-import { Markdown } from "@/components/Markdown";
+import { Markdown, citeHref } from "@/components/Markdown";
 import { assistantHeaders } from "@/lib/byok";
 
 const FIELDS = ["q", "family", "fuel_class", "topic", "measurement_type", "material", "hardware", "platform", "lens", "oxygen_min", "oxygen_max",
@@ -191,7 +191,7 @@ function Explorer() {
                     <>
                       {searchAnswer.answer ? (
                         <div className="search-synthesis-body md">
-                          <Markdown text={searchAnswer.answer} />
+                          <Markdown text={searchAnswer.answer} citations={searchAnswer.citations} />
                         </div>
                       ) : searchAnswer.template_summary ? (
                         <p className="search-synthesis-body">{searchAnswer.template_summary}</p>
@@ -199,6 +199,28 @@ function Explorer() {
                         <div className="search-synthesis-body">{searchAnswer.direct.answer}</div>
                       ) : (
                         <p className="muted small">No direct written synthesis returned. See matching experimental records below.</p>
+                      )}
+
+                      {searchAnswer.answer && (searchAnswer.citations || []).length > 0 && (
+                        <details className="search-synthesis-sources">
+                          <summary>Sources ({searchAnswer.citations.length})</summary>
+                          <ol>
+                            {searchAnswer.citations.map((c: any) => {
+                              const to = citeHref(c);
+                              const name = [c.acronym || "Challenge brief", c.section].filter(Boolean).join(" · ");
+                              return (
+                                <li key={c.ref} id={`cite-${c.ref}`}>
+                                  <span className="cite-ref">[{c.ref}]</span>{" "}
+                                  {to ? (/^https?:/.test(to)
+                                    ? <a href={to} target="_blank" rel="noreferrer">{name} ↗</a>
+                                    : <Link href={to}>{name}</Link>) : name}
+                                  {c.locator && <span className="muted small"> · {c.locator}</span>}
+                                  {c.label && <span className="muted small"> · {c.label}</span>}
+                                </li>
+                              );
+                            })}
+                          </ol>
+                        </details>
                       )}
 
                       {(() => {

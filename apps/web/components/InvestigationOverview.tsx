@@ -86,7 +86,7 @@ export default function InvestigationOverview({ invId, query }: OverviewProps) {
 
           {/* Main answer */}
           {data.answer && (
-            <Markdown className="overview-answer prose" text={data.answer} />
+            <Markdown className="overview-answer prose" text={data.answer} citations={data.citations} />
           )}
 
           {/* Template summary fallback (no LLM) */}

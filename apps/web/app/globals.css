@@ -1045,3 +1045,9 @@ q { quotes: "“" "”"; }
   color: var(--ash);
   margin-top: 2px;
 }
+.cite-ref { font-family: var(--f-mono); font-size: .78em; font-weight: 700; color: var(--signal); text-decoration: none; white-space: nowrap; }
+a.cite-ref:hover { color: var(--accent); text-decoration: underline; }
+.search-synthesis-sources { margin-top: 12px; font-size: .85rem; }
+.search-synthesis-sources summary { cursor: pointer; font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--signal); }
+.search-synthesis-sources ol { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.search-synthesis-sources li { margin: 4px 0; }

@@ -75,7 +75,7 @@ export default function Assistant() {
           {r.llm_notice && <Notice kind="warn">{r.llm_notice}</Notice>}
           {r.ai_summary && (<>
             <p className="answer-meta"><EvidenceLabel text={r.ai_label} /> <span>{r.llm.provider} · {r.llm.model}{r.llm.byok ? " · your key (this request only)" : ""}</span></p>
-            <Markdown className="answer" text={r.ai_summary} />
+            <Markdown className="answer" text={r.ai_summary} citations={r.citations} />
             {r.warnings?.map((w: string) => <Notice key={w} kind="warn">{w}</Notice>)}
           </>)}
           {r.mode === "direct" && r.setup_message && <p className="muted small">AI summary off: add your own key in <Link href="/settings">Settings</Link> (optional).</p>}
@@ -83,7 +83,7 @@ export default function Assistant() {
             <Notice>{r.setup_message} <Link href="/settings">AI settings →</Link></Notice></>)}
           {r.mode === "llm" && (<>
             <p className="answer-meta"><EvidenceLabel text={r.answer_label} /> <span>{r.llm.provider} · {r.llm.model}</span></p>
-            <Markdown className="answer" text={r.answer} />
+            <Markdown className="answer" text={r.answer} citations={r.citations} />
             {r.warnings?.map((w: string) => <Notice key={w} kind="warn">{w}</Notice>)}
           </>)}
           <h3 className="sources-title">{r.mode === "retrieval_only" ? "Retrieved source snippets" : "Related passages (retrieval)"}</h3>

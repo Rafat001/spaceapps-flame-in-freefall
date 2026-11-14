@@ -45,7 +45,7 @@ describe("BYOK", () => {
     const src = await import("node:fs").then((fs) => fs.readFileSync(new URL("../lib/api.ts", import.meta.url), "utf8"));
     expect(src).not.toMatch(/byok|X-LLM-Key/i);
   });
-  it("is wired into the assistant page only", async () => {
+  it("is wired only into pages that call the assistant (assistant, explorer search synthesis)", async () => {
     const fs = await import("node:fs");
     const path = await import("node:path");
     const root = new URL("../app/", import.meta.url).pathname;
@@ -56,6 +56,6 @@ describe("BYOK", () => {
       else if (/\.tsx?$/.test(e.name) && /assistantHeaders/.test(fs.readFileSync(p, "utf8"))) users.push(path.relative(root, p));
     });
     walk(root);
-    expect(users).toEqual(["assistant/page.tsx"]);
+    expect(users.sort()).toEqual(["assistant/page.tsx", "explorer/page.tsx"]);
   });
 });

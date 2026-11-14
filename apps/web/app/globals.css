@@ -622,3 +622,11 @@ q { quotes: "“" "”"; }
 .overview-answer ul, .overview-answer ol { margin: 0 0 .8em 1.2em; padding: 0; }
 .overview-answer li { margin-bottom: .35em; }
 .overview-answer strong { color: var(--ink); }
+
+/* Rendered markdown (AI answers): neutralise pre-wrap/pre-line from .answer/.prose */
+.md, .md.answer, .md.prose { white-space: normal; }
+.md > :first-child { margin-top: 0; }
+.md p { margin: 0 0 .6em; }
+.md ul, .md ol { margin: 0 0 .8em 1.2em; padding: 0; }
+.md li { margin-bottom: .35em; }
+.md strong { color: var(--ink); }

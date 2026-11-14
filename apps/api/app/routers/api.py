@@ -172,12 +172,14 @@ def investigation_overview(inv_id: str, request: Request, q: str | None = Query(
             f"Summarise all work done in the {inv.acronym} investigation ({inv.title}) "
             f"that is relevant to '{q.strip()}'. "
             "Cover the objectives, experimental conditions, key findings, and measurement types "
-            "reported for this topic. Cite every claim with [S#]."
+            "reported for this topic, what the experimental table (dataset) contains for it, and which "
+            "listed publications address it. Cite every claim with [S#]."
         )
     else:
         question = (
             f"Provide an overview of the {inv.acronym} investigation ({inv.title}): "
-            "what were the objectives, experimental conditions, key findings and measurement types? "
+            "what were the objectives, experimental conditions, key findings and measurement types, "
+            "what does the experimental table (dataset) contain, and which publications are listed? "
             "Cite every claim with [S#]."
         )
 

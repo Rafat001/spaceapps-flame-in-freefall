@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import { Markdown } from "@/components/Markdown";
 import { api, qs, API_BASE } from "@/lib/api";
 import { EvidenceLabel } from "@/components/ui";
 import { assistantHeaders } from "@/lib/byok";
@@ -86,11 +86,7 @@ export default function InvestigationOverview({ invId, query }: OverviewProps) {
 
           {/* Main answer */}
           {data.answer && (
-            <div className="overview-answer prose">
-              <ReactMarkdown>
-                {String(data.answer).replace(/【(S\d+)】/g, "[$1]").replace(/\[(S\d+)\]/g, "**[$1]**")}
-              </ReactMarkdown>
-            </div>
+            <Markdown className="overview-answer prose" text={data.answer} />
           )}
 
           {/* Template summary fallback (no LLM) */}

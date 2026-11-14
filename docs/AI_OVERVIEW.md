@@ -1,4 +1,4 @@
-# AI Overview (investigation page)
+# AI Overview (investigation page and Ask)
 
 The first section of every investigation page (`/investigations/[id]`) is an
 **AI Overview**: an evidence-grounded summary of the work done in that
@@ -24,6 +24,30 @@ summarises what FLEX-2 reports about heat release rate, with citations.
    investigation.
 5. The response is the normal ask result plus `investigation_id`, `acronym`,
    `title`, `query`.
+
+## Dataset and publication context
+
+Text retrieval alone only sees the PSI record and NASA documents. Two structured
+sources are added by `apps/api/app/services/overview_context.py` and appear as
+extra numbered citations (so they are validated and shown like any other source):
+
+- **Dataset** (`psi_experimental_table`): rows from the investigation's PSI
+  experimental table (`TestRun.raw`) that mention the query terms (otherwise the
+  first rows), with the column names and row count.
+- **Publications** (`psi_publication_listing`): publications listed on the PSI
+  record, ranked by query-term overlap on title/authors, with authors, year and
+  DOI. Only metadata is indexed, so the model is told not to claim findings
+  beyond a title.
+
+The prompt asks for **Dataset** and **Publications** headings. Nothing in these
+blocks is generated; it is copied from stored rows.
+
+## Ask page
+
+`ask_svc.ask` adds the same dataset/publication citations whenever the question
+names an investigation (e.g. "FLEX-2", up to 3) or the caller scopes it with
+`investigation_ids` (as the overview does). The Ask page renders AI answers as
+markdown through the shared `components/Markdown.tsx`.
 
 ## Response behaviour
 

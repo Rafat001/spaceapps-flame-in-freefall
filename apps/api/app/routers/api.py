@@ -148,6 +148,65 @@ def get_investigation(inv_id: str, s: Session = Depends(get_session)):
     return inv_detail(inv)
 
 
+@router.get("/investigations/{inv_id}/overview")
+def investigation_overview(inv_id: str, request: Request, q: str | None = Query(None, max_length=400),
+                           s: Session = Depends(get_session)):
+    """AI overview of all work done in this investigation, optionally scoped to a search query.
+
+    Uses the existing ask service with the investigation scoped so the LLM synthesises
+    what this record contributes in relation to the query (e.g. 'Heat Release Rate').
+    Falls back to a templated answer when no LLM is configured.
+    """
+    from app.ai.providers.llm import build_byok_llm, GROQ_FREE_MODELS
+    from app.security import byok_from_request
+
+    inv_id_lower = inv_id.lower()
+    inv = s.scalars(select(Investigation).where(Investigation.id == inv_id_lower)).first()
+    if not inv:
+        raise HTTPException(404, "Investigation not found")
+
+    # Build a focused question: if the caller passes a search query, incorporate it;
+    # otherwise generate a general overview of the investigation.
+    if q and q.strip():
+        question = (
+            f"Summarise all work done in the {inv.acronym} investigation ({inv.title}) "
+            f"that is relevant to '{q.strip()}'. "
+            "Cover the objectives, experimental conditions, key findings, and measurement types "
+            "reported for this topic, what the experimental table (dataset) contains for it, and which "
+            "listed publications address it. Cite every claim with [S#]."
+        )
+    else:
+        question = (
+            f"Provide an overview of the {inv.acronym} investigation ({inv.title}): "
+            "what were the objectives, experimental conditions, key findings and measurement types, "
+            "what does the experimental table (dataset) contain, and which publications are listed? "
+            "Cite every claim with [S#]."
+        )
+
+    emb, _ = state.embedder
+    byok = byok_from_request(request) if request else None
+    if byok:
+        try:
+            llm = build_byok_llm(state.cfg, byok.provider, byok.key, byok.model)
+        except ValueError:
+            raise HTTPException(400, f"Model not allowed for {byok.provider}. Free Groq models: {', '.join(GROQ_FREE_MODELS)}.") from None
+    else:
+        llm = state.llm
+
+    result = ask_svc.ask(
+        s, question, llm, emb, state.index,
+        k=8,
+        investigation_ids=[inv_id_lower],
+    )
+    return {
+        "investigation_id": inv_id_lower,
+        "acronym": inv.acronym,
+        "title": inv.title,
+        "query": q or None,
+        **result,
+    }
+
+
 class CompareIn(BaseModel):
     ids: list[str] = Field(min_length=2, max_length=3)
 

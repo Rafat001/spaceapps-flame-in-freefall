@@ -6,6 +6,7 @@ import { assistantHeaders } from "@/lib/byok";
 import { ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
 import { Citations, Flags } from "@/components/Citations";
 import { AskQuota, type Quota } from "@/components/AskQuota";
+import { Markdown } from "@/components/Markdown";
 
 const EXAMPLES = [
   "Has any PSI test been run at a lunar-habitat-like atmosphere (O2 >= 30% and pressure <= 10.2 psi)?",
@@ -74,7 +75,7 @@ export default function Assistant() {
           {r.llm_notice && <Notice kind="warn">{r.llm_notice}</Notice>}
           {r.ai_summary && (<>
             <p className="answer-meta"><EvidenceLabel text={r.ai_label} /> <span>{r.llm.provider} · {r.llm.model}{r.llm.byok ? " · your key (this request only)" : ""}</span></p>
-            <div className="answer">{r.ai_summary}</div>
+            <Markdown className="answer" text={r.ai_summary} />
             {r.warnings?.map((w: string) => <Notice key={w} kind="warn">{w}</Notice>)}
           </>)}
           {r.mode === "direct" && r.setup_message && <p className="muted small">AI summary off: add your own key in <Link href="/settings">Settings</Link> (optional).</p>}
@@ -82,7 +83,7 @@ export default function Assistant() {
             <Notice>{r.setup_message} <Link href="/settings">AI settings →</Link></Notice></>)}
           {r.mode === "llm" && (<>
             <p className="answer-meta"><EvidenceLabel text={r.answer_label} /> <span>{r.llm.provider} · {r.llm.model}</span></p>
-            <div className="answer">{r.answer}</div>
+            <Markdown className="answer" text={r.answer} />
             {r.warnings?.map((w: string) => <Notice key={w} kind="warn">{w}</Notice>)}
           </>)}
           <h3 className="sources-title">{r.mode === "retrieval_only" ? "Retrieved source snippets" : "Related passages (retrieval)"}</h3>

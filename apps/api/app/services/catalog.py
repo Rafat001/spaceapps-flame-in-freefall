@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from sqlalchemy import and_, or_, select
+from sqlalchemy import and_, func, or_, select
 
 from app.ingest.table_specs import COUNTABLE_KINDS
 from sqlalchemy.orm import Session, selectinload
@@ -13,6 +13,7 @@ from app.models import Investigation, TestRun
 from app.retrieval import lexical
 
 EXACT_MATCH = 1e9
+DOI_RE = re.compile(r"10\.\d{4,9}/\S+")
 
 
 def _norm(t: str) -> str:
@@ -99,6 +100,18 @@ def search(session: Session, *, q: str | None = None, family: str | None = None,
         if acc:
             want = f"PSI-{int(acc.group(1))}"
             invs = [i for i in invs if i.accession.upper() == want]
+            return invs, {i.id: EXACT_MATCH for i in invs}
+        # A DOI ("10.1016/...", "doi:10...", "https://doi.org/10...") is an exact lookup against
+        # the dataset DOI and every publication/dataset DOI listed in PSI metadata.
+        doi = DOI_RE.search(ql)
+        if doi:
+            want = doi.group(0).rstrip(".,;)").lower()
+            from app.models import Document
+            ids = {iid for iid in session.scalars(
+                select(Document.investigation_id).where(func.lower(Document.doi) == want)) if iid}
+            ids |= {i.id for i in invs if (i.doi or "").lower() == want}
+            invs = [i for i in invs if i.id in ids]
+            invs.sort(key=lambda i: i.accession)
             return invs, {i.id: EXACT_MATCH for i in invs}
         norm = _norm(ql)
         hits = lexical.search(session, q, k=400)

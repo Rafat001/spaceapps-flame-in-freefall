@@ -30,3 +30,15 @@ def test_accession_query_is_exact_lookup(client):
 def test_exact_acronym_listed_first(client):
     items = client.get("/api/investigations", params={"q": "FLEX-2"}).json()["items"]
     assert items[0]["acronym"] == "FLEX-2"
+
+
+def test_doi_query_is_exact_lookup(client):
+    for q in ("10.1016/j.proci.2022.07.094", "doi:10.1016/J.PROCI.2022.07.094",
+              "https://doi.org/10.1016/j.proci.2022.07.094"):
+        items = client.get("/api/investigations", params={"q": q}).json()["items"]
+        assert [i["accession"] for i in items] == ["PSI-117"], q
+
+
+def test_unknown_doi_returns_nothing(client):
+    items = client.get("/api/investigations", params={"q": "10.9999/not.a.real.doi"}).json()["items"]
+    assert items == []

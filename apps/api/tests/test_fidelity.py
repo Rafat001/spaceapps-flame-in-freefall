@@ -79,8 +79,9 @@ def test_lunar_target_rows_coverage_and_ranking_agree(client):
     assert by["psi-69"]["closest_miss"]["source"]["row"] == cm["row"]
     assert by["psi-69"]["closest_miss"]["pressure"]["source_text"] == cm["pressure_source_text"]
     # FLEX must not get full atmosphere credit from separate rows (ranking bug fix)
-    flex_atm = next(b for b in rk["psi-69"]["breakdown"] if b["criterion"] == "oxygen_atmosphere")
-    assert flex_atm["match"] < 1.0
+    flex_t = next(b for b in rk["psi-69"]["breakdown"] if b["criterion"] == "target_conditions")
+    assert flex_t["match"] == 0 and rk["psi-69"]["target_rows"] == 0
+    assert "never on the same row" in rk["psi-69"]["reason"]
     assert "inverse flames" in cov["answer_text"] or "oxidizer-stream" in cov["answer_text"]
 
 

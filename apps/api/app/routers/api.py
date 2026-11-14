@@ -111,18 +111,21 @@ def list_investigations(
 
     # Cards depend only on the catalog: build each once per loaded catalog, copy before adding per-request fields.
     cards = [dict(snapshot.memo(("card", i.id), lambda i=i: inv_card(i))) for i in invs]
-    scenario_label, ranked_total = None, 0
+    scenario_label, ranked_total, ranking_info = None, 0, None
     if scenario in SCENARIOS:
         ranked = ranking.rank(s, scenario)  # rank against the whole catalog so "#n" means the same on every page
         scenario_label, ranked_total = ranked["scenario_label"], len(ranked["results"])
+        ranking_info = {k: ranked[k] for k in ("ranking_version", "weights", "criteria_labels", "explainer",
+                                               "scenario_atmosphere", "order_note")}
         by_id = {r["investigation"]["id"]: r for r in ranked["results"]}
         for c in cards:
             r = by_id.get(c["id"])
             c["relevance_score"] = r["score"] if r else None
             c["relevance_rank"] = r["rank"] if r else None
-            c["relevance_tier"] = r["tier"] if r else None  # badge only; v0.4 orders by score alone
+            c["relevance_tier"] = r["tier"] if r else None  # badge only; orders by score alone
             c["relevance_target_rows"] = r["target_rows"] if r else None
-            c["relevance_parts"] = ([{"criterion": b["criterion"], "short_label": b["short_label"], "contribution": b["contribution"]}
+            c["relevance_reason"] = r["reason"] if r else None
+            c["relevance_parts"] = ([{"criterion": b["criterion"], "short_label": b["short_label"], "contribution": b["contribution"], "max_points": b["max_points"]}
                                      for b in r["breakdown"]] if r else None)
     if sort == "title":
         cards.sort(key=lambda c: c["title"])
@@ -133,14 +136,14 @@ def list_investigations(
     elif sort == "match":
         pass  # keep full-text (BM25) order from catalog.search
     else:
-        # Same order as the scenario ranking (sfsri-v0.4: scenario-fit score alone, deterministic ties).
+        # Same order as the scenario ranking (sfsri-v0.5: scenario-fit score alone, deterministic ties).
         # An exact ID / acronym hit from the search box is always listed first.
         cards.sort(key=lambda c: (0 if text_scores.get(c["id"], 0) >= catalog.EXACT_MATCH else 1,
                                   c.get("relevance_rank") or 10_000, c["id"]))
     total = len(cards)
     start = (page - 1) * page_size
     return {"total": total, "page": page, "page_size": page_size, "items": cards[start:start + page_size],
-            "sort": sort, "scenario": scenario, "scenario_label": scenario_label,
+            "sort": sort, "scenario": scenario, "scenario_label": scenario_label, "ranking": ranking_info,
             "ranked_total": ranked_total,
             "applied_filters": {k: v for k, v in dict(q=q, family=family, fuel_class=fuel_class, hardware=hardware,
                                 gravity_regime=gravity_regime, topic=topic, measurement_type=measurement_type,

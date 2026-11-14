@@ -3,7 +3,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, Suspense, useEffect, useState } from "react";
 import { api, qs, API_BASE } from "@/lib/api";
-import { fitParts, humanize, readCompare, toggleCompare } from "@/lib/format";
+import { humanize, readCompare, toggleCompare } from "@/lib/format";
+import { PointsLine, RankingExplainer, TargetAtmosphere } from "@/components/RankingExplainer";
 import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
 import { Markdown, citeHref } from "@/components/Markdown";
 import { assistantHeaders } from "@/lib/byok";
@@ -162,14 +163,18 @@ function Explorer() {
                     </>
                   ) : (
                     <>
-                      <b>Scenario fit</b> (0–100) scores how well an investigation’s documented tests at the scenario’s target conditions, fuel, oxygen and pressure,
-                      flame behavior, suppression work and habitat use fit the <i>{data.scenario_label}</i> scenario. It is research fit, not a hazard or safety score.
+                      <b>Scenario fit</b> (0–100) scores how closely an investigation’s PSI test rows match the <i>{data.scenario_label}</i> atmosphere (oxygen and pressure,
+                      ideally on the same row), which materials it tested, and its flame-behaviour and detection/suppression evidence. It is research fit, not a hazard or safety score.
                       {" "}<b>Rank</b> follows the score alone, highest first (ties go to more rows at the target, then data completeness).
                     </>
                   )}
                   {" "}<b>Data completeness</b> is how many of 10 key catalog fields NASA’s record fills in (objective, approach, hardware, test rows, materials,
-                  oxygen, pressure, airflow, measurements, documents). <Link href="/insights">How scores are built</Link>
+                  oxygen, pressure, airflow, measurements, documents). <Link href={`/insights?scenario=${data.scenario}`}>Full ranking with evidence</Link>
                 </p>)}
+              {data.total > 0 && data.ranking && (<>
+                <TargetAtmosphere atm={data.ranking.scenario_atmosphere} />
+                <RankingExplainer lines={data.ranking.explainer} />
+              </>)}
               {activeQuery && (
                 <div className="search-synthesis" aria-live="polite">
                   <div className="search-synthesis-head">
@@ -288,8 +293,11 @@ function Explorer() {
                             <div><dt>Pressure</dt><dd><CondCell c={c.conditions.pressure} /></dd></div>
                             <div><dt>Airflow</dt><dd><CondCell c={c.conditions.airflow} /></dd></div>
                           </dl>
+                          {c.relevance_reason && (
+                            <p className="entry-reason"><span className="ranked-reason">{c.relevance_reason}</span>
+                              <PointsLine parts={c.relevance_parts} /></p>)}
                           <div className="entry-foot">
-                            <span className="score-inline" title={c.relevance_parts ? `Scenario fit = ${fitParts(c.relevance_parts)}` : "Scenario fit to the selected scenario, out of 100. Not a hazard score."}>
+                            <span className="score-inline" title="Scenario fit to the selected scenario, out of 100. Not a hazard score.">
                               {data.sort === "match" ? (
                                 <>Match rank <b>#{resultRank}</b> of {data.total}{c.relevance_rank ? <> · Scenario rank #{c.relevance_rank} (scenario fit <b>{c.relevance_score}</b>/100)</> : null}</>
                               ) : (
@@ -299,7 +307,6 @@ function Explorer() {
                                   <>Scenario fit —</>
                                 )
                               )}
-                              {c.relevance_tier === "documented_at_target" && <span className="tag-target"> · {c.relevance_target_rows} {c.relevance_target_rows === 1 ? "row meets" : "rows meet"} the target</span>}
                             </span>
                             <span className="score-inline" title="Share of 10 key catalog fields that NASA's record fills in.">
                               Data completeness {Math.round(c.data_completeness * 10)}/10 fields</span>

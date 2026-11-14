@@ -68,7 +68,7 @@ export default function Lunar() {
       {pts && <LunarChart data={pts} />}
       {rank && (
         <section className="section">
-          <h2 className="display">Ranking agrees with the coverage check <span className="aside">same row-matching function</span></h2>
+          <h2 className="display">Ranking agrees with the coverage check <span className="aside">same row counts</span></h2>
           <div className="table-wrap"><table>
             <thead><tr><th>Rank</th><th>Investigation</th><th>Scenario fit</th><th>Rows meeting the lunar target</th><th>Tests-at-target criterion</th></tr></thead>
             <tbody>{rank.results.slice(0, 10).map((r: any) => {

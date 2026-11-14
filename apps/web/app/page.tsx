@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { fitParts, targetLine } from "@/lib/format";
+import { PointsLine, RankingExplainer, TargetAtmosphere } from "@/components/RankingExplainer";
 import Mark from "@/components/Mark";
 import VideoFacade from "@/components/VideoFacade";
 import { SpaceFireTeaser } from "@/components/SpaceFire";
@@ -101,10 +101,8 @@ export default function Home() {
             </select>
           </div>
         </div>
-        {top?.scenario_atmosphere ? (
-          <p className="atmo">Target atmosphere <span className="mono">{top.scenario_atmosphere.display}</span> <EvidenceLabel text="Official challenge brief" /></p>
-        ) : top ? <p className="atmo">Target atmosphere <EvidenceLabel text="Not established" /> (no value in the official brief)</p> : null}
-        {top?.order_note && <p className="small muted">{top.order_note}</p>}
+        {top && <TargetAtmosphere atm={top.scenario_atmosphere} />}
+        <RankingExplainer lines={top?.explainer} />
         {!top ? <Loading /> : (
           <ol className="ranked">
             {top.results.slice(0, 6).map((r: any, i: number) => (
@@ -112,8 +110,9 @@ export default function Home() {
                 <span className="ranked-no">{String(i + 1).padStart(2, "0")}</span>
                 <Link className="ranked-acr" href={`/investigations/${r.investigation.id}`}>{r.investigation.acronym}</Link>
                 <span className="ranked-title">{r.investigation.title}
-                  <span className="ranked-meta">{r.investigation.family} · {r.investigation.fuel_class}{targetLine(r.tier, r.target_rows)}</span>
-                  <span className="ranked-parts" title="Points each criterion adds to the scenario fit (weight × match × 100)">{fitParts(r.breakdown)}</span></span>
+                  <span className="ranked-meta">{r.investigation.family} · {r.investigation.fuel_class}</span>
+                  <span className="ranked-reason">{r.reason}</span>
+                  <PointsLine parts={r.breakdown} /></span>
                 <span className="ranked-score"><b>{r.score}</b><span className="muted"> / 100 scenario fit</span>
                   <span className="meter" aria-hidden="true"><span style={{ width: `${r.score}%` }} /></span></span>
               </li>
@@ -127,7 +126,7 @@ export default function Home() {
         <section className="footnotes" aria-labelledby="atmo-title">
           <h2 id="atmo-title" className="footnotes-title">Reference atmospheres</h2>
           <ol>{meta.reference_atmospheres.map((a: any) => (
-            <li key={a.label}><strong>{a.label}.</strong> {a.text} <EvidenceLabel text="Official challenge brief" /></li>))}</ol>
+            <li key={a.label}><strong>{a.label}.</strong> {a.text} <EvidenceLabel text={a.verification_status === "challenge_brief" ? "Official challenge brief" : "NASA reference (official resource)"} />{a.citation_url && <> <a className="small" href={a.citation_url} target="_blank" rel="noreferrer">↗</a></>}</li>))}</ol>
         </section>
       )}
     </>

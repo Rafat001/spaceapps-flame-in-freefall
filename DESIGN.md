@@ -51,7 +51,7 @@ Next.js App Router + TypeScript (`output: "standalone"`). Pages are client compo
 | --- | --- |
 | `/` | Home: lead lunar coverage teaser, catalog stats, search box (goes to Explorer), top ranked investigations |
 | `/androflame` | Intro / product story (`/intro` is an alias) |
-| `/explorer` | Catalog search, filters, scenario-fit ranking (one score, highest first; "N rows meet the target" badge), search synthesis, compare picks |
+| `/explorer` | Catalog search, filters, scenario-fit ranking (one score, highest first; reason line and points per factor), search synthesis, compare picks |
 | `/coverage` | “Has it been done?” parameter coverage form |
 | `/compare` | Side-by-side comparison of 2–3 investigations |
 | `/insights` | Scenario-fit ranking with per-criterion score breakdown |
@@ -82,7 +82,7 @@ FastAPI app in `app/main.py` (title “Flame in Freefall API”, version `0.1.0`
 | `GET` | `/api/ask/quota` | Remaining server-key AI answers; does not consume quota |
 | `POST` | `/api/qa` | Structured QA only (no retrieval, no LLM) |
 | `POST` | `/api/coverage` | Parameter coverage (“has this been done?”) |
-| `GET` | `/api/rank` | Deterministic scenario-fit ranking (`sfsri-v0.4`) |
+| `GET` | `/api/rank` | Deterministic scenario-fit ranking (`sfsri-v0.5`) with reasons and a "How ranking works" explainer |
 | `POST` | `/api/compare` | Compare 2–3 investigations |
 | `GET` | `/api/lunar/points` | Countable rows with known O2 and pressure, for the lunar chart |
 | `GET` | `/api/earth` | Earth / spinoff panel |
@@ -181,7 +181,7 @@ Details that the diagram compresses:
 - **Hybrid retrieval** (`app/retrieval/hybrid.py`). Lexical FTS5 (top 40) and, if the vector index signature matches the active embedder, a vector search (top 40) are merged with reciprocal-rank fusion (`RRF_K = 60`). A small score boost applies when an investigation acronym appears in the question. Results can be restricted to named investigation ids. Instruction-like lines in source text are sanitised before they go into the prompt.
 - **Structured QA** (`app/qa`). `scope_check` abstains for certification, partial-gravity measurements, rockets/propellants, platforms PSI never lists, and programmes the resources name that have no PSI record. Otherwise pattern recipes, NASA-programme quotes, a threshold-coverage intent, and a generic one-investigation resolver run in that order. Numbers are computed from stored rows at answer time; quotes must exist in the corpus.
 - **Abstention / weak evidence.** If QA does not apply, retrieval is treated as weak when there are no hits, or term coverage is under 0.5 and best vector similarity is under 0.45 and no investigation is named. A question that asks for a numeric quantity with no structured measurements (for example flame spread rate) also abstains.
-- **Grounding prompt.** The model may use only the numbered sources, must cite `[S#]` on every factual sentence, must copy numbers exactly, and must write `INSUFFICIENT_EVIDENCE` only when no source is relevant. Temperature is 0. After the call the API strips leaked `<think>` blocks, normalises fullwidth brackets (`【S1】` → `[S1]`), expands grouped refs, removes citations that were not retrieved, and warns about uncited statements, numbers that appear in no source excerpt, and truncated output.
+- **Grounding prompt.** The model may use only the numbered sources, must cite `[S#]` on every factual sentence, must copy numbers exactly, and must write `INSUFFICIENT_EVIDENCE` only when no source is relevant. When sources cover part of a question it answers that part and simply omits the rest; it must not add a Limitations / Gaps / Caveats section. Temperature is 0. After the call the API strips leaked `<think>` blocks, removes any Limitations / Gaps / Caveats heading or paragraph the model still writes (`ask.strip_limitations`, applied to Assistant answers, Explorer search synthesis, investigation overviews and direct-answer summaries), normalises fullwidth brackets (`【S1】` → `[S1]`), expands grouped refs, removes citations that were not retrieved, and warns about uncited statements, numbers that appear in no source excerpt, and truncated output.
 - **Fallback.** If the LLM is down, times out, or is over quota, the visitor still gets the computed or retrieved answer plus a plain-language notice. Failed provider calls are refunded and do not count against site limits.
 
 Response `mode` values: `direct`, `llm`, `retrieval_only`, `abstained`.
@@ -196,7 +196,7 @@ sequenceDiagram
   participant W as Explorer page
   participant C as GET /api/investigations
   participant S as POST /api/ask
-  participant Rank as sfsri-v0.4
+  participant Rank as sfsri-v0.5
 
   B->>W: query and filters
   W->>C: catalog search
@@ -227,24 +227,34 @@ Catalog search (`app/services/catalog.py`):
 
 Default sort is `relevance`: exact text hits first, then the scenario-fit ranking order. Other sorts: `match` (BM25 order), `title`, `completeness`, `accession`.
 
-**Ranking (`sfsri-v0.4`, `app/services/ranking.py`).** One number, the **scenario fit** (0–100), fully determines the order:
+**Ranking (`sfsri-v0.5`, `app/services/ranking.py`, targets in `app/scenarios.py`).** One number, the **scenario fit** (0–100), fully determines the order:
 
-`scenario fit = 100 × Σ (weight × match)`, match in `[0, 1]`, weights sum to 1. Results are sorted by the displayed (one-decimal) score, highest first, so a higher number is never listed below a lower one. Ties go to more rows at the target, then higher data completeness (share of 10 key catalog fields), then acronym.
+`scenario fit = Σ points`, `points = 100 × weight × match` (rounded to 0.1), match in `[0, 1]`, weights sum to 1. The score is exactly the sum of the points shown. Results are sorted by score, highest first, so a higher number is never listed below a lower one. Ties go to more rows at the target, then higher data completeness (share of 10 key catalog fields), then acronym, then id; a tied row's reason says which rule placed it.
 
-Weights (product hypotheses, pending domain-lead review; not hazard coefficients):
+Every scenario uses the same six factors, led by atmospheric and testing relevance read from the PSI experimental tables (weights are product hypotheses pending domain-lead review; not hazard coefficients):
 
-| Criterion | Scenarios with a brief atmosphere target (lunar habitat, pressurized rover) | Scenarios without one (spacecraft, Mars) |
+| Factor | Weight | Match |
 | --- | --- | --- |
-| Tests at target conditions | 0.35 | — (no target in the brief) |
-| Material / fuel match | 0.20 | 0.25 |
-| Oxygen / atmosphere match | 0.10 | 0.25 |
-| Prevention / flame behavior | 0.15 | 0.20 |
-| Detection / suppression | 0.10 | 0.15 |
-| Habitat applicability | 0.10 | 0.15 |
+| Tests at target atmosphere | 0.30 | `n` rows meeting the O2 **and** pressure target on the **same** row: `log(1+n)/log(1+50)`, capped at 1 |
+| Oxygen match | 0.15 | same log scale over rows whose O2 range overlaps the target (any pressure) |
+| Pressure match | 0.10 | same log scale over rows whose pressure range overlaps the target (any O2) |
+| Tested materials | 0.25 | 1.0 the table names a material NASA lists as found on spacecraft; 0.8 other solid fuel; 0.6 gas burner emulating solids (BRE, per brief); 0.4 liquid; 0.3 gaseous; 0 aerosol |
+| Flame behaviour evidence | 0.10 | 1.0 flame spread / flammability; 0.6 ignition / extinction / burning rate; 0.3 cool flames / droplet (rule tags with quoted text) |
+| Detection / suppression evidence | 0.10 | 1.0 suppression; 0.8 smoke detection; 0.4 extinction; 0.3 soot |
 
-**Tests at target conditions.** `n` = PSI experimental-table rows that meet O2 ≥ 30 % **and** pressure ≤ 10.2 psi (70.33 kPa) on the **same** row (the official brief's Moon Base / rover expectation; the same `coverage.target_rows` count the "Has it been done?" check uses). Match = `log(1+n) / log(1+50)`, capped at 1: the first rows count most and 50 rows saturate (1 row = 0.18, 8 = 0.56, 18 = 0.75, 48 = 0.99). Burner oxidizer-stream O2 counts but is labelled (D5). Zero rows give zero credit and a flag. The oxygen / atmosphere criterion still gives partial credit when O2 and pressure targets are only met on different rows.
+The log scale makes the first rows count most (1 row = 0.18, 8 = 0.56, 18 = 0.75, 48 = 0.99, ≥ 50 = 1.0). Unknown O2 or pressure never matches and is flagged. Burner oxidizer-stream O2 (inverse flames) counts per team decision D5 and is called out in the reason text. Spacecraft materials and their sources: cotton-fiberglass (SIBAL), Nomex and acrylic/PMMA from the Saffire fact sheet ("a cotton-fiberglass blend, Nomex, and the same acrylic glass that is used for spacecraft windows"); Teflon, Kapton and silicone rubber from the SAME fact sheet ("material found on spacecraft such as, Teflon, Kapton, cellulose and silicone rubber"). Matching uses the verbatim material cell and the curator alias (`material_normalized`).
 
-Each ranked row carries `score`, `score_label` ("scenario fit"), `target_rows`, `data_completeness`, `tier` (`documented_at_target` / `not_at_target`, now a badge only; it no longer affects order) and a `breakdown` of `{criterion, label, short_label, weight, match, contribution, citations, flags}`. The response adds `weights`, `criteria_short`, `target_rule` and `order_note`. The home widget and `/insights` show "N rows meet the target" and the per-criterion points (e.g. `Target tests 34.7 + Fuel 6 + O2/pressure 10 + …`); Explorer shows the same points as a tooltip and the row count as a badge. Version history: v0.3 listed every at-target investigation before the rest regardless of score, which put lower numbers above higher ones; v0.4 folds that evidence into the score instead.
+Target atmospheres come only from official resources; a test checks every quote is verbatim in the captured resource text:
+
+| Scenario | Target used | Source |
+| --- | --- | --- |
+| Lunar habitat, pressurized rover | O2 ≥ 30 %, pressure ≤ 10.2 psi (70.33 kPa) | Official brief: "The intermediate oxygen concentration used on the Moon will likely be 30% or greater, with a corresponding pressure of 10.2 psi or less." |
+| Spacecraft / station cabin | ISS air: 20–22 % O2 and 14.2–15.2 psi (97.9–104.8 kPa) | NASA guide *Combustion in Reduced Gravity on the ISS* p. 19: "ISS 'air,' nominally 21 percent oxygen by volume and one atmospheric pressure"; brief: sea level is 14.7 psi. The ±1 point / ±0.5 psi band is a labelled team convention. |
+| Mars surface habitat | **Not established** numerically. Direction only: O2 > 22 % and pressure < 14.2 psi (above / below the ISS-air band) | Same guide p. 38: "exploration atmospheres with reduced pressure and elevated oxygen"; the brief lists Martian bases as a target environment. |
+
+Each ranked row carries `score`, `score_label`, `reason` (one plain sentence, e.g. "Ranks #2: 18 test rows match ≥30 % O2 and ≤10.2 psi (O2 of a burner stream, not room air); gaseous fuel, not a cabin material."), `why`, `target_rows`, `atmosphere_rows` (`both`, `oxygen`, `pressure`, `burner_stream`, reported counts), `materials_named`, `data_completeness`, `tier` (badge only) and a `breakdown` of `{criterion, label, short_label, weight, match, max_points, contribution, citations, flags}`. The response adds `weights`, `criteria_labels`, `material_match`, `spacecraft_materials`, `explainer` (the plain-language "How ranking works" bullets), `target_rule` and `order_note`. Home, Explorer and `/insights` show the target atmosphere with its source label, a collapsible "How ranking works" panel, each row's reason and every factor's points as earned/possible. Tests assert that the order is strictly descending for all scenarios, the score equals the shown points, each atmosphere factor equals the log-scaled row count, and the reason text agrees with the counts and materials.
+
+Version history: v0.3 listed every at-target investigation before the rest regardless of score; v0.4 folded that into one score but only lunar scenarios had an atmosphere target and a "habitat applicability" keyword factor; v0.5 scores every scenario on the same atmosphere, pressure and materials factors with resource-backed targets, drops the keyword-only habitat factor and adds the reason line.
 
 ### 4.3 Investigation overview
 
@@ -386,7 +396,8 @@ Equivalent scripts: `./scripts/setup.sh`, `./scripts/dev.sh`, `./scripts/test.sh
 | `test_ratelimit.py` | Per-IP and site-wide quota, refunds |
 | `test_perf_cache.py` | Answer cache (repeat served without a provider call or quota, failures, abstentions and own-key answers never cached, LRU/TTL), per-request usage, catalog snapshot reuse and reset |
 | `test_explorer_order.py` | Relevance order, DOI and accession exact lookup |
-| `test_ranking.py` | Reproducible `sfsri-v0.4` ranking: weights sum to 1, order strictly by score with deterministic ties for every scenario, target match grows with rows and saturates |
+| `test_ranking.py` | Reproducible `sfsri-v0.5` ranking: weights sum to 1, order strictly by score with deterministic ties for every scenario, score = shown points, atmosphere factors = log-scaled row counts, reason text agrees with counts, every target quote verbatim in an official resource |
+| `test_no_limitations.py` | AI answers carry no Limitations / Gaps section (prompt + post-processing); abstention unchanged |
 | `test_coverage.py`, `test_filters.py` | Coverage verdicts; unknown values never pass filters |
 | `test_fidelity.py` | Table counts match source CSVs; flags surfaced |
 | `test_provenance.py` | Scope rule on every indexed item |

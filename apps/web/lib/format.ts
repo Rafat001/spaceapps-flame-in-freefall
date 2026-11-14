@@ -30,17 +30,3 @@ export function toggleCompare(id: string): string[] {
   return next;
 }
 
-/** Compact scenario-fit breakdown: the points each criterion adds (only non-zero ones), e.g. "Target tests 34.7 · Fuel 6". */
-export type FitPart = { criterion: string; short_label?: string; label?: string; contribution: number };
-export function fitParts(parts?: FitPart[] | null): string {
-  if (!parts) return "";
-  const nz = parts.filter((p) => p.contribution > 0);
-  return nz.length ? nz.map((p) => `${p.short_label || p.label} ${p.contribution}`).join(" + ") : "no criterion matched";
-}
-
-/** Plain-language "N rows meet the target" line for a ranked row. */
-export function targetLine(tier: string | null | undefined, rows: number | null | undefined): string {
-  if (!tier) return "";
-  if (tier === "documented_at_target") return ` · ${rows} ${rows === 1 ? "row meets" : "rows meet"} the target`;
-  return " · no row meets the target";
-}

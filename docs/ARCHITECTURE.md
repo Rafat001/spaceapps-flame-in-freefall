@@ -25,7 +25,7 @@ Browser ──> Next.js App Router (apps/web, Vercel Hobby)
 | Seed builder | `app/ingest/build_seed.py` | `data/sources` (PSI JSON + CSV, brief) → versioned `data/seed/*.v2.json` |
 | Loader | `app/ingest/load.py` | Seed + official documents + transcript → SQLite, FTS5, vectors. Runs at Docker image build; boot re-runs it only if needed |
 | Catalog search | `app/services/catalog.py` | Accession / DOI exact lookups, FTS5 keyword search, same-row numeric filters |
-| Ranking | `app/services/ranking.py` | Deterministic `sfsri-v0.4` scenario-fit score; the score alone fixes the order, with same-row tests at the brief's target conditions as a weighted criterion |
+| Ranking | `app/services/ranking.py` | Deterministic `sfsri-v0.5` scenario-fit score; the score alone fixes the order. Every scenario is scored on same-row tests at its resource-backed target atmosphere, oxygen and pressure matches, tested materials, flame behaviour and detection/suppression, with a reason line per row |
 | Coverage, compare | `app/services/coverage.py`, `compare.py` | "Has it been done?" and side-by-side comparison, no LLM |
 | Ask | `app/services/ask.py`, `app/qa/`, `app/retrieval/` | DOI lookup, structured QA, hybrid retrieval, grounded LLM answer with checked `[S#]` citations, abstention |
 | Overview | `GET /api/investigations/{id}/overview` | The ask pipeline scoped to one investigation (plus dataset and publication context) |

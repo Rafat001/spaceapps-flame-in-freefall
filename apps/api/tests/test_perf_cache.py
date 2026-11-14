@@ -104,6 +104,8 @@ def test_cache_lru_and_ttl():
     assert answer_cache.get(("k", 0)) is None and answer_cache.get(("k", answer_cache.MAX_ENTRIES + 4)) is not None
     answer_cache.put(("bad",), {"answer": "x", "llm_notice": "busy"})
     assert answer_cache.get(("bad",)) is None
+    answer_cache.put(("abstain",), {"answer": "Insufficient evidence", "mode": "abstained"})
+    assert answer_cache.get(("abstain",)) is None
 
 
 def test_snapshot_reused_and_cleared_on_reset(session):

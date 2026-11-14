@@ -2,7 +2,7 @@
 # docker compose --profile ollama up --build     -> also starts Ollama (:11434); then: docker compose exec ollama ollama pull llama3.2
 services:
   api:
-    build: { context: ., dockerfile: apps/api/Dockerfile, args: { LOCAL_AI: "${LOCAL_AI:-0}" } }
+    build: { context: ., dockerfile: apps/api/Dockerfile, args: { LOCAL_AI: "${LOCAL_AI:-0}", AI_EMBEDDING_PROVIDER: "${AI_EMBEDDING_PROVIDER:-hash}" } }
     env_file: [{ path: .env, required: false }]
     environment:
       AI_EMBEDDING_PROVIDER: "${AI_EMBEDDING_PROVIDER:-hash}"

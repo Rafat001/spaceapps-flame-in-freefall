@@ -52,8 +52,10 @@ def get(key: tuple, now: float | None = None) -> dict | None:
 
 
 def cacheable(result: dict) -> bool:
-    """Only clean outcomes: no provider failure / quota notice and no setup problem."""
-    return not result.get("llm_notice") and not result.get("setup_message")
+    """Only clean answers: no provider failure / quota notice, no setup problem, and not an abstention (a model
+    "insufficient evidence" verdict can vary between calls and must not be pinned for hours; computed abstentions
+    are cheap to recompute)."""
+    return not result.get("llm_notice") and not result.get("setup_message") and result.get("mode") != "abstained"
 
 
 def put(key: tuple, result: dict, now: float | None = None) -> None:

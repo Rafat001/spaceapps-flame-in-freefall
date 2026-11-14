@@ -176,6 +176,21 @@ def test_groq_429_falls_back_to_template_with_notice(client, monkeypatch, caplog
     assert FAKE["groq"] not in str(d) and FAKE["groq"] not in caplog.text
 
 
+def test_gemini_402_falls_back_to_template_with_payment_notice(client, monkeypatch, caplog):
+    caplog.set_level(logging.DEBUG)
+    r = Recorder(status=402, echo_key=True)
+    monkeypatch.setattr(llm_mod.httpx, "post", r)
+    d = client.post("/api/ask", json=Q, headers=_hdr("gemini")).json()
+    assert d["mode"] == "direct" and d["answer"] and d["ai_summary"] is None
+    assert "HTTP 402" in d["llm_notice"] and "payment-required" in d["llm_notice"]
+    assert "Free tier is not used" in d["llm_notice"]
+    d = client.post("/api/ask", json={"question": "What do the sources say about smoke particle size in microgravity?"},
+                    headers=_hdr("gemini")).json()
+    if d["mode"] == "retrieval_only":
+        assert "HTTP 402" in d["llm_notice"] and d["template_summary"]
+    assert FAKE["gemini"] not in str(d) and FAKE["gemini"] not in caplog.text
+
+
 def test_provider_error_echoing_key_is_redacted(client, monkeypatch, caplog):
     caplog.set_level(logging.DEBUG)
     r = Recorder(status=401, echo_key=True)

@@ -13,7 +13,7 @@ import re
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.ai.providers.llm import LLMProvider, LLMQuotaExceeded, LLMRateLimited, LLMUnavailable
+from app.ai.providers.llm import LLMPaymentRequired, LLMProvider, LLMQuotaExceeded, LLMRateLimited, LLMUnavailable
 from app.security import redact
 from app.labels import NOT_CERTIFICATION, PARTIAL_GRAVITY_WARNING, label
 from app.models import Investigation, Measurement
@@ -138,6 +138,20 @@ def rate_limit_notice(e: LLMRateLimited) -> str:
             + f". Showing the computed, templated answer instead (no AI). Free-plan limits: {docs}")
 
 
+def payment_notice(e: LLMPaymentRequired) -> str:
+    """HTTP 402: billed projects do not fall back to the Free tier when prepaid credits are gone."""
+    docs = "https://ai.google.dev/gemini-api/docs/billing" if e.provider == "Gemini" else "the provider's billing page"
+    return (f"AI summary skipped: {e.provider} returned a payment-required response (HTTP 402). "
+            "If this Google AI Studio project has billing enabled, the Free tier is not used — "
+            "add prepaid credits, or use a key from a project with billing turned off. "
+            f"Showing the computed, templated answer instead (no AI). Billing: {docs}")
+
+
+def call_failed_notice(e: LLMUnavailable) -> str:
+    return (f"AI summary skipped: {redact(str(e))}. "
+            "Showing the computed, templated answer instead (no AI).")
+
+
 def ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: int = 6,
         investigation_ids: list[str] | None = None, notice: str | None = None) -> dict:
     out = _ask(session, question, llm, embedder, index, k, investigation_ids)
@@ -204,9 +218,12 @@ def _ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: 
     except LLMRateLimited as e:
         return {**base, "mode": "retrieval_only", "abstained": False, "answer": None, "llm_notice": rate_limit_notice(e),
                 "template_summary": template_summary(cites)}
+    except LLMPaymentRequired as e:
+        return {**base, "mode": "retrieval_only", "abstained": False, "answer": None, "llm_notice": payment_notice(e),
+                "template_summary": template_summary(cites)}
     except LLMUnavailable as e:
         return {**base, "mode": "retrieval_only", "abstained": False, "answer": None,
-                "setup_message": setup_message({"message": redact(str(e))}), "template_summary": template_summary(cites)}
+                "llm_notice": call_failed_notice(e), "template_summary": template_summary(cites)}
     valid = {c["ref"] for c in cites}
     used = set(re.findall(r"\[(S\d+)\]", raw))
     bogus = used - valid
@@ -313,8 +330,10 @@ def _llm_summary(llm: LLMProvider, q: str, direct: dict, cites: list[dict]) -> d
         return {"ai_summary": None, "llm_notice": e.notice}
     except LLMRateLimited as e:
         return {"ai_summary": None, "llm_notice": rate_limit_notice(e)}
+    except LLMPaymentRequired as e:
+        return {"ai_summary": None, "llm_notice": payment_notice(e)}
     except LLMUnavailable as e:
-        return {"ai_summary": None, "setup_message": setup_message({"message": redact(str(e))})}
+        return {"ai_summary": None, "llm_notice": call_failed_notice(e)}
     nums_s0 = set(re.findall(r"\d+(?:\.\d+)?", direct["answer"]))
     extra = [n for n in re.findall(r"\d+(?:\.\d+)?", raw) if n not in nums_s0 and not re.fullmatch(r"S?\d", n)]
     warnings = ["The AI summary contains numbers not in the computed answer: " + ", ".join(sorted(set(extra))[:8])] if extra else []

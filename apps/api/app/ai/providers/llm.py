@@ -29,6 +29,14 @@ class LLMQuotaExceeded(LLMUnavailable):
         super().__init__("site AI quota reached")
 
 
+class LLMPaymentRequired(LLMUnavailable):
+    """The provider answered 402 (payment required / no prepaid credits). Do not retry until billing is fixed."""
+
+    def __init__(self, provider: str):
+        self.provider = provider
+        super().__init__(f"{provider} payment required (HTTP 402)")
+
+
 # Groq free plan, production chat models only. Source (checked 2026-11-13):
 #   https://console.groq.com/docs/models  (Production Models)
 #   https://console.groq.com/docs/rate-limits  (Free Plan Limits)
@@ -171,9 +179,11 @@ class OpenAICompatLLM(LLMProvider):
             if r.status_code == 429:
                 ra = r.headers.get("retry-after")
                 raise LLMRateLimited(self.label, ra if ra and ra.replace(".", "", 1).isdigit() else None)
+            if r.status_code == 402:
+                raise LLMPaymentRequired(self.label)
             r.raise_for_status()
             return r.json()["choices"][0]["message"]["content"] or ""
-        except LLMRateLimited:
+        except (LLMRateLimited, LLMPaymentRequired):
             raise
         except Exception as e:  # noqa: BLE001
             raise _redact_error(self.label, e) from None

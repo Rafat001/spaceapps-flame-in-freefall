@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import re
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.ai.providers.llm import LLMProvider, LLMQuotaExceeded, LLMRateLimited, LLMUnavailable
@@ -147,6 +147,9 @@ def ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: i
 def _ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: int = 6,
          investigation_ids: list[str] | None = None) -> dict:
     q = question.strip()
+    doi_out = _doi_answer(session, q, llm, k)
+    if doi_out is not None:
+        return doi_out
     hits = retrieve(session, q, embedder, index, k=k, investigation_ids=investigation_ids)
     inv_map = {i.id: i for i in session.scalars(select(Investigation)).all()}
     cites = [_citation(n, h, inv_map) for n, h in enumerate(hits, 1)]
@@ -216,6 +219,63 @@ def _ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: 
         warnings.append("The model answer contains no valid citations; treat it as unsupported and rely on the snippets.")
     return {**base, "mode": "llm", "abstained": False, "answer": answer, "cited_refs": sorted(used & valid),
             "warnings": warnings}
+
+
+DOI_RE = re.compile(r"10\.\d{4,9}/\S+", re.I)
+
+
+def _doi_answer(session: Session, q: str, llm: LLMProvider, k: int) -> dict | None:
+    """A DOI in the question is an exact lookup in the PSI publication/dataset lists (metadata only)."""
+    from app.models import Document
+
+    m = DOI_RE.search(q)
+    if not m:
+        return None
+    shown = m.group(0).rstrip(".,;)]\"'")
+    want = shown.lower()
+    docs = session.scalars(select(Document).where(func.lower(Document.doi) == want)).all()
+    invs = {i.id: i for i in session.scalars(select(Investigation)).all()}
+    ds = [i for i in invs.values() if (i.doi or "").lower() == want]
+    base = {"question": q, "policy_notes": [], "llm": llm.health(), "answer_label": label("psi_metadata"),
+            "retrieval": {"doi": want, "named_investigations": [], "k": k}}
+    if not docs and not ds:
+        msg = (f"DOI {shown} is not listed in any PSI investigation record or the official challenge resources, "
+               "so this app has no source for it.")
+        return {**base, "citations": [], "mode": "abstained", "abstained": True, "abstain_reason": msg,
+                "answer": f"Not found: {msg}", "answer_label": label("not_reported")}
+    lines, cites, seen = [], [], []
+    for d in docs:
+        inv = invs.get(d.investigation_id)
+        if not inv:
+            continue
+        year = re.search(r"(19|20)\d{2}", f"{d.publication_date or ''} {d.title}")
+        who = f" by {d.authors}" if d.authors else ""
+        yr = f" ({year.group(0)})" if year else ""
+        lines.append(f"- **{inv.acronym or inv.accession}** ({inv.accession}, {inv.title}) lists the {d.type} "
+                     f"*{d.title}*{who}{yr} [S{len(cites) + 1}].")
+        cites.append({"ref": f"S{len(cites) + 1}", "chunk_id": d.id, "investigation_id": inv.id, "acronym": inv.acronym,
+                      "section": "Publications (PSI record)", "page": "Not applicable", "locator": f"doi:{d.doi}",
+                      "source_type": "psi_publication_listing", "provenance": d.provenance or {},
+                      "source_url": d.url or inv.source_url, "verification_status": "psi_metadata",
+                      "label": label("psi_metadata"), "excerpt": f"{d.title}{who}{yr}. doi:{d.doi}",
+                      "injection_flagged": False, "retrieval": {"score": None, "reasons": ["exact DOI match"]}})
+        seen.append(inv.id)
+    for inv in ds:
+        lines.append(f"- It is the dataset DOI of **{inv.acronym or inv.accession}** ({inv.accession}, {inv.title}) "
+                     f"[S{len(cites) + 1}].")
+        cites.append({"ref": f"S{len(cites) + 1}", "chunk_id": f"{inv.id}-dataset-doi", "investigation_id": inv.id,
+                      "acronym": inv.acronym, "section": "PSI record", "page": "Not applicable", "locator": f"doi:{inv.doi}",
+                      "source_type": "psi_metadata", "provenance": inv.provenance or {}, "source_url": inv.source_url,
+                      "verification_status": "psi_metadata", "label": label("psi_metadata"),
+                      "excerpt": f"Dataset DOI for {inv.accession}: {inv.doi}", "injection_flagged": False,
+                      "retrieval": {"score": None, "reasons": ["exact DOI match"]}})
+        seen.append(inv.id)
+    answer = (f"DOI `{shown}` appears in the PSI metadata:\n" + "\n".join(lines) +
+              "\n\nOnly the title, authors and DOI of listed papers are indexed, not their full text, so this app makes no "
+              "claim about the paper's findings. Open the investigation for its test rows and NASA summary.")
+    base["retrieval"]["named_investigations"] = list(dict.fromkeys(seen))
+    return {**base, "citations": cites, "mode": "direct", "abstained": False, "answer": answer,
+            "direct": {"answer_kind": "doi_lookup", "answer": answer, "label": label("psi_metadata")}}
 
 
 def _direct(session: Session, q: str) -> dict | None:

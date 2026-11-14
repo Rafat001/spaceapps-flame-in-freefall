@@ -42,3 +42,15 @@ def test_doi_query_is_exact_lookup(client):
 def test_unknown_doi_returns_nothing(client):
     items = client.get("/api/investigations", params={"q": "10.9999/not.a.real.doi"}).json()["items"]
     assert items == []
+
+
+def test_ask_doi_lookup(client):
+    out = client.post("/api/ask", json={"question": "10.1134/S0010508220040036"}).json()
+    assert out["mode"] == "direct" and not out["abstained"]
+    assert {c["investigation_id"] for c in out["citations"]} == {"psi-20"}
+    assert "Radiative Extinction" in out["answer"]
+
+
+def test_ask_unknown_doi_says_not_found(client):
+    out = client.post("/api/ask", json={"question": "10.9999/nope.123"}).json()
+    assert out["abstained"] and out["citations"] == []

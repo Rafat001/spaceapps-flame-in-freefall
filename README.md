@@ -10,6 +10,9 @@ measurement type), and lets researchers inspect, compare, rank by research relev
 > spacecraft safety authority. PSI has **no partial-gravity combustion data yet**; microgravity results do not
 > directly establish lunar or Martian performance.
 
+How the system is put together — components, request flows, AI, citations, deployment and limits — is in
+[DESIGN.md](DESIGN.md).
+
 ## Scope rule (what the app may know)
 
 The app answers only from the challenge **Resources** tab and the challenge **Details/brief** page, plus references those
@@ -143,6 +146,8 @@ rebuild vectors (`make ingest` or the button in AI settings) — the API detects
 
 ### Architecture
 
+The high-level architecture is in [DESIGN.md](DESIGN.md). A short recap:
+
 ```
 apps/web  (Next.js App Router, TypeScript)  ──HTTP──>  apps/api (FastAPI)
                                                      ├─ SQLite (SQLAlchemy): investigations, documents, chunks, test_runs, measurements
@@ -216,11 +221,12 @@ the rules we apply and where, with page numbers, are in [`docs/BRAND.md`](docs/B
 ## Repo layout
 
 ```
+DESIGN.md     High-level architecture
 apps/api      FastAPI app (app/), tests/, requirements*.txt, Dockerfile
 apps/web      Next.js app (app/, components/, lib/), tests/ (vitest)
 data/sources  raw sources (PSI JSON/CSV, challenge text, official/ placeholder)
 data/seed     versioned seed JSON
-docs/         FOUNDATION_BRIEF.md, PRD.md, chatgpt-session.md
+docs/         AI_OVERVIEW.md, ARCHITECTURE.md (early draft), PRD.md, brand guide
 scripts/dev.sh, Makefile, docker-compose.yml, .env.example
 ```
 

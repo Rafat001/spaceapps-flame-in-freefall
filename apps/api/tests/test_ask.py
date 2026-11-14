@@ -120,3 +120,8 @@ def test_llm_answer_with_fullwidth_refs_counts_as_cited(session):
     out = _ask(session, "What does BASS tell us about airflow?", FakeLLM("- BASS varied the airflow speed【S1】."))
     assert out["mode"] == "llm" and out["cited_refs"] == ["S1"] and "[S1]" in out["answer"]
     assert not any("no valid citations" in w for w in out["warnings"])
+
+
+def test_limitations_section_is_not_flagged_as_uncited():
+    a = "- Flames spread quickly after ignition [S1].\n\n**Limitations:**\n- No quantitative spread rates are reported in any source.\n"
+    assert ask_svc.uncited_statements(a) == 0

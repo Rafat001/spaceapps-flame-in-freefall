@@ -24,7 +24,11 @@ function Explorer() {
   const key = sp.toString();
   useEffect(() => {
     setData(null); setErr(null);
-    api(`/api/investigations?${key}`).then(setData).catch(setErr);
+    // A text search with no explicit sort orders by text match; the default scenario order is
+    // query-independent, so every search would otherwise list the same investigations first.
+    const params = new URLSearchParams(key);
+    if (params.get("q") && !params.get("sort")) params.set("sort", "match");
+    api(`/api/investigations?${params.toString()}`).then(setData).catch(setErr);
   }, [key]);
 
   const set = (k: string, v: string) => setF((p) => ({ ...p, [k]: v }));
@@ -92,7 +96,7 @@ function Explorer() {
             <legend>Ordering</legend>
             {sel("scenario", meta ? Object.keys(meta.scenarios) : [], "Relevance scenario")}
             <label htmlFor="sort">Sort by</label>
-            <select id="sort" value={f.sort || "relevance"} onChange={(e) => set("sort", e.target.value)}>
+            <select id="sort" value={f.sort || (f.q ? "match" : "relevance")} onChange={(e) => set("sort", e.target.value)}>
               <option value="relevance">Most relevant first</option>{f.q && <option value="match">Best text match</option>}<option value="title">Title</option>
               <option value="completeness">Data completeness</option><option value="accession">PSI accession</option>
             </select>

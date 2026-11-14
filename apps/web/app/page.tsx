@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import Mark from "@/components/Mark";
 import VideoFacade from "@/components/VideoFacade";
+import { SpaceFireTeaser } from "@/components/SpaceFire";
 import { Disclaimer, ErrorBox, EvidenceLabel, Loading } from "@/components/ui";
 
 const VIDEO = { id: "W1oXykoz9zg", title: "NASA ScienceCasts: The Power of Studying Combustion on the ISS" };
@@ -83,6 +84,8 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      <SpaceFireTeaser />
 
       <Disclaimer />
       <ErrorBox error={err} />

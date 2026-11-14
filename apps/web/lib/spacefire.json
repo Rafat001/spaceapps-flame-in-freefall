@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "provenance": "Titles, URLs and 'resources_tab' text: Flame in Freefall challenge Resources tab (official challenge resources, captured 2026-11-12). Excerpts and dates: each linked page's own text (data/sources/official/text/<src>.txt). Every quote is checked word for word by apps/api/tests/test_spacefire.py.",
+  "resources_tab_url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/?tab=resources",
+  "groups": [
+    {
+      "id": "lessons",
+      "title": "Lessons from Spacecraft Fires",
+      "items": [
+        {
+          "id": "apollo-1", "title": "Apollo 1", "url": "https://sma.nasa.gov/sma-disciplines/accllp/apollo-1",
+          "site": "NASA Office of Safety and Mission Assurance", "host": "sma.nasa.gov", "src": "apollo1",
+          "date": "Jan. 27, 1967", "date_quote": "On Jan. 27, 1967, astronauts Virgil “Gus” Grissom, Edward White and Robert Chaffee lost their lives during a preflight test for AS-204 when a fire swept through the Command Module (CM).",
+          "resources_tab": "Information about the crew mission, fire that erupted during a pre-launch test killing the crew, investigation, and lessons learned.",
+          "excerpts": [
+            "The astronauts would be wearing spacesuits with the spacecraft’s hatches closed and the cabin pressurized with 100% oxygen. During the test, a flash fire swept through the spacecraft so quickly, there was no time to open the hatches.",
+            "Additionally, NASA severely restricted and controlled the number of combustible materials in the spacecraft and made those changes in the Lunar Module as well. As another safeguard, the agency designed new spacesuits using fire-resistant materials."
+          ],
+          "excerpt_labels": ["The fire", "Lessons learned"]
+        },
+        {
+          "id": "apollo-13", "title": "Apollo 13", "url": "https://sma.nasa.gov/sma-disciplines/accllp/apollo-13",
+          "site": "NASA Office of Safety and Mission Assurance", "host": "sma.nasa.gov", "src": "apollo13",
+          "date": "1970", "date_quote": "As the 1960s drew to a close, NASA had two successful moon landings under its belt with plans for a third to take place in 1970.",
+          "resources_tab": "Information about the crew, mission, oxygen tank explosion that occurred during the flight to the Moon, investigation, and lessons learned.",
+          "excerpts": [
+            "Things went smoothly until the third day of the mission when, after finishing a 49-minute TV broadcast showing the conditions on board the spacecraft, oxygen tank number two blew up, leading to the subsequent failure of tank number one.",
+            "the Review Board’s recommendations, which included the redesign and recertification of the Service Module oxygen storage system and a thorough review by NASA of all Apollo systems that use cryogenic oxygen."
+          ],
+          "excerpt_labels": ["The accident", "Lessons learned"]
+        },
+        {
+          "id": "mir-fire", "title": "25 Years Ago: Fire Aboard Space Station Mir", "url": "https://www.nasa.gov/history/25-years-ago-fire-aboard-space-station-mir/",
+          "site": "NASA History", "host": "nasa.gov", "src": "mir_fire",
+          "date": "Feb. 24, 1997 (article Feb 23, 2022)", "date_quote": "On Feb. 24, 1997, the six crew members aboard the Russian space station Mir faced significant danger when a fire ignited in an oxygen generating system.",
+          "resources_tab": "Basic information about a fire—caused by an oxygen generator failure—that erupted within the Russian space station Mir in 1997 during joint operations in preparation for the International Space Station (first occupied in 2000).",
+          "excerpts": [
+            "Shortly after dinner on Feb. 24, as Lazutkin activated a solid-fuel oxygen generator in Mir’s Kvant-1 module, the canister ignited, shooting a three-foot flame with sparks and bits of molten metal across the module and generating a large quantity of dense smoke.",
+            "The lessons learned from the incident were passed on in the design and operations of the International Space Station."
+          ],
+          "excerpt_labels": ["The fire", "Lessons learned"]
+        }
+      ]
+    },
+    {
+      "id": "technologies",
+      "title": "Development of Fire Safety Technologies",
+      "items": [
+        {
+          "id": "air-tanks", "title": "Fireman’s Air Tanks", "url": "https://spinoff.nasa.gov/node/9582",
+          "site": "NASA Spinoff", "host": "spinoff.nasa.gov", "src": "spinoff_air_tanks",
+          "date": "1976", "date_quote": "Originally published in 1976",
+          "resources_tab": "Basic information about the 1970s adaptation of spacesuit technology to improve firefighters’ air tanks and breathing gear.",
+          "excerpts": ["Together with NASA's Johnson Space Center, A-T-O Inc.'s Scott Aviation has developed light-weight firefighter's air tanks. New backpack system weighs only 20 pounds for 30 minute air supply, 13 pounds less than conventional firefighting tanks."],
+          "excerpt_labels": ["What NASA Spinoff says"]
+        },
+        {
+          "id": "fire-detector", "title": "Fire Detector", "url": "https://spinoff.nasa.gov/node/9407",
+          "site": "NASA Spinoff", "host": "spinoff.nasa.gov", "src": "spinoff_fire_detector",
+          "date": "1978", "date_quote": "Originally published in 1978",
+          "resources_tab": "Basic information about a 1970s smoke detector developed for the shuttle that, discriminating between smoke and dust, results in less nuisance alarms. As such, it has industrial applications (e.g., in mining operations).",
+          "excerpts": ["Fire detector represents an advancement over commercially available smoke detectors in that it senses and signals the presence of a fire condition before appearance of flame and smoke."],
+          "excerpt_labels": ["What NASA Spinoff says"]
+        },
+        {
+          "id": "fire-attire", "title": "New Technology for the Fire Attire", "url": "https://spinoff.nasa.gov/node/9918",
+          "site": "NASA Spinoff", "host": "spinoff.nasa.gov", "src": "spinoff_fire_attire",
+          "date": "1982", "date_quote": "Originally published in 1982",
+          "resources_tab": "Basic information about a 1980s application of NASA spacesuit technology to improve firefighter clothing.",
+          "excerpts": ["A major focus of the effort involves application to the FIRES ensemble of lightweight, fire-resistant, heat-protective materials originally developed for use in astronauts' space suits or in spacecraft components which require thermal protection."],
+          "excerpt_labels": ["What NASA Spinoff says"]
+        }
+      ]
+    },
+    {
+      "id": "guideline",
+      "title": "Guideline",
+      "items": [
+        {
+          "id": "researchers-guide", "title": "A Researcher’s Guide to International Space Station Combustion Science",
+          "url": "https://www.nasa.gov/missions/station/a-researchers-guide-to-combustion-science/",
+          "site": "NASA Space Station Research Integration Office", "host": "nasa.gov", "src": "researchers_guide",
+          "date": "October 2015 Edition", "date_quote": "October 2015 Edition",
+          "resources_tab": "A 2015 review of NASA’s combustion research conducted on, or planned for, the International Space Station. Basic information about most of the combustion investigations described in this 50+ page document is found within the PSI Data Repository.",
+          "excerpts": ["This Researcher’s Guide provides an overview of combustion science research, including past research, lessons learned, opportunities for future research and introductory information on funding opportunities."],
+          "excerpt_labels": ["What the guide covers"],
+          "related": [{"href": "/explorer", "label": "Browse the PSI investigations in the Explorer"}]
+        }
+      ]
+    }
+  ]
+}

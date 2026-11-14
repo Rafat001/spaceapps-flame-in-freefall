@@ -128,7 +128,7 @@ function Explorer() {
                 {data.items.map((c: any) => (
                   <li key={c.id}>
                     <article className="entry">
-                      <h2 className="entry-acr"><Link href={`/investigations/${c.id}`}>{c.acronym}</Link>
+                      <h2 className="entry-acr"><Link href={`/investigations/${c.id}${f.q ? `?from_q=${encodeURIComponent(f.q)}` : ""}`}>{c.acronym}</Link>
                         <span className="entry-acc">{c.accession}</span></h2>
                       <div>
                         <p className="entry-title">{c.title}</p>

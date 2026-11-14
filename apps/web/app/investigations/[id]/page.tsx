@@ -1,17 +1,20 @@
 "use client";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { humanize, readCompare, toggleCompare } from "@/lib/format";
 import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice } from "@/components/ui";
 import { Flags } from "@/components/Citations";
 import NasaSummary from "@/components/NasaSummary";
+import InvestigationOverview from "@/components/InvestigationOverview";
 
 const fmtBytes = (b?: number) => (b ? (b >= 1e12 ? `${(b / 1e12).toFixed(2)} TB` : b >= 1e9 ? `${(b / 1e9).toFixed(2)} GB` : `${(b / 1e6).toFixed(1)} MB`) : "—");
 
 export default function Detail() {
   const { id } = useParams<{ id: string }>();
+  const sp = useSearchParams();
+  const fromQ = sp.get("from_q") || null;
   const [d, setD] = useState<any>(null);
   const [err, setErr] = useState<unknown>(null);
   const [cmp, setCmp] = useState<string[]>([]);
@@ -20,7 +23,7 @@ export default function Detail() {
   if (!d) return <Loading />;
   return (
     <>
-      <p className="back"><Link href="/explorer">← Explorer</Link></p>
+      <p className="back"><Link href={fromQ ? `/explorer?q=${encodeURIComponent(fromQ)}` : "/explorer"}>← Explorer{fromQ ? ` · "${fromQ}"` : ""}</Link></p>
       <header className="dossier-head">
         <h1 className="acr-xl"><span className="visually-hidden">{d.acronym} — {d.title}</span><span aria-hidden="true">{d.acronym}</span></h1>
         <p className="title" aria-hidden="true">{d.title}</p>
@@ -37,6 +40,10 @@ export default function Detail() {
       </p>
       {d.caveats.map((c: string) => <Notice key={c} kind="warn">{c}</Notice>)}
       {d.platform_note && <Notice>{d.platform_note}</Notice>}
+
+      {/* ── AI Overview / Summary ── */}
+      <InvestigationOverview invId={id} query={fromQ} />
+
       <section className="dossier">
         <p className="dossier-no">What this record tells us <EvidenceLabel text={d.interpretation.label} /></p>
         <ul className="interp">{d.interpretation.sentences.map((x: any, i: number) => <li key={i}>{x.text}</li>)}</ul>

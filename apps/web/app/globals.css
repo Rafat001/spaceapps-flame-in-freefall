@@ -598,3 +598,27 @@ q { quotes: "“" "”"; }
 .sf-teaser-cols ul { list-style: none; margin: 0; padding: 0; }
 .sf-teaser-cols li { padding: 5px 0; font-size: .95rem; }
 @media (max-width: 860px) { .sf-teaser-cols { grid-template-columns: 1fr; gap: 18px; } }
+
+/* ── Investigation AI overview ── */
+.overview-section { margin: 24px 0 32px; padding: 20px 22px; background: var(--well); border: 1px solid var(--rule-strong); border-left: 3px solid var(--accent); border-radius: 2px; }
+.overview-section h2 { margin-top: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.overview-subtitle { margin: 4px 0 14px; }
+.overview-section .notice { display: block; margin: 10px 0; padding: 10px 0; }
+.overview-answer p { margin: 0 0 .7em; line-height: 1.65; max-width: 78ch; color: var(--ink); }
+.overview-policy-notes { list-style: none; margin: 12px 0; padding: 0; }
+.overview-citations { margin-top: 14px; }
+.overview-cites-list { padding-left: 1.2em; }
+.overview-cites-list li { margin-bottom: 10px; }
+.cite-excerpt { margin: 4px 0 0; padding-left: 10px; border-left: 2px solid var(--rule-strong); }
+.overview-abstain, .overview-warn { margin: 8px 0 0; }
+.overview-shimmer { display: grid; gap: 10px; }
+.shimmer-line { height: 12px; border-radius: 2px; background: linear-gradient(90deg, var(--rule) 25%, var(--rule-strong) 50%, var(--rule) 75%); background-size: 200% 100%; animation: overview-shimmer 1.3s linear infinite; }
+.shimmer-line--long { width: 92%; } .shimmer-line--mid { width: 74%; } .shimmer-line--short { width: 48%; }
+@keyframes overview-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .shimmer-line { animation: none; } }
+
+.overview-answer { white-space: normal; }
+.overview-answer > :last-child { margin-bottom: 0; }
+.overview-answer ul, .overview-answer ol { margin: 0 0 .8em 1.2em; padding: 0; }
+.overview-answer li { margin-bottom: .35em; }
+.overview-answer strong { color: var(--ink); }

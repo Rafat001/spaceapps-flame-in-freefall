@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Fira_Code, Fira_Sans, Overpass } from "next/font/google";
 import Link from "next/link";
-import CatalogStatus from "@/components/CatalogStatus";
 import Mark from "@/components/Mark";
 import Nav from "@/components/Nav";
 import "./globals.css";
@@ -28,7 +27,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Mark id="rail-mark" />
               <span className="wordmark-text">Flame <i>in</i> Freefall</span>
             </Link>
-            <CatalogStatus />
             <Nav />
           </div>
         </header>

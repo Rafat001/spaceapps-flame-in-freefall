@@ -4,9 +4,13 @@ All providers implement ``chat(system, user) -> str``. ``health()`` never raises
 """
 from __future__ import annotations
 
+import logging
+
 import httpx
 
 from app.config import Settings
+
+log = logging.getLogger("flame.ai")
 
 
 class LLMUnavailable(RuntimeError):
@@ -35,6 +39,14 @@ class LLMPaymentRequired(LLMUnavailable):
     def __init__(self, provider: str):
         self.provider = provider
         super().__init__(f"{provider} payment required (HTTP 402)")
+
+
+class LLMAuthFailed(LLMUnavailable):
+    """The provider rejected the API key (HTTP 401/403, or 400 naming the key). Never carries the key or body."""
+
+    def __init__(self, provider: str):
+        self.provider = provider
+        super().__init__(f"{provider} rejected the API key")
 
 
 # Groq, production chat model offered by this site. The org is on Groq's Developer (pay-as-you-go) plan.
@@ -110,8 +122,9 @@ class QuotaGuardLLM(LLMProvider):
         now = time.time()
         ok, why = self._take(now)
         if not ok:
-            raise LLMQuotaExceeded(f"AI summary skipped: this site's shared AI key is limited to {why}. The computed answer and "
-                                   "sources are unaffected. Try again later, or add your own Groq key in Settings.")
+            wait = "tomorrow" if "per day" in (why or "") or "daily" in (why or "") else "in about a minute"
+            raise LLMQuotaExceeded(f"You've reached this site's limit of {why}, so this is the computed answer without an AI "
+                                   f"summary. Try again {wait}, or add your own Groq key in Settings.")
         try:
             return self.inner.chat(system, user)
         except LLMUnavailable:
@@ -149,12 +162,30 @@ class OllamaLLM(LLMProvider):
             r.raise_for_status()
             return r.json()["message"]["content"]
         except Exception as e:  # noqa: BLE001
+            log.warning("LLM call failed: provider=Ollama error=%s", type(e).__name__)
             raise LLMUnavailable(f"Ollama call failed: {type(e).__name__}") from e
 
 
-def _redact_error(name: str, e: Exception) -> LLMUnavailable:
-    """Never put provider response bodies or exception text in errors: they can echo the key."""
-    status = getattr(getattr(e, "response", None), "status_code", None)
+def _redact_error(name: str, e: Exception, byok: bool = False) -> LLMUnavailable:
+    """Map a provider failure to a typed error. Never put provider response bodies or exception text in errors
+    (they can echo the key). The raw status and exception type are logged server-side only; visitors see a
+    friendly notice built in app.services.ask.friendly_notice."""
+    resp = getattr(e, "response", None)
+    status = getattr(resp, "status_code", None)
+    log.warning("LLM call failed: provider=%s byok=%s status=%s error=%s", name, byok, status, type(e).__name__)
+    if status in (401, 403):
+        return LLMAuthFailed(name)
+    if status == 400 and byok:
+        try:
+            body = (resp.text or "").lower()
+        except Exception:  # noqa: BLE001
+            body = ""
+        if "api key" in body or "api_key" in body or "invalid_api_key" in body:
+            return LLMAuthFailed(name)
+    if status == 402:
+        return LLMPaymentRequired(name)
+    if status == 429:
+        return LLMRateLimited(name)
     return LLMUnavailable(f"{name} call failed: {type(e).__name__}" + (f" (HTTP {status})" if status else ""))
 
 
@@ -220,8 +251,10 @@ class OpenAICompatLLM(LLMProvider):
                            json=self._body(system, user))
             if r.status_code == 429:
                 ra = r.headers.get("retry-after")
+                log.warning("LLM call failed: provider=%s byok=%s status=429", self.label, self.byok)
                 raise LLMRateLimited(self.label, ra if ra and ra.replace(".", "", 1).isdigit() else None)
             if r.status_code == 402:
+                log.warning("LLM call failed: provider=%s byok=%s status=402", self.label, self.byok)
                 raise LLMPaymentRequired(self.label)
             r.raise_for_status()
             data = r.json()
@@ -231,12 +264,14 @@ class OpenAICompatLLM(LLMProvider):
             content = choice["message"].get("content") or ""
             if not content.strip():
                 # e.g. all completion tokens spent on reasoning: treat as a failed call (refunded, templated fallback)
+                log.warning("LLM call returned empty content: provider=%s finish_reason=%s", self.label,
+                            choice.get("finish_reason"))
                 raise LLMUnavailable(f"{self.label} returned an empty answer (finish_reason={choice.get('finish_reason')})")
             return content
         except (LLMRateLimited, LLMPaymentRequired, LLMUnavailable):
             raise
         except Exception as e:  # noqa: BLE001
-            raise _redact_error(self.label, e) from None
+            raise _redact_error(self.label, e, self.byok) from None
 
     @property
     def label(self) -> str:
@@ -340,7 +375,7 @@ class AnthropicLLM(LLMProvider):
             r.raise_for_status()
             return "".join(b.get("text", "") for b in r.json().get("content", []))
         except Exception as e:  # noqa: BLE001
-            raise _redact_error("Anthropic", e) from None
+            raise _redact_error("Anthropic", e, self.byok) from None
 
 
 BYOK_PROVIDERS = ("groq", "gemini", "openai", "anthropic")
@@ -385,7 +420,7 @@ def model_not_allowed_message(provider: str) -> str:
     """Client-facing error when X-LLM-Model is outside the free-tier allowlist. Never includes the key."""
     if provider == "groq":
         allowed = ", ".join(GROQ_FREE_MODELS)
-        kind = "Free Groq models"
+        kind = "Allowed Groq model"
     elif provider == "gemini":
         allowed = ", ".join(GEMINI_FREE_MODELS)
         kind = "Free-tier Gemini models"

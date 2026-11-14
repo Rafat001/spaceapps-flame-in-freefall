@@ -111,7 +111,7 @@ def test_failed_llm_and_no_llm_are_labelled_computed_not_ai(session, client):
 
     out = _ask(session, "What does BASS tell us about airflow?", Broken(""))
     assert out["mode"] == "retrieval_only" and out["answer"] is None
-    assert out["answer_label"] == "Computed summary (no AI)" and "AI summary skipped" in out["llm_notice"]
+    assert out["answer_label"] == "Computed summary (no AI)" and out["llm_notice"] == ask_svc.BUSY_NOTICE
     j = client.post("/api/ask", json={"question": "What does BASS tell us about airflow?"}).json()
     assert j["answer_label"] == "Computed summary (no AI)"
 

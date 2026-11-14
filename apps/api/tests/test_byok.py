@@ -1,4 +1,5 @@
 """D3 bring-your-own-key and admin lock. All provider HTTP is mocked; no real keys anywhere."""
+import re
 import logging
 
 import httpx
@@ -6,6 +7,7 @@ import pytest
 
 from app.ai.providers import llm as llm_mod
 from app.ai.registry import state
+from app.services import ask as ask_svc
 from app.security import redact
 
 FAKE = {"openai": "sk-test-" + "A" * 40, "anthropic": "sk-ant-test-" + "B" * 40, "groq": "gsk_test" + "C" * 44,
@@ -166,12 +168,12 @@ def test_groq_429_falls_back_to_template_with_notice(client, monkeypatch, caplog
     # direct-answer question: computed answer kept, AI summary skipped with a notice
     d = client.post("/api/ask", json=Q, headers=_hdr("groq")).json()
     assert d["mode"] == "direct" and d["answer"] and d["ai_summary"] is None
-    assert "HTTP 429" in d["llm_notice"] and "7 s" in d["llm_notice"]
+    assert d["llm_notice"] == ask_svc.BUSY_NOTICE
     # retrieval question: templated summary plus the notice
     d = client.post("/api/ask", json={"question": "What do the sources say about smoke particle size in microgravity?"},
                     headers=_hdr("groq")).json()
     if d["mode"] == "retrieval_only":
-        assert "HTTP 429" in d["llm_notice"] and d["template_summary"]
+        assert d["llm_notice"] == ask_svc.BUSY_NOTICE and d["template_summary"]
     assert FAKE["groq"] not in str(d) and FAKE["groq"] not in caplog.text
 
 
@@ -181,12 +183,11 @@ def test_gemini_402_falls_back_to_template_with_payment_notice(client, monkeypat
     monkeypatch.setattr(llm_mod.httpx, "post", r)
     d = client.post("/api/ask", json=Q, headers=_hdr("gemini")).json()
     assert d["mode"] == "direct" and d["answer"] and d["ai_summary"] is None
-    assert "HTTP 402" in d["llm_notice"] and "payment-required" in d["llm_notice"]
-    assert "Free tier is not used" in d["llm_notice"]
+    assert d["llm_notice"] == ask_svc.OWN_BILLING_NOTICE and "402" not in d["llm_notice"]
     d = client.post("/api/ask", json={"question": "What do the sources say about smoke particle size in microgravity?"},
                     headers=_hdr("gemini")).json()
     if d["mode"] == "retrieval_only":
-        assert "HTTP 402" in d["llm_notice"] and d["template_summary"]
+        assert d["llm_notice"] == ask_svc.OWN_BILLING_NOTICE and d["template_summary"]
     assert FAKE["gemini"] not in str(d) and FAKE["gemini"] not in caplog.text
 
 
@@ -198,7 +199,8 @@ def test_provider_error_echoing_key_is_redacted(client, monkeypatch, caplog):
         resp = client.post("/api/ask", json=Q, headers=_hdr(p))
         assert resp.status_code == 200
         assert FAKE[p] not in resp.text and FAKE[p] not in caplog.text
-        assert "HTTP 401" in resp.text
+        assert "HTTP 401" not in resp.text and resp.json()["llm_notice"] == ask_svc.BAD_KEY_NOTICE
+        assert "status=401" in caplog.text  # raw detail is logged server-side only
 
 
 def test_key_header_refused_on_other_endpoints(client, rec):
@@ -259,3 +261,43 @@ def test_admin_lock(client, monkeypatch):
     r = client.put("/api/settings/ai", json=body, headers={"X-Admin-Token": "t0ken-for-tests"})
     assert r.status_code == 200 and "t0ken-for-tests" not in r.text
     monkeypatch.setattr(security.settings, "app_env", "development")
+
+
+RAW_ERROR_MARKERS = re.compile(r"HTTP|\b[1-5]\d\d\b|Error\b|Exception|Payment Required|status|Timeout|httpx", re.I)
+
+
+@pytest.mark.parametrize("status", [400, 401, 402, 403, 404, 429, 500, 502, 503])
+@pytest.mark.parametrize("own_key", [True, False])
+def test_provider_failures_never_reach_the_visitor_raw(client, monkeypatch, status, own_key):
+    from app import ratelimit
+
+    monkeypatch.setattr(llm_mod.httpx, "post", Recorder(status=status, echo_key=True))
+    if not own_key:
+        monkeypatch.setattr(state, "cfg", state.cfg.model_copy(update={"ai_llm_provider": "groq",
+                                                                        "groq_api_key": "gsk_server" + "E" * 40}))
+        monkeypatch.setattr(state, "_llm", None)
+        ratelimit.reset()
+    hdr = _hdr("groq") if own_key else {}
+    for d in (client.post("/api/ask", json=Q, headers=hdr).json(),
+              client.post("/api/ask", json={"question": "What do the sources say about smoke particle size in microgravity?"},
+                          headers=hdr).json(),
+              client.get("/api/investigations/psi-117/overview").json()):
+        n = d.get("llm_notice")
+        if n is None:
+            continue
+        assert not RAW_ERROR_MARKERS.search(n), n
+        if status in (401, 403) and own_key and d is not None:
+            assert n == ask_svc.BAD_KEY_NOTICE or "Settings" in n
+        if not own_key:
+            assert "billing" not in n.lower() and "credit" not in n.lower()
+    monkeypatch.setattr(state, "_llm", None)
+    ratelimit.reset()
+
+
+def test_timeout_is_a_friendly_busy_notice(client, monkeypatch):
+    def boom(*a, **k):
+        raise httpx.ReadTimeout("timed out")
+
+    monkeypatch.setattr(llm_mod.httpx, "post", boom)
+    d = client.post("/api/ask", json=Q, headers=_hdr("groq")).json()
+    assert d["llm_notice"] == ask_svc.BUSY_NOTICE

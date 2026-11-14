@@ -13,8 +13,8 @@ import re
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.ai.providers.llm import LLMPaymentRequired, LLMProvider, LLMQuotaExceeded, LLMRateLimited, LLMUnavailable
-from app.security import redact
+from app.ai.providers.llm import (LLMAuthFailed, LLMPaymentRequired, LLMProvider, LLMQuotaExceeded, LLMRateLimited,
+                                  LLMUnavailable)
 from app.labels import NOT_CERTIFICATION, PARTIAL_GRAVITY_WARNING, label
 from app.models import Investigation, Measurement
 from app.retrieval import lexical
@@ -132,32 +132,29 @@ def setup_message(health: dict) -> str:
     return ("The site's AI is not available right now, so this is the computed summary and the best-matching sources, "
             "with no AI-written text. To get an AI summary, paste your own Groq key in Settings (it stays only in this "
             "browser tab and is used for one request at a time). Site owner: set AI_LLM_PROVIDER=groq and GROQ_API_KEY in "
-            f"the server env. Provider status: {health.get('message', 'unknown')}")
+            "the server env.")
 
 
-def rate_limit_notice(e: LLMRateLimited) -> str:
-    docs = {"Groq": "https://console.groq.com/docs/rate-limits",
-            "Gemini": "https://ai.google.dev/gemini-api/docs/rate-limits"}.get(e.provider, "https://console.groq.com/docs/rate-limits")
-    return (f"AI summary skipped: {e.provider} returned a rate-limit response (HTTP 429)"
-            + (f"; it suggests retrying in {e.retry_after} s" if e.retry_after else "")
-            + f". Showing the computed summary instead (no AI). Provider limits: {docs}")
+BUSY_NOTICE = "The AI summary is busy right now, so this is the computed answer. Try again in a minute."
+UNAVAILABLE_NOTICE = "AI summaries are temporarily unavailable, so this is the computed answer and its sources."
+BAD_KEY_NOTICE = ("Your API key wasn't accepted — check it in Settings. This is the computed answer without an AI "
+                  "summary.")
+OWN_BILLING_NOTICE = ("Your AI provider account couldn't run this request — check its credits or spend limit in the "
+                      "provider's console, or remove your key in Settings. This is the computed answer.")
 
 
-def payment_notice(e: LLMPaymentRequired) -> str:
-    """HTTP 402: billed projects do not fall back to the Free tier when prepaid credits are gone."""
-    if e.provider == "Gemini":
-        return ("AI summary skipped: Gemini returned a payment-required response (HTTP 402). "
-                "If this Google AI Studio project has billing enabled, the Free tier is not used — "
-                "add prepaid credits, or use a key from a project with billing turned off. "
-                "Showing the computed summary instead (no AI). Billing: https://ai.google.dev/gemini-api/docs/billing")
-    docs = "https://console.groq.com/settings/billing" if e.provider == "Groq" else "the provider's billing page"
-    return (f"AI summary skipped: {e.provider} returned a payment-required response (HTTP 402); check the account's "
-            f"billing or spend limit. Showing the computed summary instead (no AI). Billing: {docs}")
-
-
-def call_failed_notice(e: LLMUnavailable) -> str:
-    return (f"AI summary skipped: {redact(str(e))}. "
-            "Showing the computed summary instead (no AI).")
+def friendly_notice(e: LLMUnavailable, byok: bool = False) -> str:
+    """Visitor-facing text for a failed AI call. Never contains HTTP status codes, exception names or provider
+    billing details for the shared key; the raw detail is logged server-side (app.ai.providers.llm)."""
+    if isinstance(e, LLMQuotaExceeded):
+        return e.notice
+    if isinstance(e, LLMAuthFailed):
+        return BAD_KEY_NOTICE if byok else UNAVAILABLE_NOTICE
+    if isinstance(e, LLMPaymentRequired):
+        return OWN_BILLING_NOTICE if byok else UNAVAILABLE_NOTICE
+    if isinstance(e, LLMRateLimited):
+        return BUSY_NOTICE
+    return BUSY_NOTICE
 
 
 def ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: int = 6,
@@ -222,14 +219,8 @@ def _ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: 
                 "template_summary": template_summary(cites), "answer_label": label("computed")}
     try:
         raw = llm.chat(SYSTEM_PROMPT, user)
-    except LLMQuotaExceeded as e:
-        return {**fallback, "llm_notice": e.notice}
-    except LLMRateLimited as e:
-        return {**fallback, "llm_notice": rate_limit_notice(e)}
-    except LLMPaymentRequired as e:
-        return {**fallback, "llm_notice": payment_notice(e)}
     except LLMUnavailable as e:
-        return {**fallback, "llm_notice": call_failed_notice(e)}
+        return {**fallback, "llm_notice": friendly_notice(e, bool(getattr(llm, "byok", False)))}
     usage = getattr(llm, "last_usage", None)
     raw = clean_model_text(raw)
     if raw.lstrip().startswith("INSUFFICIENT_EVIDENCE") or ("INSUFFICIENT_EVIDENCE" in raw and not CITE_RE.search(raw)):
@@ -419,14 +410,8 @@ def _llm_summary(llm: LLMProvider, q: str, direct: dict, cites: list[dict]) -> d
             "not in S0. Cite [S0] and any other [S#] you use.")
     try:
         raw = llm.chat(SYSTEM_PROMPT, user)
-    except LLMQuotaExceeded as e:
-        return {"ai_summary": None, "llm_notice": e.notice}
-    except LLMRateLimited as e:
-        return {"ai_summary": None, "llm_notice": rate_limit_notice(e)}
-    except LLMPaymentRequired as e:
-        return {"ai_summary": None, "llm_notice": payment_notice(e)}
     except LLMUnavailable as e:
-        return {"ai_summary": None, "llm_notice": call_failed_notice(e)}
+        return {"ai_summary": None, "llm_notice": friendly_notice(e, bool(getattr(llm, "byok", False)))}
     raw = clean_model_text(raw)
     raw, _, _ = check_citations(raw, [{"ref": "S0"}, *cites])
     nums_s0 = set(re.findall(r"\d+(?:\.\d+)?", direct["answer"]))

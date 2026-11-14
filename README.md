@@ -58,8 +58,8 @@ interpretation, plus retrieved sources.
 
 ## Bring your own key (optional AI summary)
 
-On **Settings** a user can paste a **Groq** key (recommended: free plan, key at https://console.groq.com/keys), a
-**Gemini** key (free tier, key at https://aistudio.google.com/apikey), or an OpenAI or Anthropic key. Rules (decision D3):
+The production site and the Settings UI offer only **Gemini 3.8 Flash**. A user can optionally paste their own
+**Gemini** key (free tier, key at https://aistudio.google.com/apikey). Rules (decision D3):
 - kept only in `sessionStorage` in that browser tab (cleared when the tab closes);
 - sent over HTTPS in the `X-LLM-Key` header (plus `X-LLM-Provider`, optional `X-LLM-Model`) **only** with assistant
   requests (`POST /api/ask`); the API refuses the header on every other endpoint;
@@ -93,21 +93,19 @@ Ask page shows it as a live counter with a note that this prototype runs on the 
 
 Set `AI_LLM_PROVIDER=gemini` and `GEMINI_API_KEY` (optional `GEMINI_MODEL`). Gemini is called through its
 OpenAI-compatible API at `https://generativelanguage.googleapis.com/v1beta/openai/`
-([docs](https://ai.google.dev/gemini-api/docs/openai)). Only free-tier text chat models are allowed, for both the server
-and user keys (source: [pricing](https://ai.google.dev/gemini-api/docs/pricing), checked 2026-11-14).
-`gemini-2.5-flash` is deprecated (API limited to existing users until 1 Dec 2026, then routed to `gemini-3.5-flash-lite`)
-and is not allowlisted.
+([docs](https://ai.google.dev/gemini-api/docs/openai)). Only `gemini-3.8-flash` is allowed, for both the server and user keys
+(source: [pricing](https://ai.google.dev/gemini-api/docs/pricing), checked 2026-11-14).
+Other Gemini models, including deprecated `gemini-2.5-flash` and `gemini-3.5-flash-lite`, are not allowlisted.
 
 | `GEMINI_MODEL` | Free tier |
 | --- | --- |
-| `gemini-3.8-flash` (default) | Input and output free of charge on the Gemini API Free tier |
-| `gemini-3.5-flash-lite` | Input and output free of charge on the Gemini API Free tier |
+| `gemini-3.8-flash` (only allowed model) | Input and output free of charge on the Gemini API Free tier |
 
 Requests use `reasoning_effort=low` and at most 700 output tokens. If Gemini answers 429, the assistant returns the
 computed, templated answer with a notice instead of failing. Site rate limits above still apply when the shared server
 key is used. A visitor's own Gemini key in Settings is not limited by the site. To set the server key on Render: open
-the API service → Environment → add `GEMINI_API_KEY` (leave `GEMINI_MODEL` blank to use the default) → Save. Do not
-commit the key. Groq remains the default provider unless you also set `AI_LLM_PROVIDER=gemini`.
+the API service → Environment → add `GEMINI_API_KEY` and `AI_LLM_PROVIDER=gemini` (leave `GEMINI_MODEL` blank to use
+`gemini-3.8-flash`) → Save. Do not commit the key.
 
 ## Docker
 
@@ -124,7 +122,7 @@ Switch in `.env` (or at runtime on the **AI settings** page / `PUT /api/settings
 
 | Purpose | Free / local | Paid |
 | --- | --- | --- |
-| LLM for `/api/ask` | `AI_LLM_PROVIDER=groq` + `GROQ_API_KEY` (free plan, recommended; see above), `gemini` + `GEMINI_API_KEY` (free tier; see above), or `local` → Ollama (`OLLAMA_MODEL=llama3.2`, `OLLAMA_BASE_URL`) | `openai` + `OPENAI_API_KEY` (`OPENAI_MODEL`) or `anthropic` + `ANTHROPIC_API_KEY` (`ANTHROPIC_MODEL`) |
+| LLM for `/api/ask` | `AI_LLM_PROVIDER=gemini` + `GEMINI_API_KEY` (Gemini 3.8 Flash, free tier; production default — see above). Other providers remain in the API for local/dev: `groq` + `GROQ_API_KEY`, or `local` → Ollama (`OLLAMA_MODEL=llama3.2`, `OLLAMA_BASE_URL`) | `openai` + `OPENAI_API_KEY` (`OPENAI_MODEL`) or `anthropic` + `ANTHROPIC_API_KEY` (`ANTHROPIC_MODEL`) |
 | Embeddings | `AI_EMBEDDING_PROVIDER=local` → sentence-transformers `all-MiniLM-L6-v2`; or `hash` (offline fallback) | `AI_EMBEDDING_PROVIDER=openai` (`text-embedding-3-small`) |
 | No AI at all | `AI_LLM_PROVIDER=none` | — |
 

@@ -69,12 +69,13 @@ sources, and the existing disclaimers and abstain behaviour apply.
 Without a key the overview falls back to retrieval-only. Two options:
 
 - **Server key:** in the repo-root `.env` (copy from `.env.example`) set
-  `AI_LLM_PROVIDER=groq` and `GROQ_API_KEY=...`, or `AI_LLM_PROVIDER=gemini` and
-  `GEMINI_API_KEY=...`. **Restart `make dev`**: the
+  `AI_LLM_PROVIDER=gemini` and `GEMINI_API_KEY=...` (the production default;
+  only `gemini-3.8-flash` is allowed). **Restart `make dev`**: the
   API reads `.env` at startup, and auto-reload does not pick up `.env` changes.
-  Other providers: `openai`, `anthropic`, `local` (Ollama).
-- **Bring your own key:** paste a key in Settings. It is kept in
-  sessionStorage only and sent per request.
+  Other providers remain available in the API for local/dev: `groq`, `openai`,
+  `anthropic`, `local` (Ollama).
+- **Bring your own key:** paste a Gemini key in Settings. It is kept in
+  sessionStorage only and sent per request. Only Gemini 3.8 Flash is offered.
 
 ## Known gaps
 

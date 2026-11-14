@@ -50,7 +50,7 @@ class AIState:
         return {
             "llm": {"configured_provider": self.cfg.ai_llm_provider, **self.llm.health(),
                     "options": ["local", "groq", "gemini", "openai", "anthropic", "none"],
-                    "byok_providers": list(BYOK_PROVIDERS), "recommended_free": "groq",
+                    "byok_providers": list(BYOK_PROVIDERS), "recommended_free": "gemini",
                     "groq_free_models": GROQ_FREE_MODELS, "groq_docs": "https://console.groq.com/docs/rate-limits",
                     "gemini_free_models": GEMINI_FREE_MODELS, "gemini_docs": GEMINI_DOCS},
             "embeddings": {**emb_status, "signature": emb.signature, "options": ["local", "openai", "hash"]},

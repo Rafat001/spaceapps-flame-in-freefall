@@ -4,17 +4,11 @@
 // - The server uses it for that one request and never stores, logs or returns it.
 
 export type Provider = "groq" | "gemini" | "openai" | "anthropic";
-/** Groq free-plan production chat models (console.groq.com/docs/models + /docs/rate-limits, checked 2026-11-13).
- *  The API enforces the same allowlist. */
-export const GROQ_FREE_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b"] as const;
-/** Gemini API Free-tier text models (ai.google.dev/gemini-api/docs/pricing, checked 2026-11-14).
- *  The API enforces the same allowlist. gemini-2.5-flash is deprecated and is not listed. */
-export const GEMINI_FREE_MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite"] as const;
+/** The Settings UI and allowlist offer only Gemini 3.8 Flash. Other provider ids remain
+ *  on the type so a stale key from an older build is ignored by getByok. */
+export const GEMINI_FREE_MODELS = ["gemini-3.8-flash"] as const;
 export const PROVIDERS: { id: Provider; label: string; defaultModel: string; models?: readonly string[] }[] = [
-  { id: "groq", label: "Groq (free plan, recommended)", defaultModel: "openai/gpt-oss-120b", models: GROQ_FREE_MODELS },
-  { id: "gemini", label: "Gemini (free tier)", defaultModel: "gemini-3.8-flash", models: GEMINI_FREE_MODELS },
-  { id: "openai", label: "OpenAI", defaultModel: "gpt-4o-mini" },
-  { id: "anthropic", label: "Anthropic", defaultModel: "claude-3-5-haiku-latest" },
+  { id: "gemini", label: "Gemini 3.8 Flash (free tier)", defaultModel: "gemini-3.8-flash", models: GEMINI_FREE_MODELS },
 ];
 const K = { key: "byok.key", provider: "byok.provider", model: "byok.model" };
 

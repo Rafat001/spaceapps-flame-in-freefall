@@ -112,10 +112,8 @@ def test_gemini_default_model_allowlist_and_free_params(client, rec):
     assert rec.calls[-1]["url"] == "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
     assert body["model"] == "gemini-3.8-flash"
     assert body["reasoning_effort"] == "low" and body["max_tokens"] <= 1000
-    client.post("/api/ask", json=Q, headers=_hdr("gemini", model="gemini-3.5-flash-lite"))
-    assert rec.calls[-1]["json"]["model"] == "gemini-3.5-flash-lite"
     n = len(rec.calls)
-    for paid in ("gemini-4-carbon", "gemini-2.5-flash", "gpt-4o"):
+    for paid in ("gemini-3.5-flash-lite", "gemini-4-carbon", "gemini-2.5-flash", "gpt-4o"):
         r = client.post("/api/ask", json=Q, headers=_hdr("gemini", model=paid))
         assert r.status_code == 400 and FAKE["gemini"] not in r.text
         assert "gemini-3.8-flash" in r.text

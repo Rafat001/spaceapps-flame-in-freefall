@@ -72,6 +72,9 @@ def test_settings_switch(client):
     assert r["llm"]["configured_provider"] == "gemini" and r["llm"]["ok"] is False
     assert "GEMINI_API_KEY" in r["llm"]["message"]
     assert "gemini-3.8-flash" in r["llm"]["gemini_free_models"]
+    assert "gemini-3.5-flash-lite" not in r["llm"]["gemini_free_models"]
+    assert r["llm"]["recommended_free"] == "gemini"
+    assert list(r["llm"]["gemini_free_models"]) == ["gemini-3.8-flash"]
     assert r["keys_present"]["gemini"] is False
     client.put("/api/settings/ai", json={"ai_llm_provider": "none"})
 

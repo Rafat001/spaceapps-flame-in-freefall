@@ -44,16 +44,13 @@ GROQ_DEFAULT_MODEL = "openai/gpt-oss-120b"
 #   https://ai.google.dev/gemini-api/docs/pricing
 #   https://ai.google.dev/gemini-api/docs/models
 #   https://ai.google.dev/gemini-api/docs/openai  (OpenAI-compatible endpoint)
-# gemini-2.5-flash is deprecated (API limited to existing users until 2026-12-01, then routes to
-# gemini-3.5-flash-lite) and is not allowlisted. gemini-4-carbon / gemini-4-argon have no free tier.
+# The production site and Settings UI offer only gemini-3.8-flash. Other Gemini models
+# (including deprecated gemini-2.5-flash and gemini-3.5-flash-lite) are not allowlisted.
+# gemini-4-carbon / gemini-4-argon have no free tier.
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai"
 GEMINI_FREE_MODELS = {
     "gemini-3.8-flash": {
         "label": "Gemini 3.8 Flash",
-        "free_limits": "Free of charge on the Gemini API Free tier (project rate limits are shown in Google AI Studio)",
-    },
-    "gemini-3.5-flash-lite": {
-        "label": "Gemini 3.5 Flash-Lite",
         "free_limits": "Free of charge on the Gemini API Free tier (project rate limits are shown in Google AI Studio)",
     },
 }
@@ -94,7 +91,7 @@ class QuotaGuardLLM(LLMProvider):
         ok, why = self._take()
         if not ok:
             raise LLMQuotaExceeded(f"AI summary skipped: this site's shared AI key is limited to {why}. The computed answer and "
-                                   "sources are unaffected. Try again later, or add your own free Groq or Gemini key in Settings.")
+                                   "sources are unaffected. Try again later, or add your own Gemini key in Settings.")
         return self.inner.chat(system, user)
 
 

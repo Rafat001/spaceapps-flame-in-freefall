@@ -22,12 +22,7 @@ export default function Home() {
   const [q, setQ] = useState("");
   const [err, setErr] = useState<unknown>(null);
 
-  const [lunar, setLunar] = useState<any>(null);
   useEffect(() => { api("/api/meta").then(setMeta).catch(setErr); }, []);
-  useEffect(() => {
-    api("/api/coverage", { method: "POST", body: JSON.stringify({ oxygen_min: 30, pressure_max: 10.2, pressure_unit: "psi", max_runs: 3 }) })
-      .then(setLunar).catch(() => {});
-  }, []);
   useEffect(() => { setTop(null); api(`/api/rank?scenario=${scenario}`).then(setTop).catch(setErr); }, [scenario]);
 
   return (
@@ -35,7 +30,7 @@ export default function Home() {
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
           <p className="kicker"><span className="kicker-no">TM-2026</span> Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion Data · 2026 NASA Space Apps Challenge</p>
-          <h1 id="hero-title" className="display display-xl">Has this fire&#8209;safety work already been&nbsp;done?</h1>
+          <h1 id="hero-title" className="display display-xl">Decoding Fire Beyond&nbsp;Gravity</h1>
           <p className="lede">Search NASA microgravity combustion investigations by material, oxygen, pressure, airflow, hardware and
             measurement type. See what is documented, what is <em>Not reported</em>, and where the evidence comes from.</p>
           <form className="instrument" onSubmit={(e) => { e.preventDefault(); router.push(`/explorer?q=${encodeURIComponent(q)}`); }} role="search">
@@ -62,13 +57,6 @@ export default function Home() {
             {meta?.catalog_stats && <p className="plate-note">Computed from PSI records, as of {meta.catalog_stats.as_of}: {meta.catalog_stats.by_project_type["Microgravity Investigation"]} microgravity + {meta.catalog_stats.by_project_type["Ground Investigation"]} ground investigations.</p>}
           </dl>
         </aside>
-      </section>
-
-      <section className="lead-card" aria-labelledby="lead-title">
-        <p className="kicker"><span className="kicker-no">Lead question</span> Lunar habitat atmosphere (official brief: ≥ 30 % O2, ≤ 10.2 psi)</p>
-        <h2 id="lead-title" className="display">Has fire been studied at Moon-base oxygen and pressure?</h2>
-        {!lunar ? <Loading /> : <p className="answer">{lunar.answer_text}</p>}
-        <p><Link href="/insights">See scenario rankings, rows, and research scores →</Link></p>
       </section>
 
       <section className="film" aria-labelledby="film-title">

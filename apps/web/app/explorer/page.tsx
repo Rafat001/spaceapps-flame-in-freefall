@@ -289,7 +289,7 @@ function Explorer() {
                               <q>{c.nasa_hint.quote}</q> <a href={c.nasa_hint.citation.url} target="_blank" rel="noreferrer"
                                 title={`${c.nasa_hint.citation.title}, ${c.nasa_hint.citation.locator}`}>source ↗</a></p>)}
                           <dl className="cond-strip">
-                            <div><dt>O2</dt><dd><CondCell c={c.conditions.oxygen} /></dd></div>
+                            <div><dt>O₂</dt><dd><CondCell c={c.conditions.oxygen} /></dd></div>
                             <div><dt>Pressure</dt><dd><CondCell c={c.conditions.pressure} /></dd></div>
                             <div><dt>Airflow</dt><dd><CondCell c={c.conditions.airflow} /></dd></div>
                           </dl>

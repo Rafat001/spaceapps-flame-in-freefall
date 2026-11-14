@@ -29,7 +29,7 @@ const RESEARCH_APPS: AppItem[] = [
   {
     href: "/coverage",
     title: "Coverage Matrix",
-    desc: "Test target O2, pressure & airflow coverage",
+    desc: "Test target O₂, pressure & airflow coverage",
     category: "Analysis",
     color: "#EAFE07",
     icon: (

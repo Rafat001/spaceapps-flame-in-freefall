@@ -16,7 +16,7 @@ const INSTRUMENTS = [
     title: "Coverage Matrix",
     badge: "02 · Analysis",
     tagline: "Test planned study conditions against real flight rows",
-    desc: "Enter target O2 %, pressure, and airflow to see exactly which investigations report data at those parameters, and identify uncharted microgravity gaps.",
+    desc: "Enter target O₂ %, pressure, and airflow to see exactly which investigations report data at those parameters, and identify uncharted microgravity gaps.",
   },
   {
     href: "/compare",
@@ -178,6 +178,7 @@ export default function AndroFlamePage() {
           <li><strong>Data Absence is Not Non-Flammability:</strong> An absence of documented experimental rows at a specific pressure or oxygen level in the PSI archive indicates a data gap—it is <em>not proof</em> that a material will not ignite or that no hazard exists.</li>
           <li><strong>Scale &amp; Geometry Effects:</strong> Small-scale glovebox/chamber samples (droplets, narrow fuel cards) do not capture full-scale turbulent vehicle fire dynamics or complex ventilation duct geometries without coupled computational fluid dynamics (CFD).</li>
           <li><strong>Zero Hallucination Policy:</strong> The AI synthesis answers cite only verbatim PSI records and official publications [S#]. When a topic is not addressed in NASA records, the system explicitly abstains rather than inventing speculative extrapolations.</li>
+          <li><strong>Verify AI Results Before Use:</strong> Answers from the AI chatbot and the Ask feature are generated from model confidence, not certainty, so no AI output should be trusted 100%. Check every result precisely against the cited sources [S#] before using it in research, design, or safety decisions.</li>
         </ul>
       </section>
 

@@ -10,5 +10,9 @@ COPY data/seed /repo/data/seed
 COPY data/sources /repo/data/sources
 COPY data/curation /repo/data/curation
 ENV DATA_DIR=/repo/data
+# Build the SQLite catalog + search indexes into the image, so a (cold) start does not re-ingest. At boot,
+# `--if-needed` re-ingests only if they are missing or were built with a different embedder than the runtime env.
+ARG AI_EMBEDDING_PROVIDER=hash
+RUN AI_EMBEDDING_PROVIDER=$AI_EMBEDDING_PROVIDER python -m app.ingest > /dev/null
 EXPOSE 8000
-CMD ["sh", "-c", "python -m app.ingest && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "python -m app.ingest --if-needed && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

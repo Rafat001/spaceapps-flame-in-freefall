@@ -39,6 +39,10 @@ def server_groq(monkeypatch):
                                        "ask_rate_per_min": 2, "ask_rate_per_day": 200})
     monkeypatch.setattr(state, "cfg", cfg)
     monkeypatch.setattr(state, "_llm", None)
+    # these tests repeat one question to exercise the limits: keep the answer cache out of the way
+    from app.services import answer_cache
+
+    monkeypatch.setattr(answer_cache, "MAX_ENTRIES", 0)
     ratelimit.reset()
     yield calls
     ratelimit.reset()

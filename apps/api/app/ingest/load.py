@@ -230,6 +230,8 @@ def load(seed_path=None, brief_path=None, build_vectors: bool = True) -> dict:
         backend = VectorIndex(settings.index_dir).build([c.id for c in chunks], vecs, embedder.signature, settings.vector_backend)
         info.update({"embedder": status, "vector_backend": backend})
     s.close()
+    from app.services import snapshot
+    snapshot.clear()  # drop the cached catalog so the next request sees the new data
     return info
 
 

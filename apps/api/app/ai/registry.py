@@ -42,6 +42,9 @@ class AIState:
         with _lock:
             self.cfg = self.cfg.model_copy(update={k: v for k, v in overrides.items() if v is not None})
             self._llm, self._emb, self._index = None, None, None
+        from app.services import snapshot
+
+        snapshot.clear()
 
     def status(self) -> dict:
         emb, emb_status = self.embedder

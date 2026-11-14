@@ -6,8 +6,7 @@ receives no positive match and is flagged. Every non-zero criterion carries >= 1
 """
 from __future__ import annotations
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session
 
 from app.ingest.curation import CHALLENGE_URL
 from app.labels import PARTIAL_GRAVITY_WARNING, RELEVANCE_DISCLAIMER, label
@@ -178,10 +177,21 @@ def rank(session: Session, scenario: str = "lunar_habitat", ids: list[str] | Non
          include_ground: bool = True) -> dict:
     if scenario not in SCENARIOS:
         raise KeyError(scenario)
-    stmt = select(Investigation).options(selectinload(Investigation.test_runs))
-    if ids:
-        stmt = stmt.where(Investigation.id.in_(ids))
-    invs = session.scalars(stmt).all()
+    from app.services import snapshot
+
+    # Scores depend only on the catalog, so each (scenario, filter) ranking is computed once per loaded catalog and
+    # reused (every Explorer search ranks the whole catalog). The returned dict is shared: read it, don't mutate it.
+    from app.services.lenses import LENSES
+
+    build = lambda: _rank(snapshot.investigations(session), scenario, ids, lens, include_ground)  # noqa: E731
+    if ids or (lens and lens not in LENSES):
+        return build()  # caller-specific subsets are cheap and not worth a cache slot (keeps the cache bounded)
+    return snapshot.memo(("rank", scenario, lens, include_ground), build)
+
+
+def _rank(catalog: dict[str, Investigation], scenario: str, ids: list[str] | None, lens: str | None,
+          include_ground: bool) -> dict:
+    invs = [i for i in catalog.values() if not ids or i.id in ids]
     if lens:
         invs = [i for i in invs if lens in (i.lenses or {})]
     if not include_ground:

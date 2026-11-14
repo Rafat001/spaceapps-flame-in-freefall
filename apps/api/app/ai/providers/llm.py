@@ -288,6 +288,7 @@ class GroqLLM(OpenAICompatLLM):
 
     name = "groq"
     env_var = "GROQ_API_KEY"
+    reasoning_effort = "medium"
 
     def __init__(self, api_key: str | None, model: str, timeout: float, byok: bool = False):
         super().__init__(api_key, model, timeout, GROQ_BASE_URL, byok)
@@ -305,7 +306,10 @@ class GroqLLM(OpenAICompatLLM):
         # GPT-OSS are reasoning models (console.groq.com/docs/reasoning). For faithful, well-checked answers use
         # "medium" reasoning effort; reasoning is excluded from the reply (include_reasoning=false), and the
         # completion budget covers reasoning + answer so the answer is not cut off. temperature 0 = deterministic.
-        body.update(temperature=0, reasoning_effort="medium", include_reasoning=False, max_completion_tokens=3000)
+        # "medium" for every AI answer: "low" was ~0.5-2 s faster on Explorer searches but abstained on questions the
+        # sources partly answer (measured 2026-11-14), so it was not adopted.
+        body.update(temperature=0, reasoning_effort=self.reasoning_effort, include_reasoning=False,
+                    max_completion_tokens=3000)
         return body
 
     def chat(self, system: str, user: str) -> str:

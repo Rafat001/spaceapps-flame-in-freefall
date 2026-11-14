@@ -31,7 +31,9 @@ def named_investigations(session: Session, q: str) -> list[str]:
     """Investigation ids whose acronym appears as a whole token in the question."""
     out = []
     ql = q.lower()
-    for inv in session.scalars(select(Investigation)).all():
+    from app.services import snapshot
+
+    for inv in snapshot.investigations(session).values():
         names = {inv.acronym or ""} | {p.strip() for p in (inv.acronym or "").split("/")}
         for n in names:
             n = n.strip().lower()

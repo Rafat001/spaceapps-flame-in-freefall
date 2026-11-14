@@ -19,6 +19,7 @@ from app.labels import NOT_CERTIFICATION, PARTIAL_GRAVITY_WARNING, label
 from app.models import Investigation, Measurement
 from app.retrieval import lexical
 from app.retrieval.hybrid import Hit, named_investigations, retrieve
+from app.services import snapshot
 from app.services.overview_context import context_citations
 
 INJECTION_PATTERNS = [
@@ -174,7 +175,7 @@ def _ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: 
     if doi_out is not None:
         return doi_out
     hits = retrieve(session, q, embedder, index, k=k, investigation_ids=investigation_ids)
-    inv_map = {i.id: i for i in session.scalars(select(Investigation)).all()}
+    inv_map = snapshot.investigations(session)
     cites = [_citation(n, h, inv_map) for n, h in enumerate(hits, 1)]
     named = named_investigations(session, q)
     ctx_ids = investigation_ids or named[:3]
@@ -341,7 +342,7 @@ def _doi_answer(session: Session, q: str, llm: LLMProvider, k: int) -> dict | No
     shown = m.group(0).rstrip(".,;)]\"'")
     want = shown.lower()
     docs = session.scalars(select(Document).where(func.lower(Document.doi) == want)).all()
-    invs = {i.id: i for i in session.scalars(select(Investigation)).all()}
+    invs = snapshot.investigations(session)
     ds = [i for i in invs.values() if (i.doi or "").lower() == want]
     base = {"question": q, "policy_notes": [], "llm": llm.health(), "answer_label": label("psi_metadata"),
             "retrieval": {"doi": want, "named_investigations": [], "k": k}}

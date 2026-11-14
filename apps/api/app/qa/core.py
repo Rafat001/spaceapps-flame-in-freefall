@@ -103,8 +103,9 @@ class Result:
 class Ctx:
     def __init__(self, session: Session):
         self.s = session
-        self._invs = {i.id: i for i in session.scalars(select(Investigation).options(
-            selectinload(Investigation.test_runs))).all()}
+        from app.services import snapshot
+
+        self._invs = snapshot.investigations(session)  # cached read-only catalog (was re-loaded on every question)
 
     def inv(self, iid: str) -> Investigation:
         return self._invs[iid]

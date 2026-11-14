@@ -33,3 +33,13 @@ def session(seeded):
     s = SessionLocal()
     yield s
     s.close()
+
+
+@pytest.fixture(autouse=True)
+def _fresh_answer_cache():
+    """Each test starts with an empty AI answer cache (cached answers would hide provider calls from mocks)."""
+    from app.services import answer_cache
+
+    answer_cache.clear()
+    yield
+    answer_cache.clear()

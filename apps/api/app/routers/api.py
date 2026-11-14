@@ -30,7 +30,9 @@ FlowUnit = Literal["m/s", "cm/s", "mm/s"]
 @router.get("/health")
 def health(s: Session = Depends(get_session)):
     n = s.scalar(select(func.count()).select_from(Investigation)) or 0
-    return {"ok": True, "investigations": n, "ai": state.status(),
+    from app.services import answer_cache
+
+    return {"ok": True, "investigations": n, "ai": state.status(), "answer_cache": answer_cache.info(),
             "notices": [NOT_CERTIFICATION, PARTIAL_GRAVITY_WARNING]}
 
 
@@ -62,6 +64,12 @@ def stats(s: Session = Depends(get_session)):
 
 @router.get("/meta")
 def meta(s: Session = Depends(get_session)):
+    from app.services import snapshot
+
+    return snapshot.memo("meta", lambda: _meta(s))  # catalog-only facets and counts: computed once per loaded catalog
+
+
+def _meta(s: Session) -> dict:
     from app.ingest.table_specs import COUNTABLE_KINDS
     from app.services.lenses import LENS_SOURCE, LENSES
 
@@ -99,7 +107,10 @@ def list_investigations(
         oxygen=catalog.NumericRange(oxygen_min, oxygen_max),
         pressure=catalog.NumericRange(to_kpa(pressure_min, pressure_unit), to_kpa(pressure_max, pressure_unit)),
         airflow=catalog.NumericRange(to_m_s(airflow_min, airflow_unit), to_m_s(airflow_max, airflow_unit)))
-    cards = [inv_card(i) for i in invs]
+    from app.services import snapshot
+
+    # Cards depend only on the catalog: build each once per loaded catalog, copy before adding per-request fields.
+    cards = [dict(snapshot.memo(("card", i.id), lambda i=i: inv_card(i))) for i in invs]
     scenario_label, ranked_total = None, 0
     if scenario in SCENARIOS:
         ranked = ranking.rank(s, scenario)  # rank against the whole catalog so "#n" means the same on every page
@@ -155,11 +166,9 @@ def investigation_overview(inv_id: str, request: Request, q: str | None = Query(
 
     Uses the existing ask service with the investigation scoped so the LLM synthesises
     what this record contributes in relation to the query (e.g. 'Heat Release Rate').
-    Falls back to a templated answer when no LLM is configured.
+    Falls back to a templated answer when no LLM is configured. Honors the same optional BYOK headers as
+    POST /api/ask; server-key overviews are cached per (investigation, query).
     """
-    from app.ai.providers.llm import build_byok_llm, model_not_allowed_message
-    from app.security import byok_from_request
-
     inv_id_lower = inv_id.lower()
     inv = s.scalars(select(Investigation).where(Investigation.id == inv_id_lower)).first()
     if not inv:
@@ -183,21 +192,8 @@ def investigation_overview(inv_id: str, request: Request, q: str | None = Query(
             "Cite every claim with [S#]."
         )
 
-    emb, _ = state.embedder
-    byok = byok_from_request(request) if request else None
-    if byok:
-        try:
-            llm = build_byok_llm(state.cfg, byok.provider, byok.key, byok.model)
-        except ValueError:
-            raise HTTPException(400, model_not_allowed_message(byok.provider)) from None
-    else:
-        llm = _server_llm(request)
-
-    result = ask_svc.ask(
-        s, question, llm, emb, state.index,
-        k=8,
-        investigation_ids=[inv_id_lower],
-    )
+    llm, byok = _llm_for(request)
+    result = _cached_ask(s, "overview", question, llm, byok, k=8, investigation_ids=[inv_id_lower])
     return {
         "investigation_id": inv_id_lower,
         "acronym": inv.acronym,
@@ -269,34 +265,61 @@ class AskIn(BaseModel):
 @router.post("/ask")
 def ask(body: AskIn, request: Request, s: Session = Depends(get_session)):
     """Assistant. Optional BYOK headers (X-LLM-Provider, X-LLM-Key, X-LLM-Model) are used for this request only."""
-    from app.ai.providers.llm import build_byok_llm
-    from app.security import byok_from_request
-
-    from app.ai.providers.llm import model_not_allowed_message
     from app.ratelimit import client_ip
 
-    emb, _ = state.embedder
+    llm, byok = _llm_for(request)
+    # The Assistant and the Explorer search synthesis share one cache entry per question (same prompt and model).
+    out = _cached_ask(s, "ask", body.question, llm, byok, k=body.k,
+                      investigation_ids=[i.lower() for i in body.investigation_ids] if body.investigation_ids else None)
+    out["quota"] = {"own_key": True, "message": "Using your own key: no site limit applies."} if byok else \
+        _quota(client_ip(request))
+    return out
+
+
+def _llm_for(request: Request):
+    """The provider for one request: the visitor's own key (BYOK headers) or the shared server key with site quota.
+    Always a per-request object, so token usage reported for this answer is this answer's (never another request's)."""
+    import copy
+
+    from app.ai.providers.llm import build_byok_llm, model_not_allowed_message
+    from app.security import byok_from_request
+
     byok = byok_from_request(request)
-    ip = client_ip(request)
     if byok:
         try:
             llm = build_byok_llm(state.cfg, byok.provider, byok.key, byok.model)
         except ValueError:
             raise HTTPException(400, model_not_allowed_message(byok.provider)) from None
-    else:
-        llm = _server_llm(request)
-    out = ask_svc.ask(s, body.question, llm, emb, state.index, k=body.k,
-                      investigation_ids=[i.lower() for i in body.investigation_ids] if body.investigation_ids else None)
-    out["quota"] = {"own_key": True, "message": "Using your own key: no site limit applies."} if byok else _quota(ip)
+        return llm, byok
+    inner = copy.copy(state.llm)
+    if hasattr(inner, "last_usage"):
+        inner.last_usage = None
+    return _server_llm(request, inner), None
+
+
+def _cached_ask(s: Session, kind: str, question: str, llm, byok, *, k: int, investigation_ids: list[str] | None):
+    """ask_svc.ask, served from the answer cache for server-key requests (see app.services.answer_cache)."""
+    from app.services import answer_cache
+
+    emb, _ = state.embedder
+    if byok:
+        return ask_svc.ask(s, question, llm, emb, state.index, k=k, investigation_ids=investigation_ids)
+    key = answer_cache.make_key(kind, question, k=k, ids=investigation_ids, provider=llm.name, model=llm.model,
+                                effort=getattr(getattr(llm, "inner", llm), "reasoning_effort", None))
+    hit = answer_cache.get(key)
+    if hit is not None:
+        return hit
+    out = ask_svc.ask(s, question, llm, emb, state.index, k=k, investigation_ids=investigation_ids)
+    answer_cache.put(key, out)
     return out
 
 
-def _server_llm(request: Request):
+def _server_llm(request: Request, llm=None):
     """The shared server-key LLM, wrapped so each AI summary takes (and on failure refunds) one unit of site quota."""
     from app.ai.providers.llm import QuotaGuardLLM
     from app.ratelimit import allow, client_ip, refund
 
-    llm = state.llm
+    llm = llm if llm is not None else state.llm
     if not _server_ai_on():
         return llm
     ip, c = client_ip(request), state.cfg

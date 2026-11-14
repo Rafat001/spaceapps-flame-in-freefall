@@ -29,18 +29,23 @@ function Explorer() {
   useEffect(() => { api("/api/meta").then(setMeta).catch(setErr); setCmp(readCompare()); }, []);
   const key = sp.toString();
   useEffect(() => {
+    let live = true;
     setData(null); setErr(null);
     // A text search with no explicit sort orders by text match; the default scenario order is
     // query-independent, so every search would otherwise list the same investigations first.
     const params = new URLSearchParams(key);
     if (params.get("q") && !params.get("sort")) params.set("sort", "match");
-    api(`/api/investigations?${params.toString()}`).then(setData).catch(setErr);
+    api(`/api/investigations?${params.toString()}`)
+      .then((d) => { if (live) setData(d); })
+      .catch((e) => { if (live) setErr(e); });
+    return () => { live = false; };
   }, [key]);
 
-  // Fetch synthesized AI answer across literature whenever search query ?q= changes
+  // The AI synthesis is fetched in parallel and never blocks the result list, which renders as soon as it arrives.
+  // Repeated searches are served from the API's answer cache (no new AI call).
   useEffect(() => {
-    const qStr = sp.get("q")?.trim();
-    if (!qStr) {
+    let live = true;
+    if (!activeQuery.trim()) {
       setSearchAnswer(null);
       setAnswerLoading(false);
       return;
@@ -50,16 +55,14 @@ function Explorer() {
     const headers = assistantHeaders(API_BASE);
     api("/api/ask", {
       method: "POST",
-      body: JSON.stringify({ question: qStr }),
+      body: JSON.stringify({ question: activeQuery.trim() }),
       headers: headers as Record<string, string>,
     })
-      .then((res) => setSearchAnswer(res))
-      .catch((e) => {
-        console.error("Search answer error:", e);
-        setSearchAnswer(null);
-      })
-      .finally(() => setAnswerLoading(false));
-  }, [sp.get("q")]);
+      .then((res) => { if (live) setSearchAnswer(res); })
+      .catch(() => { if (live) setSearchAnswer(null); })
+      .finally(() => { if (live) setAnswerLoading(false); });
+    return () => { live = false; };
+  }, [activeQuery]);
 
   const set = (k: string, v: string) => setF((p) => ({ ...p, [k]: v }));
   const apply = (e?: React.FormEvent) => { e?.preventDefault(); router.push(`/explorer${qs(f)}`); };

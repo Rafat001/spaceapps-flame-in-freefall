@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from sqlalchemy import and_, func, or_, select
 
 from app.ingest.table_specs import COUNTABLE_KINDS
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session
 
 from app.models import Investigation, TestRun
 from app.retrieval import lexical
@@ -71,18 +71,22 @@ def search(session: Session, *, q: str | None = None, family: str | None = None,
            lens: str | None = None,
            oxygen: NumericRange = NumericRange(), pressure: NumericRange = NumericRange(),
            airflow: NumericRange = NumericRange()) -> tuple[list[Investigation], dict[str, float]]:
-    stmt = select(Investigation).options(selectinload(Investigation.test_runs), selectinload(Investigation.documents))
+    from app.services import snapshot
+
+    # Filter the cached, read-only catalog snapshot instead of re-loading every investigation with its table rows
+    # on each request (see app.services.snapshot). Same filters, same order as the SQL they replace.
+    invs = list(snapshot.investigations(session).values())
     if family:
-        stmt = stmt.where(Investigation.family == family)
+        invs = [i for i in invs if i.family == family]
     if fuel_class:
-        stmt = stmt.where(Investigation.fuel_class == fuel_class)
+        invs = [i for i in invs if i.fuel_class == fuel_class]
     if hardware:
-        stmt = stmt.where(Investigation.hardware.ilike(f"%{hardware}%"))
+        h = hardware.lower()
+        invs = [i for i in invs if h in (i.hardware or "").lower()]
     if gravity_regime:
-        stmt = stmt.where(Investigation.gravity_regime == gravity_regime)
+        invs = [i for i in invs if i.gravity_regime == gravity_regime]
     if platform:
-        stmt = stmt.where(Investigation.platform == platform)
-    invs = list(session.scalars(stmt).all())
+        invs = [i for i in invs if i.platform == platform]
     if lens:
         invs = [i for i in invs if lens in (i.lenses or {})]
     if topic:

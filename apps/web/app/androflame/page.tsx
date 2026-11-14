@@ -96,38 +96,21 @@ export default function AndroFlamePage() {
         <p className="intro-tagline">Decoding Fire Beyond Gravity</p>
       </header>
 
-      {/* Row 1: Objective (Left) + YouTube Video (Right) */}
-      <div className="intro-split-grid">
-        <section className="intro-panel" aria-labelledby="obj-title" style={{ marginBottom: 0 }}>
-          <h2 id="obj-title" className="intro-panel-title">Objective</h2>
-          <p>
-            <strong>AndroFlame</strong> is an open-science intelligence and data-synthesis engine engineered to decode the complex, non-intuitive physics of fire in microgravity. Without buoyant convection, flames do not rise—they burn as spherical, slow-diffusing balls governed by molecular transport, radiative heat loss, and delicate ventilation currents.
-          </p>
-          <p>
-            Our core mission is to bridge 50 years of NASA microgravity combustion research with future human spaceflight safety. By ingesting, harmonizing, and structuring published datasets from NASA&apos;s Physical Sciences Informatics (PSI) repository, AndroFlame turns isolated test runs into actionable intelligence for deep-space habitat architects, fire-safety researchers, and mission planning engineers.
-          </p>
-          <ul style={{ margin: "14px 0 0 18px" }}>
-            <li><strong>Synthesize:</strong> 24 flight &amp; ground investigations with 1,980+ experimental table rows.</li>
-            <li><strong>Benchmark:</strong> Test habitat atmospheres (Lunar, Mars, ISS) against documented flight data.</li>
-            <li><strong>Ground AI:</strong> Strictly evidence-backed assistant with zero hallucination and verbatim citations.</li>
-          </ul>
-        </section>
-
-        <section className="intro-panel" aria-labelledby="video-title" style={{ marginBottom: 0 }}>
-          <h2 id="video-title" className="intro-panel-title">YouTube Video · Combustion on the ISS</h2>
-          <div className="intro-video-wrapper">
-            <iframe
-              src="https://www.youtube.com/embed/W1oXykoz9zg"
-              title="NASA ScienceCasts: The Power of Studying Combustion on the ISS"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-          <p className="intro-video-caption">
-            <strong>NASA ScienceCasts:</strong> How microgravity combustion experiments aboard the International Space Station reveal cleaner, safer combustion processes and inform future spacecraft fire prevention.
-          </p>
-        </section>
-      </div>
+      {/* Row 1: Objective */}
+      <section className="intro-panel" aria-labelledby="obj-title">
+        <h2 id="obj-title" className="intro-panel-title">Objective</h2>
+        <p>
+          <strong>AndroFlame</strong> is an open-science intelligence and data-synthesis engine engineered to decode the complex, non-intuitive physics of fire in microgravity. Without buoyant convection, flames do not rise—they burn as spherical, slow-diffusing balls governed by molecular transport, radiative heat loss, and delicate ventilation currents.
+        </p>
+        <p>
+          Our core mission is to bridge 50 years of NASA microgravity combustion research with future human spaceflight safety. By ingesting, harmonizing, and structuring published datasets from NASA&apos;s Physical Sciences Informatics (PSI) repository, AndroFlame turns isolated test runs into actionable intelligence for deep-space habitat architects, fire-safety researchers, and mission planning engineers.
+        </p>
+        <ul style={{ margin: "14px 0 0 18px" }}>
+          <li><strong>Synthesize:</strong> 24 flight &amp; ground investigations with 1,980+ experimental table rows.</li>
+          <li><strong>Benchmark:</strong> Test habitat atmospheres (Lunar, Mars, ISS) against documented flight data.</li>
+          <li><strong>Ground AI:</strong> Strictly evidence-backed assistant with zero hallucination and verbatim citations.</li>
+        </ul>
+      </section>
 
       {/* Row 2: Scope and Target Audience */}
       <section className="intro-panel" aria-labelledby="scope-title">

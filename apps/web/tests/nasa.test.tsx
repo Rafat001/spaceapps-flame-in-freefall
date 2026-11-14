@@ -1,24 +1,10 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import VideoFacade from "../components/VideoFacade";
 import NasaSummary, { citeName } from "../components/NasaSummary";
 
 const glenn = { label: "NASA Combustion Science page", title: "Combustion Science (NASA Glenn)", locator: "Archived Combustion Experiments",
   url: "https://www.nasa.gov/glenn/x/combustion-science/#archived" };
 const sheet = { label: "NASA fact sheet", title: "FLEX fact sheet (NASA GRC)", locator: "p. 2", url: "https://x/flex.pdf#page=2" };
-
-describe("Home video facade", () => {
-  const html = renderToStaticMarkup(<VideoFacade id="W1oXykoz9zg" title="NASA ScienceCasts" />);
-  it("is a keyboard-focusable button with an accessible name", () => {
-    expect(html).toMatch(/^<button type="button"/);
-    expect(html).toContain('aria-label="Play video: NASA ScienceCasts"');
-  });
-  it("shows only the i.ytimg.com still until clicked (no player, no YouTube cookies)", () => {
-    expect(html).toContain("https://i.ytimg.com/vi/W1oXykoz9zg/maxresdefault.jpg");
-    expect(html).not.toContain("<iframe");
-    expect(html).not.toContain("youtube.com/embed");
-  });
-});
 
 describe("NASA program summary", () => {
   it("renders nothing when the API has no curated summary", () => {

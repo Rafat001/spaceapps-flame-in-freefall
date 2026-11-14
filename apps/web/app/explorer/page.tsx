@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, Suspense, useEffect, useState } from "react";
 import { api, qs, API_BASE } from "@/lib/api";
 import { humanize, readCompare, toggleCompare } from "@/lib/format";
-import { PointsLine, RankingExplainer, TargetAtmosphere } from "@/components/RankingExplainer";
+import { PointsLine } from "@/components/RankingExplainer";
 import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
 import { Markdown, citeHref } from "@/components/Markdown";
 import { assistantHeaders } from "@/lib/byok";
@@ -154,27 +154,6 @@ function Explorer() {
               {(data.total === 0 || Object.keys(data.applied_filters || {}).some((k) => !k.endsWith("_unit"))) && (
                 <p className="result-count">{data.total === 0 ? "No documented work in this catalog matches all filters. That is not proof that none exists."
                   : <><b>{data.total}</b> investigation(s) match your filters.</>}</p>)}
-              {data.total > 0 && data.scenario_label && (
-                <p className="score-legend muted small">
-                  {data.sort === "match" ? (
-                    <>
-                      Ordered by <b>Best text match</b> for your search. <b>Match rank</b> shows each investigation’s position in the search results (top match is #1).
-                      {" "}<b>Scenario rank</b> is the investigation’s position by <b>scenario fit</b> (0–100) for the <i>{data.scenario_label}</i> scenario.
-                    </>
-                  ) : (
-                    <>
-                      <b>Scenario fit</b> (0–100) scores how closely an investigation’s PSI test rows match the <i>{data.scenario_label}</i> atmosphere (oxygen and pressure,
-                      ideally on the same row), which materials it tested, and its flame-behaviour and detection/suppression evidence. It is research fit, not a hazard or safety score.
-                      {" "}<b>Rank</b> follows the score alone, highest first (ties go to more rows at the target, then data completeness).
-                    </>
-                  )}
-                  {" "}<b>Data completeness</b> is how many of 10 key catalog fields NASA’s record fills in (objective, approach, hardware, test rows, materials,
-                  oxygen, pressure, airflow, measurements, documents). <Link href={`/insights?scenario=${data.scenario}`}>Full ranking with evidence</Link>
-                </p>)}
-              {data.total > 0 && data.ranking && (<>
-                <TargetAtmosphere atm={data.ranking.scenario_atmosphere} />
-                <RankingExplainer lines={data.ranking.explainer} />
-              </>)}
               {activeQuery && (
                 <div className="search-synthesis" aria-live="polite">
                   <div className="search-synthesis-head">

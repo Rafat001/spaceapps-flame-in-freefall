@@ -875,6 +875,13 @@ def answer(session: Session, question: str) -> dict | None:
                     res = None
                 break
     if res is None:
+        from app.qa.nasa import describe
+
+        try:
+            res = describe(ctx, q)
+        except (LookupError, StopIteration, ValueError, IndexError, KeyError):
+            res = None
+    if res is None:
         try:
             res = threshold_coverage(ctx, q)
         except (LookupError, StopIteration, ValueError, IndexError, KeyError):

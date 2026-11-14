@@ -268,6 +268,15 @@ def earth(s: Session = Depends(get_session)):
     return earth_panel(s)
 
 
+@router.get("/nasa/other-experiments")
+def nasa_other_experiments(s: Session = Depends(get_session)):
+    """Experiments and facilities the official resources describe that have no PSI Combustion Science record.
+    Never counted, filtered or ranked."""
+    from app.services.nasa_program import other_experiments
+
+    return other_experiments(s)
+
+
 @router.get("/explainer")
 def explainer(s: Session = Depends(get_session)):
     from app.services.earth import explainer as ex

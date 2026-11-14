@@ -16,6 +16,7 @@ CHALLENGE_RESOURCES_URL = "https://www.spaceappschallenge.org/2026/challenges/fl
 VIDEO_URL = "https://www.youtube.com/watch?v=AVuEiKxOpc0"
 
 _FS = "https://www.nasa.gov/wp-content/uploads/2025/07/"
+_GLENN = "https://www.nasa.gov/glenn/glenn-expertise-space-exploration/physical-sciences-program/combustion-science/"
 GUIDE_PDF = "np-2015-10-034-jsc_combustion_in_reduced_gravity-iss-mini-book-011116-508"
 
 # kind: html page (text extracted to text/<id>.txt) or pdf (per-page text in pdf_pages/<id>/pN.txt)
@@ -45,6 +46,16 @@ OFFICIAL_DOCS: list[dict] = [
      "accessions": ["PSI-98", "PSI-99", "PSI-100"]},
     {"id": "structure-liftoff-in-combustion-experiment-slice", "title": "SLICE fact sheet (NASA GRC)", "kind": "pdf",
      "source_type": "nasa_fact_sheet", "url": _FS + "structure-liftoff-in-combustion-experiment-slice.pdf", "accessions": ["PSI-106"]},
+    # "Learn More" pages linked from the NASA Combustion Science page (references of resource #2), fetched 2026-11-13.
+    {"id": "glenn_fm2", "title": "Flammability of Materials on the Moon (FM2) (NASA GRC)", "kind": "html",
+     "source_type": "nasa_program_page", "reference_of": "NASA Combustion Science (resource #2)",
+     "url": _GLENN + "flammability-of-materials-on-the-moon-fm2/", "accessions": []},
+    {"id": "glenn_sofie", "title": "Solid Fuel Ignition and Extinction (SoFIE) (NASA GRC)", "kind": "html",
+     "source_type": "nasa_program_page", "reference_of": "NASA Combustion Science (resource #2)",
+     "url": _GLENN + "solid-fuel-ignition-and-extinction-sofie/", "accessions": []},
+    {"id": "glenn_flare", "title": "Flammability Limits At Reduced-g Experiment (FLARE) (NASA GRC)", "kind": "html",
+     "source_type": "nasa_program_page", "reference_of": "NASA Combustion Science (resource #2)",
+     "url": _GLENN + "flammability-limits-at-reduced-g-experiment-flare/", "accessions": []},
     {"id": "apollo1", "title": "Apollo 1 (NASA OSMA lessons learned)", "kind": "html", "source_type": "nasa_history",
      "url": "https://sma.nasa.gov/sma-disciplines/accllp/apollo-1", "accessions": []},
     {"id": "apollo13", "title": "Apollo 13 (NASA OSMA lessons learned)", "kind": "html", "source_type": "nasa_history",

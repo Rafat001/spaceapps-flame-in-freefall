@@ -4,6 +4,7 @@ from app.ingest.table_specs import COUNTABLE_KINDS
 from app.labels import NOT_REPORTED, label
 from app.models import Investigation, TestRun
 from app.units import sig
+from app.services import nasa_program
 
 
 def cond(vmin, vmax, src, meta, unit, context=None) -> dict:
@@ -91,6 +92,7 @@ def inv_card(inv: Investigation) -> dict:
         "platform": inv.platform or NOT_REPORTED, "is_ground": inv.is_ground, "project_type": inv.project_type,
         "lenses": sorted((inv.lenses or {}).keys()), "total_file_size_bytes": (inv.files or {}).get("total_file_size_bytes"),
         "n_flags": sum(len(r.flags or []) for r in inv.test_runs) + len(inv.table_flags or []),
+        "nasa_hint": nasa_program.hint(inv.id),
     }
 
 
@@ -124,6 +126,7 @@ def inv_detail(inv: Investigation, max_runs: int = 500) -> dict:
         "flags": [{"row": r.source_row, "run_label": r.run_label, "file": r.source_file, **f} for r in inv.test_runs for f in (r.flags or [])],
         "variables": summarize(inv.test_runs),
         "interpretation": interpret_investigation(inv),
+        "nasa_program": nasa_program.summary(inv),
         "caveats": ["Numeric conditions are per PSI table row and keep the source text; verify against PSI before use."]
                    + (["Ground (modeling / lab) investigation: 1-g laboratory or computational work that reuses PSI flight "
                        "data. It is not a flight test."] if inv.is_ground else

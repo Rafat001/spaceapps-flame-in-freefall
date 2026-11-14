@@ -20,8 +20,19 @@ SOURCE_LABEL = {
 }
 
 
+def doc_provenance(d: dict) -> dict:
+    """Provenance block for an OFFICIAL_DOCS entry: the resource itself, or a reference linked from resource #2."""
+    if d["source_type"] == "nasa_fact_sheet" or d.get("reference_of"):
+        return {"kind": "reference", "resource": d["title"], "resource_url": d["url"],
+                "reference_of": d.get("reference_of") or "NASA Combustion Science (resource #2)",
+                "parent_url": OFFICIAL_DOCS[0]["url"], "listed_on": CHALLENGE_RESOURCES_URL}
+    return {"kind": "resource", "resource": d["title"], "resource_url": d.get("landing") or d["url"],
+            "listed_on": CHALLENGE_RESOURCES_URL}
+
+
 def _norm(t: str) -> str:
-    t = t.replace("\u00ad", "").replace("\ufb01", "fi").replace("\ufb02", "fl")
+    t = t.replace("\u00ad", "").replace("\ufb01", "fi").replace("\ufb02", "fl").replace("\ufb00", "ff")
+    t = t.replace("\ufb03", "ffi").replace("\ufb04", "ffl")
     t = re.sub(r"-\n(?=[a-z])", "", t)  # de-hyphenate line breaks
     return re.sub(r"\s+", " ", t).strip()
 
@@ -35,12 +46,7 @@ def _split(t: str, size: int = 900) -> list[str]:
 def doc_chunks() -> list[dict]:
     out = []
     for d in OFFICIAL_DOCS:
-        prov = {"kind": "resource", "resource": d["title"], "resource_url": d.get("landing") or d["url"],
-                "listed_on": CHALLENGE_RESOURCES_URL}
-        if d["source_type"] == "nasa_fact_sheet":  # fact sheets are linked from the NASA Combustion Science page
-            prov = {"kind": "reference", "resource": d["title"], "resource_url": d["url"],
-                    "reference_of": "NASA Combustion Science (resource #2)",
-                    "parent_url": OFFICIAL_DOCS[0]["url"], "listed_on": CHALLENGE_RESOURCES_URL}
+        prov = doc_provenance(d)
         n = 0
         for page, text in doc_pages(d):
             t = _norm(text)

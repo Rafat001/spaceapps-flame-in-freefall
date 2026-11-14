@@ -79,6 +79,13 @@ def scope_check(ctx: Ctx, q: str) -> Result | None:
             return _abstain(f"{name} is not in PSI: the official resources name it ({c['label']}, {c['locator']}) but PSI's "
                             f"Combustion Science listing has no record for it. Saffire records in PSI: {have}.",
                             [c], "scope registry: named in a resource, absent from the PSI listing")
+    # data questions about other experiments the resources describe (curated map); "what is X" is answered elsewhere
+    from app.qa.nasa import DESCRIBE, data_abstain
+
+    if not DESCRIBE.match(q) or re.search(r"\b(data|results?|measured)\b", ql):
+        res = data_abstain(ctx, q)
+        if res is not None:
+            return res
     # Saffire-II specific cells
     m = re.search(r"Saffire[- ]?(II|2)\b.*?sample (2-\d)|sample (2-\d).*?Saffire[- ]?(II|2)\b", q, re.I)
     if m:

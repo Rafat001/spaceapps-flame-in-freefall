@@ -75,7 +75,7 @@ def row_chunk_text(acr: str, acc: str, r: dict) -> str:
 
 
 def load(seed_path=None, brief_path=None, build_vectors: bool = True) -> dict:
-    from app.ingest.corpus import doc_chunks, transcript_chunks
+    from app.ingest.corpus import doc_provenance, doc_chunks, transcript_chunks
     from app.ingest.official_sources import OFFICIAL_DOCS, VIDEO
     from app.services.lenses import tag_lenses
 
@@ -195,7 +195,7 @@ def load(seed_path=None, brief_path=None, build_vectors: bool = True) -> dict:
     for d in OFFICIAL_DOCS:
         s.add(Document(id=d["id"], investigation_id=None, title=d["title"], url=d["url"], type=d["source_type"],
                        local_path=f"data/sources/official/{'pdf' if d['kind'] == 'pdf' else 'html'}/{d['id']}.{d['kind']}",
-                       provenance={"kind": "resource", "resource": d["title"], "resource_url": d["url"]}))
+                       provenance=doc_provenance(d)))
     s.add(Document(id="guidance-video", investigation_id=None, title=VIDEO["title"], url=VIDEO["url"], type="guidance_video",
                    local_path=VIDEO["transcript"], provenance={"kind": "resource", "resource": "Official guidance video",
                                                                "resource_url": VIDEO["url"]}))
@@ -203,6 +203,17 @@ def load(seed_path=None, brief_path=None, build_vectors: bool = True) -> dict:
         inv_id = acc_to_id.get(c["accessions"][0]) if len(c["accessions"]) == 1 else None
         s.add(Chunk(id=c["id"], document_id=c["document_id"], investigation_id=inv_id, text=c["text"], section=c["section"],
                     page=c["page"], source_url=c["source_url"], verification_status=c["verification_status"],
+                    source_type=c["source_type"], locator=c["locator"], provenance=c["provenance"]))
+        n_chunks += 1
+    # NASA program summaries + experiments with no PSI data (verbatim excerpts, checked against the stored sources)
+    from app.services import nasa_program
+
+    bad = nasa_program.verify()
+    if bad:
+        raise ValueError("NASA program curation has excerpts that are not verbatim:\n" + "\n".join(bad))
+    for c in nasa_program.chunks():
+        s.add(Chunk(id=c["id"], document_id=c["document_id"], investigation_id=c["investigation_id"], text=c["text"],
+                    section=c["section"], page=c["page"], source_url=c["source_url"], verification_status=c["source_type"],
                     source_type=c["source_type"], locator=c["locator"], provenance=c["provenance"]))
         n_chunks += 1
     s.commit()

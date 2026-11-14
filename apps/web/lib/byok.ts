@@ -4,11 +4,11 @@
 // - The server uses it for that one request and never stores, logs or returns it.
 
 export type Provider = "groq" | "gemini" | "openai" | "anthropic";
-/** The Settings UI and allowlist offer only Gemini 3.8 Flash. Other provider ids remain
- *  on the type so a stale key from an older build is ignored by getByok. */
-export const GEMINI_FREE_MODELS = ["gemini-3.8-flash"] as const;
+/** The Settings UI and the API allowlist offer only Groq's GPT OSS 120B (console.groq.com/docs/models).
+ *  Other provider ids remain on the type so a stale key from an older build is ignored by getByok. */
+export const GROQ_MODELS = ["openai/gpt-oss-120b"] as const;
 export const PROVIDERS: { id: Provider; label: string; defaultModel: string; models?: readonly string[] }[] = [
-  { id: "gemini", label: "Gemini 3.8 Flash (free tier)", defaultModel: "gemini-3.8-flash", models: GEMINI_FREE_MODELS },
+  { id: "groq", label: "Groq · GPT OSS 120B", defaultModel: "openai/gpt-oss-120b", models: GROQ_MODELS },
 ];
 const K = { key: "byok.key", provider: "byok.provider", model: "byok.model" };
 

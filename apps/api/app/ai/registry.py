@@ -4,7 +4,7 @@ from __future__ import annotations
 import threading
 
 from app.ai.providers.embeddings import EmbeddingProvider, get_embedder
-from app.ai.providers.llm import BYOK_PROVIDERS, GEMINI_DOCS, GEMINI_FREE_MODELS, GROQ_FREE_MODELS, LLMProvider, build_llm
+from app.ai.providers.llm import BYOK_PROVIDERS, LAST_LIMITS, GEMINI_DOCS, GEMINI_FREE_MODELS, GROQ_FREE_MODELS, LLMProvider, build_llm
 from app.config import Settings, settings
 from app.retrieval.vector import VectorIndex
 
@@ -50,7 +50,7 @@ class AIState:
         return {
             "llm": {"configured_provider": self.cfg.ai_llm_provider, **self.llm.health(),
                     "options": ["local", "groq", "gemini", "openai", "anthropic", "none"],
-                    "byok_providers": list(BYOK_PROVIDERS), "recommended_free": "gemini",
+                    "byok_providers": list(BYOK_PROVIDERS), "recommended_free": "groq",
                     "groq_free_models": GROQ_FREE_MODELS, "groq_docs": "https://console.groq.com/docs/rate-limits",
                     "gemini_free_models": GEMINI_FREE_MODELS, "gemini_docs": GEMINI_DOCS},
             "embeddings": {**emb_status, "signature": emb.signature, "options": ["local", "openai", "hash"]},
@@ -69,7 +69,9 @@ class AIState:
             "ollama_base_url": self.cfg.ollama_base_url,
             "ask_limits": {"per_ip_per_min": self.cfg.ask_rate_per_min, "per_ip_per_day": self.cfg.ask_rate_per_day,
                            "global_per_min": self.cfg.ask_global_per_min, "global_per_day": self.cfg.ask_global_per_day,
-                           "applies_to": "AI summaries that use the server key (your own key is not limited here)"},
+                           "applies_to": "AI summaries that use the server key (your own key is not limited here)",
+                           "failed_calls_counted": False},
+            "provider_limits_observed": {p: dict(v) for p, v in LAST_LIMITS.items()},
         }
 
 

@@ -22,13 +22,13 @@ export function quotaText(q: Quota | null, ownKey: boolean): string {
 }
 
 export function AskQuota({ quota, ownKey }: { quota: Quota | null; ownKey: boolean }) {
-  const prov = quota?.provider ? PROVIDER_NAMES[quota.provider] ?? quota.provider : "Gemini";
+  const prov = quota?.provider ? PROVIDER_NAMES[quota.provider] ?? quota.provider : "Groq";
   return (
     <div className="quota">
       <p className="quota-count" role="status" aria-live="polite">{quotaText(quota, ownKey)}</p>
       <p className="quota-note">
-        This is a hackathon prototype, so AI summaries run on {prov}&apos;s free tier, which allows only a limited number of
-        requests. Computed answers and citations are always free and unlimited. For more AI answers, add your own Gemini key in <Link href="/settings">Settings</Link>; it stays in this browser tab only.
+        This is a hackathon prototype, so AI summaries on {prov} are capped per visitor and per day to keep the shared key&apos;s
+        cost bounded. Computed answers and citations are always free and unlimited. For more AI answers, add your own Groq key in <Link href="/settings">Settings</Link>; it stays in this browser tab only.
       </p>
     </div>
   );

@@ -1,7 +1,7 @@
 """Small in-memory sliding-window limiter for POST /api/ask when it would spend the shared server key.
 
 Per-IP limits stop one visitor from using up the key; the global caps keep the whole deployment under the
-provider's free-plan limits even if per-IP identification is imperfect (e.g. shared NAT, spoofed headers).
+provider's limits and the owner's daily spend cap even if per-IP identification is imperfect (e.g. shared NAT, spoofed headers).
 State is per process and resets on restart, which is fine for a single free Render instance.
 """
 from __future__ import annotations
@@ -49,6 +49,18 @@ def allow(ip: str, per_min: int, per_day: int, global_min: int, global_day: int,
             if limit > 0:
                 _hits[key].append(now)
     return True, None
+
+
+def refund(ip: str, at: float) -> None:
+    """Undo one use recorded by allow(..., now=at): the provider call failed, so it must not count."""
+    with _lock:
+        for key in (f"ip-m:{ip}", f"ip-d:{ip}", "g-m", "g-d"):
+            q = _hits.get(key)
+            if q is not None:
+                try:
+                    q.remove(at)
+                except ValueError:
+                    pass
 
 
 def _windows(ip: str, per_min: int, per_day: int, global_min: int, global_day: int):

@@ -58,8 +58,8 @@ interpretation, plus retrieved sources.
 
 ## Bring your own key (optional AI summary)
 
-The production site and the Settings UI offer only **Gemini 3.8 Flash**. A user can optionally paste their own
-**Gemini** key (free tier, key at https://aistudio.google.com/apikey). Rules (decision D3):
+The production site and the Settings UI offer only **GPT OSS 120B on Groq** (`openai/gpt-oss-120b`). A user can optionally
+paste their own **Groq** key (https://console.groq.com/keys; their own account's limits and charges apply). Rules (decision D3):
 - kept only in `sessionStorage` in that browser tab (cleared when the tab closes);
 - sent over HTTPS in the `X-LLM-Key` header (plus `X-LLM-Provider`, optional `X-LLM-Model`) **only** with assistant
   requests (`POST /api/ask`); the API refuses the header on every other endpoint;
@@ -68,44 +68,40 @@ The production site and the Settings UI offer only **Gemini 3.8 Flash**. A user 
 The templated, no-key answer is always the default. `PUT /api/settings/ai` and `POST /api/ingest/rebuild` need
 `X-Admin-Token` = `ADMIN_TOKEN`; with no `ADMIN_TOKEN` they are disabled in production (`APP_ENV=production` or on Render).
 
-### Groq (free) on the server
+### Groq on the server (production default, Developer plan)
 
 Set `AI_LLM_PROVIDER=groq` and `GROQ_API_KEY` (optional `GROQ_MODEL`). Groq is called through its OpenAI-compatible API at
-`https://api.groq.com/openai/v1`. Only free-plan production chat models are allowed, for both the server and user keys
-(source: [models](https://console.groq.com/docs/models), [rate limits](https://console.groq.com/docs/rate-limits), checked 2026-11-13):
+`https://api.groq.com/openai/v1`. Only `openai/gpt-oss-120b` is allowed, for both the server and user keys.
 
-| `GROQ_MODEL` | Free plan limits |
-| --- | --- |
-| `openai/gpt-oss-120b` (default) | 30 RPM · 1K requests/day · 8K tokens/min · 200K tokens/day |
-| `openai/gpt-oss-20b` | 30 RPM · 1K requests/day · 8K tokens/min · 200K tokens/day |
+| | Value | Source (checked 2026-11-14) |
+| --- | --- | --- |
+| Price | $0.15 / 1M input tokens ($0.075 cached) · $0.60 / 1M output tokens · 131K context | [model page](https://console.groq.com/docs/model/openai/gpt-oss-120b) |
+| Org limits (Developer plan) | 250K tokens/min (`x-ratelimit-limit-tokens`) · 500K requests/day (`x-ratelimit-limit-requests`) | live response headers; [rate limits](https://console.groq.com/docs/rate-limits) |
 
-Requests use `reasoning_effort=low`, `include_reasoning=false` and at most 700 output tokens. If Groq answers 429, the
-assistant returns the computed, templated answer with a notice instead of failing. Because one server key is shared by
-every visitor, AI summaries that use it are limited per IP (`ASK_RATE_PER_MIN=10`, `ASK_RATE_PER_DAY=200`) and site-wide
-(`ASK_GLOBAL_PER_MIN=25`, `ASK_GLOBAL_PER_DAY=900`, under Groq's free 30 RPM / 1K RPD). Over the limit, the visitor still gets the
-computed answer and sources, with a notice. Only real AI calls with the server key count (abstentions and computed-only
-answers do not). Counters are in memory and reset on restart. `GET /api/ask/quota` returns the caller's and the site's
-limits, remaining answers and reset times without using any quota; `POST /api/ask` returns the same `quota` object, and the
-Ask page shows it as a live counter with a note that this prototype runs on the configured provider's free plan and that a visitor's own key
-(Settings) is not limited by the site.
+`GET /api/settings/ai` shows the last rate-limit headers Groq returned for the server key under `provider_limits_observed`.
 
-### Gemini (free tier) on the server
+**Answer accuracy.** Requests use `temperature=0`, `reasoning_effort=medium`, `include_reasoning=false` (reasoning is never
+shown) and `max_completion_tokens=3000` (reasoning + answer, so answers are not cut off). The prompt allows only the
+numbered sources, a `[S#]` citation on every factual sentence, numbers copied exactly, and `INSUFFICIENT_EVIDENCE` when the
+sources do not answer. After the call the API normalises GPT-OSS citation brackets (`【S1】` → `[S1]`), removes citations to
+sources that were not retrieved, and adds warnings for uncited statements, numbers that appear in no source excerpt, and
+truncated output. Each response carries `llm_usage` (prompt, completion and reasoning tokens).
 
-Set `AI_LLM_PROVIDER=gemini` and `GEMINI_API_KEY` (optional `GEMINI_MODEL`). Gemini is called through its
-OpenAI-compatible API at `https://generativelanguage.googleapis.com/v1beta/openai/`
-([docs](https://ai.google.dev/gemini-api/docs/openai)). Only `gemini-3.8-flash` is allowed, for both the server and user keys
-(source: [pricing](https://ai.google.dev/gemini-api/docs/pricing), checked 2026-11-14).
-Other Gemini models, including deprecated `gemini-2.5-flash` and `gemini-3.5-flash-lite`, are not allowlisted.
+**Site limits (shared server key).** AI summaries from the Assistant, the Explorer search synthesis and the investigation
+overview are limited per IP (`ASK_RATE_PER_MIN=20`, `ASK_RATE_PER_DAY=300`) and site-wide (`ASK_GLOBAL_PER_MIN=60`,
+`ASK_GLOBAL_PER_DAY=1200`). Measured calls use about 1.2–2.1K input and 0.5–1.3K output tokens, so 60/min stays well under
+250K TPM. The daily cap bounds spend: worst case per call ≤ 4K input + 3K output = $0.0006 + $0.0018 = **$0.0024**, so
+1,200 calls/day cost at most **≈ $2.88/day** (typically $0.0007–0.0011 per call, ≈ $1/day at the cap). A provider call that
+fails (402, 429, 5xx, timeout, empty reply) is refunded and does not count. Over the limit, the visitor still gets the
+computed answer and sources, with a notice. Counters are in memory and reset on restart. `GET /api/ask/quota` returns the
+caller's and the site's limits, remaining answers and reset times without using any quota; `POST /api/ask` returns the same
+`quota` object, shown on the Ask page as a live counter. A visitor's own key (Settings) is not limited by the site.
 
-| `GEMINI_MODEL` | Free tier |
-| --- | --- |
-| `gemini-3.8-flash` (only allowed model) | Input and output free of charge on the Gemini API Free tier |
+### Gemini on the server (optional, not the default)
 
-Requests use `reasoning_effort=low` and at most 700 output tokens. If Gemini answers 429, the assistant returns the
-computed, templated answer with a notice instead of failing. Site rate limits above still apply when the shared server
-key is used. A visitor's own Gemini key in Settings is not limited by the site. To set the server key on Render: open
-the API service → Environment → add `GEMINI_API_KEY` and `AI_LLM_PROVIDER=gemini` (leave `GEMINI_MODEL` blank to use
-`gemini-3.8-flash`) → Save. Do not commit the key.
+Gemini remains in the API (`AI_LLM_PROVIDER=gemini`, `GEMINI_API_KEY`, only `gemini-3.8-flash`) through its OpenAI-compatible
+endpoint ([docs](https://ai.google.dev/gemini-api/docs/openai)), but it is not offered in Settings. A billed Google project
+with no prepaid credits answers HTTP 402; the assistant then shows the computed answer with a billing notice.
 
 ## Docker
 
@@ -122,7 +118,7 @@ Switch in `.env` (or at runtime on the **AI settings** page / `PUT /api/settings
 
 | Purpose | Free / local | Paid |
 | --- | --- | --- |
-| LLM for `/api/ask` | `AI_LLM_PROVIDER=gemini` + `GEMINI_API_KEY` (Gemini 3.8 Flash, free tier; production default — see above). Other providers remain in the API for local/dev: `groq` + `GROQ_API_KEY`, or `local` → Ollama (`OLLAMA_MODEL=llama3.2`, `OLLAMA_BASE_URL`) | `openai` + `OPENAI_API_KEY` (`OPENAI_MODEL`) or `anthropic` + `ANTHROPIC_API_KEY` (`ANTHROPIC_MODEL`) |
+| LLM for `/api/ask` | `local` → Ollama (`OLLAMA_MODEL=llama3.2`, `OLLAMA_BASE_URL`) | `AI_LLM_PROVIDER=groq` + `GROQ_API_KEY` (GPT OSS 120B, Groq Developer plan; production default — see above); also `gemini`, `openai` or `anthropic` with the matching key |
 | Embeddings | `AI_EMBEDDING_PROVIDER=local` → sentence-transformers `all-MiniLM-L6-v2`; or `hash` (offline fallback) | `AI_EMBEDDING_PROVIDER=openai` (`text-embedding-3-small`) |
 | No AI at all | `AI_LLM_PROVIDER=none` | — |
 

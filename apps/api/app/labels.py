@@ -7,6 +7,7 @@ LABELS = {
     "challenge_brief": "Official challenge brief",
     "rule_tag": "Curator classification (rule-based keyword match)",
     "ai": "AI interpretation",
+    "computed": "Computed summary (no AI)",
     "not_established": "Not established",
     "not_reported": "Not reported",
 }

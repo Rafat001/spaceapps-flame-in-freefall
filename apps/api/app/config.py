@@ -37,12 +37,15 @@ class Settings(BaseSettings):
     app_env: Literal["development", "production"] = "development"
     render: str | None = None  # Render sets RENDER=true; treated as production
 
-    # --- per-IP limits on POST /api/ask when it would spend the shared server key ---
-    ask_rate_per_min: int = 10
-    ask_rate_per_day: int = 200
-    # whole-deployment caps on server-key LLM calls, kept under Groq's free-plan 30 RPM / 1K RPD
-    ask_global_per_min: int = 25
-    ask_global_per_day: int = 900
+    # --- per-IP limits on server-key AI summaries (Assistant, Explorer search, investigation overview) ---
+    ask_rate_per_min: int = 20
+    ask_rate_per_day: int = 300
+    # Whole-deployment caps. Groq Developer plan (org headers 2026-11-14): 250K tokens/min, 500K requests/day.
+    # A call uses ~1.7-3.4K tokens (measured), so 60/min stays under 250K TPM. The daily cap is a spend cap:
+    # worst case per call <= 4K input + 3K output (max_completion_tokens) = 4000*$0.15/1M + 3000*$0.60/1M = $0.0024,
+    # so 1200/day costs at most ~$2.88/day (typically ~$0.0007-0.0011 per call, about $1/day at the cap).
+    ask_global_per_min: int = 60
+    ask_global_per_day: int = 1200
 
     vector_backend: Literal["faiss", "numpy"] = "faiss"
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"

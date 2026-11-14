@@ -67,11 +67,10 @@ def test_groq_default_model_allowlist_and_free_params(client, rec):
     client.post("/api/ask", json=Q, headers=_hdr("groq"))
     body = rec.calls[-1]["json"]
     assert body["model"] == "openai/gpt-oss-120b"
-    assert body["reasoning_effort"] == "low" and body["include_reasoning"] is False and body["max_completion_tokens"] <= 1000
-    client.post("/api/ask", json=Q, headers=_hdr("groq", model="openai/gpt-oss-20b"))
-    assert rec.calls[-1]["json"]["model"] == "openai/gpt-oss-20b"
+    assert body["reasoning_effort"] == "medium" and body["include_reasoning"] is False
+    assert 2000 <= body["max_completion_tokens"] <= 3000 and body["temperature"] == 0
     n = len(rec.calls)
-    for paid in ("llama-3.3-70b-versatile", "qwen/qwen3.8-27b", "gpt-4o"):
+    for paid in ("openai/gpt-oss-20b", "llama-3.3-70b-versatile", "qwen/qwen3.8-27b", "gpt-4o"):
         r = client.post("/api/ask", json=Q, headers=_hdr("groq", model=paid))
         assert r.status_code == 400 and FAKE["groq"] not in r.text
     assert len(rec.calls) == n
@@ -83,7 +82,7 @@ def test_groq_server_env_provider(rec):
     assert isinstance(p, llm_mod.GroqLLM) and p.base_url == "https://api.groq.com/openai/v1"
     assert p.model == "openai/gpt-oss-120b"
     h = p.health()
-    assert h["ok"] and "gsk_env" not in str(h) and "gsk_env" not in repr(p) and "30 RPM" in h["free_limits"]
+    assert h["ok"] and "gsk_env" not in str(h) and "gsk_env" not in repr(p) and "Developer plan" in h["free_limits"]
     assert p.chat("s", "u").startswith("Nine")
     assert rec.calls[-1]["url"] == "https://api.groq.com/openai/v1/chat/completions"
 

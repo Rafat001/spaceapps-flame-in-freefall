@@ -88,11 +88,11 @@ def test_quota_endpoint_read_only_and_decreases_after_asks(client, server_groq):
     assert a["you"]["minute"] == b["you"]["minute"] and a["you"]["minute"]["remaining"] == 2  # limit from config, not hardcoded
     assert "gsk_server" not in str(a)
     d = client.post("/api/ask", json=Q, headers=h).json()
-    assert d["quota"]["you"]["minute"]["remaining"] == 1 and d["quota"]["site"]["day"]["remaining"] == 899
+    assert d["quota"]["you"]["minute"]["remaining"] == 1 and d["quota"]["site"]["day"]["remaining"] == state.cfg.ask_global_per_day - 1
     c = client.get("/api/ask/quota", headers=h).json()
     assert c["you"]["minute"]["remaining"] == 1 and c["you"]["day"]["remaining"] == 199
     other = client.get("/api/ask/quota", headers={"X-Forwarded-For": "198.51.100.20"}).json()
-    assert other["you"]["minute"]["remaining"] == 2 and other["site"]["day"]["remaining"] == 899
+    assert other["you"]["minute"]["remaining"] == 2 and other["site"]["day"]["remaining"] == state.cfg.ask_global_per_day - 1
 
 
 def test_abstained_questions_do_not_consume_quota(client, server_groq):
@@ -109,3 +109,40 @@ def test_quota_with_own_key_and_without_server_key(client, server_groq, monkeypa
     monkeypatch.setattr(state, "_llm", None)
     q = client.get("/api/ask/quota").json()
     assert q["server_ai"] is False and q["server_key_configured"] is False
+
+
+def test_failed_provider_call_is_refunded(client, monkeypatch, server_groq):
+    def failing_post(url, headers=None, json=None, timeout=None):
+        server_groq.append(url)
+        return httpx.Response(503, json={"error": "busy"}, request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(llm_mod.httpx, "post", failing_post)
+    h = {"X-Forwarded-For": "203.0.113.44"}
+    for _ in range(4):  # limit is 2/min: failures must not use it up
+        d = client.post("/api/ask", json=Q, headers=h).json()
+        assert "per minute" not in (d.get("llm_notice") or "")
+    q = client.get("/api/ask/quota", headers=h).json()
+    assert q["you"]["minute"]["used"] == 0 and q["site"]["day"]["used"] == 0
+    assert len(server_groq) == 4
+
+
+def test_investigation_overview_uses_site_quota(client, server_groq):
+    h = {"X-Forwarded-For": "203.0.113.55"}
+    for _ in range(2):
+        client.get("/api/investigations/psi-117/overview", headers=h)
+    q = client.get("/api/ask/quota", headers=h).json()
+    assert q["you"]["minute"]["used"] == 2
+    d = client.get("/api/investigations/psi-117/overview", headers=h).json()
+    assert d["answer"] is None and "per minute" in d["llm_notice"] and d["answer_label"] == "Computed summary (no AI)"
+    assert len(server_groq) == 2
+
+
+def test_refund_removes_only_that_use():
+    ratelimit.reset()
+    t = 3_000_000.0
+    ratelimit.allow("7.7.7.7", 5, 5, 5, 5, now=t)
+    ratelimit.allow("7.7.7.7", 5, 5, 5, 5, now=t + 1)
+    ratelimit.refund("7.7.7.7", t + 1)
+    q = ratelimit.peek("7.7.7.7", 5, 5, 5, 5, now=t + 2)
+    assert q["you"]["minute"]["used"] == 1 and q["site"]["day"]["used"] == 1
+    ratelimit.reset()

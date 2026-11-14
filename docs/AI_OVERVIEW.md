@@ -69,18 +69,18 @@ sources, and the existing disclaimers and abstain behaviour apply.
 Without a key the overview falls back to retrieval-only. Two options:
 
 - **Server key:** in the repo-root `.env` (copy from `.env.example`) set
-  `AI_LLM_PROVIDER=gemini` and `GEMINI_API_KEY=...` (the production default;
-  only `gemini-3.8-flash` is allowed). **Restart `make dev`**: the
+  `AI_LLM_PROVIDER=groq` and `GROQ_API_KEY=...` (the production default;
+  only `openai/gpt-oss-120b` is allowed). **Restart `make dev`**: the
   API reads `.env` at startup, and auto-reload does not pick up `.env` changes.
-  Other providers remain available in the API for local/dev: `groq`, `openai`,
+  Other providers remain available in the API for local/dev: `gemini`, `openai`,
   `anthropic`, `local` (Ollama).
-- **Bring your own key:** paste a Gemini key in Settings. It is kept in
-  sessionStorage only and sent per request. Only Gemini 3.8 Flash is offered.
+- **Bring your own key:** paste a Groq key in Settings. It is kept in
+  sessionStorage only and sent per request. Only GPT OSS 120B is offered.
 
 ## Known gaps
 
-- The overview endpoint does not apply the `QuotaGuardLLM` rate limit used by
-  `/api/ask` when the server key is used.
+- The overview endpoint uses the same `QuotaGuardLLM` site limits as `/api/ask`
+  (failed provider calls are refunded).
 - Results are not cached; each page view makes an LLM call.
 - The detail page uses `useSearchParams` without a `<Suspense>` boundary, which
   may fail `next build`.

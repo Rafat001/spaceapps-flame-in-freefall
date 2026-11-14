@@ -1,4 +1,4 @@
-"""LLM providers: local (Ollama, free) | groq (free plan) | gemini (free tier) | openai | anthropic | none.
+"""LLM providers: local (Ollama, free) | groq (Developer plan) | gemini (free tier) | openai | anthropic | none.
 
 All providers implement ``chat(system, user) -> str``. ``health()`` never raises.
 """
@@ -37,14 +37,18 @@ class LLMPaymentRequired(LLMUnavailable):
         super().__init__(f"{provider} payment required (HTTP 402)")
 
 
-# Groq free plan, production chat models only. Source (checked 2026-11-13):
-#   https://console.groq.com/docs/models  (Production Models)
-#   https://console.groq.com/docs/rate-limits  (Free Plan Limits)
-# llama-3.1-8b-instant / llama-3.3-70b-versatile are listed as Enterprise ("Contact Sales"); preview models are excluded.
+# Groq, production chat model offered by this site. The org is on Groq's Developer (pay-as-you-go) plan.
+# Sources (checked 2026-11-14):
+#   https://console.groq.com/docs/model/openai/gpt-oss-120b  (pricing: $0.15 / 1M input, $0.075 cached, $0.60 / 1M output;
+#                                                              131,072-token context)
+#   https://console.groq.com/docs/rate-limits  (headers: x-ratelimit-limit-requests = RPD, x-ratelimit-limit-tokens = TPM)
+# A live call on 2026-11-14 returned x-ratelimit-limit-requests: 500000 (RPD) and x-ratelimit-limit-tokens: 250000 (TPM).
+# The name GROQ_FREE_MODELS is kept for compatibility: it is the Groq allowlist (one model).
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 GROQ_FREE_MODELS = {
-    "openai/gpt-oss-120b": {"label": "GPT OSS 120B", "free_limits": "30 RPM · 1K RPD · 8K TPM · 200K TPD"},
-    "openai/gpt-oss-20b": {"label": "GPT OSS 20B", "free_limits": "30 RPM · 1K RPD · 8K TPM · 200K TPD"},
+    "openai/gpt-oss-120b": {"label": "GPT OSS 120B",
+                            "free_limits": "Groq Developer plan: 250K tokens/min · 500K requests/day (org limits from Groq's "
+                                           "response headers); $0.15 / 1M input, $0.60 / 1M output tokens"},
 }
 GROQ_DEFAULT_MODEL = "openai/gpt-oss-120b"
 
@@ -83,10 +87,11 @@ class NoLLM(LLMProvider):
 
 class QuotaGuardLLM(LLMProvider):
     """Wraps the shared server-key provider: each real chat() call first takes one unit of the visitor's quota.
-    Questions answered without the LLM (abstentions, no-summary paths) never consume quota."""
+    Questions answered without the LLM (abstentions, no-summary paths) never consume quota, and a provider call that
+    fails (HTTP 402/429/5xx, timeout) is refunded, so only AI summaries that were actually produced are counted."""
 
-    def __init__(self, inner: LLMProvider, take):
-        self.inner, self._take = inner, take
+    def __init__(self, inner: LLMProvider, take, refund=None):
+        self.inner, self._take, self._refund = inner, take, refund
         self.name, self.model = inner.name, inner.model
 
     def __repr__(self) -> str:
@@ -95,12 +100,24 @@ class QuotaGuardLLM(LLMProvider):
     def health(self) -> dict:
         return self.inner.health()
 
+    @property
+    def last_usage(self):
+        return getattr(self.inner, "last_usage", None)
+
     def chat(self, system: str, user: str) -> str:
-        ok, why = self._take()
+        import time
+
+        now = time.time()
+        ok, why = self._take(now)
         if not ok:
             raise LLMQuotaExceeded(f"AI summary skipped: this site's shared AI key is limited to {why}. The computed answer and "
-                                   "sources are unaffected. Try again later, or add your own Gemini key in Settings.")
-        return self.inner.chat(system, user)
+                                   "sources are unaffected. Try again later, or add your own Groq key in Settings.")
+        try:
+            return self.inner.chat(system, user)
+        except LLMUnavailable:
+            if self._refund:
+                self._refund(now)
+            raise
 
 
 class OllamaLLM(LLMProvider):
@@ -141,6 +158,30 @@ def _redact_error(name: str, e: Exception) -> LLMUnavailable:
     return LLMUnavailable(f"{name} call failed: {type(e).__name__}" + (f" (HTTP {status})" if status else ""))
 
 
+# Last rate-limit headers seen from the SERVER key (never a visitor's key). Values are limits, not secrets.
+LAST_LIMITS: dict[str, dict] = {}
+_LIMIT_HEADERS = ("x-ratelimit-limit-requests", "x-ratelimit-limit-tokens", "x-ratelimit-remaining-requests",
+                  "x-ratelimit-remaining-tokens", "x-ratelimit-reset-requests", "x-ratelimit-reset-tokens")
+
+
+def _record_limits(provider: str, headers, byok: bool) -> None:
+    if byok:
+        return
+    import time
+
+    got = {h.replace("x-ratelimit-", ""): headers.get(h) for h in _LIMIT_HEADERS if headers.get(h) is not None}
+    if got:
+        LAST_LIMITS[provider] = {**got, "seen_at": time.time(),
+                                 "meaning": "limit-requests = requests per day; limit-tokens = tokens per minute (Groq docs)"}
+
+
+def _usage(u: dict | None) -> dict:
+    u = u or {}
+    det = u.get("completion_tokens_details") or {}
+    return {"prompt_tokens": u.get("prompt_tokens"), "completion_tokens": u.get("completion_tokens"),
+            "reasoning_tokens": det.get("reasoning_tokens"), "total_tokens": u.get("total_tokens")}
+
+
 class OpenAICompatLLM(LLMProvider):
     """OpenAI Chat Completions over plain HTTPS (also used for Groq, which is OpenAI-compatible).
 
@@ -153,6 +194,7 @@ class OpenAICompatLLM(LLMProvider):
     def __init__(self, api_key: str | None, model: str, timeout: float, base_url: str = "https://api.openai.com/v1",
                  byok: bool = False):
         self._key, self.model, self.timeout, self.base_url, self.byok = api_key, model, timeout, base_url.rstrip("/"), byok
+        self.last_usage: dict | None = None
 
     def __repr__(self) -> str:  # keep the key out of tracebacks / debug output
         return f"<{type(self).__name__} model={self.model!r} byok={self.byok}>"
@@ -182,8 +224,16 @@ class OpenAICompatLLM(LLMProvider):
             if r.status_code == 402:
                 raise LLMPaymentRequired(self.label)
             r.raise_for_status()
-            return r.json()["choices"][0]["message"]["content"] or ""
-        except (LLMRateLimited, LLMPaymentRequired):
+            data = r.json()
+            choice = data["choices"][0]
+            self.last_usage = {**_usage(data.get("usage")), "finish_reason": choice.get("finish_reason")}
+            _record_limits(self.name, r.headers, self.byok)
+            content = choice["message"].get("content") or ""
+            if not content.strip():
+                # e.g. all completion tokens spent on reasoning: treat as a failed call (refunded, templated fallback)
+                raise LLMUnavailable(f"{self.label} returned an empty answer (finish_reason={choice.get('finish_reason')})")
+            return content
+        except (LLMRateLimited, LLMPaymentRequired, LLMUnavailable):
             raise
         except Exception as e:  # noqa: BLE001
             raise _redact_error(self.label, e) from None
@@ -199,7 +249,7 @@ class OpenAILLM(OpenAICompatLLM):
 
 
 class GroqLLM(OpenAICompatLLM):
-    """Groq via its OpenAI-compatible API (https://api.groq.com/openai/v1), free-plan production models only."""
+    """Groq via its OpenAI-compatible API (https://api.groq.com/openai/v1), allowlisted production model only."""
 
     name = "groq"
     env_var = "GROQ_API_KEY"
@@ -210,21 +260,22 @@ class GroqLLM(OpenAICompatLLM):
     def health(self) -> dict:
         if self.model not in GROQ_FREE_MODELS:
             return {"ok": False, "provider": self.name, "model": self.model, "byok": self.byok,
-                    "message": f"GROQ_MODEL '{self.model}' is not an allowed free-plan model. Use one of: "
+                    "message": f"GROQ_MODEL '{self.model}' is not an allowed model. Use one of: "
                                + ", ".join(GROQ_FREE_MODELS)}
         h = super().health()
         return {**h, "free_limits": GROQ_FREE_MODELS[self.model]["free_limits"]}
 
     def _body(self, system: str, user: str) -> dict:
         body = super()._body(system, user)
-        # GPT-OSS are reasoning models: keep reasoning short and out of the reply (console.groq.com/docs/reasoning),
-        # and cap output so a request stays well inside the free plan's 8K tokens per minute.
-        body.update(reasoning_effort="low", include_reasoning=False, max_completion_tokens=700)
+        # GPT-OSS are reasoning models (console.groq.com/docs/reasoning). For faithful, well-checked answers use
+        # "medium" reasoning effort; reasoning is excluded from the reply (include_reasoning=false), and the
+        # completion budget covers reasoning + answer so the answer is not cut off. temperature 0 = deterministic.
+        body.update(temperature=0, reasoning_effort="medium", include_reasoning=False, max_completion_tokens=3000)
         return body
 
     def chat(self, system: str, user: str) -> str:
         if self.model not in GROQ_FREE_MODELS:
-            raise LLMUnavailable("Groq model is not on the free-plan allowlist")
+            raise LLMUnavailable("Groq model is not on the allowlist")
         return super().chat(system, user)
 
 

@@ -191,7 +191,7 @@ def investigation_overview(inv_id: str, request: Request, q: str | None = Query(
         except ValueError:
             raise HTTPException(400, model_not_allowed_message(byok.provider)) from None
     else:
-        llm = state.llm
+        llm = _server_llm(request)
 
     result = ask_svc.ask(
         s, question, llm, emb, state.index,
@@ -272,8 +272,8 @@ def ask(body: AskIn, request: Request, s: Session = Depends(get_session)):
     from app.ai.providers.llm import build_byok_llm
     from app.security import byok_from_request
 
-    from app.ai.providers.llm import QuotaGuardLLM, model_not_allowed_message
-    from app.ratelimit import allow, client_ip
+    from app.ai.providers.llm import model_not_allowed_message
+    from app.ratelimit import client_ip
 
     emb, _ = state.embedder
     byok = byok_from_request(request)
@@ -284,14 +284,25 @@ def ask(body: AskIn, request: Request, s: Session = Depends(get_session)):
         except ValueError:
             raise HTTPException(400, model_not_allowed_message(byok.provider)) from None
     else:
-        llm = state.llm
-        if _server_ai_on():
-            c = state.cfg
-            llm = QuotaGuardLLM(llm, lambda: allow(ip, c.ask_rate_per_min, c.ask_rate_per_day, c.ask_global_per_min, c.ask_global_per_day))
+        llm = _server_llm(request)
     out = ask_svc.ask(s, body.question, llm, emb, state.index, k=body.k,
                       investigation_ids=[i.lower() for i in body.investigation_ids] if body.investigation_ids else None)
     out["quota"] = {"own_key": True, "message": "Using your own key: no site limit applies."} if byok else _quota(ip)
     return out
+
+
+def _server_llm(request: Request):
+    """The shared server-key LLM, wrapped so each AI summary takes (and on failure refunds) one unit of site quota."""
+    from app.ai.providers.llm import QuotaGuardLLM
+    from app.ratelimit import allow, client_ip, refund
+
+    llm = state.llm
+    if not _server_ai_on():
+        return llm
+    ip, c = client_ip(request), state.cfg
+    return QuotaGuardLLM(llm, lambda now: allow(ip, c.ask_rate_per_min, c.ask_rate_per_day, c.ask_global_per_min,
+                                                c.ask_global_per_day, now=now),
+                         lambda now: refund(ip, now))
 
 
 def _server_ai_on() -> bool:

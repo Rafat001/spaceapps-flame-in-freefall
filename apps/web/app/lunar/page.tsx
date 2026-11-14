@@ -46,7 +46,7 @@ export default function Lunar() {
       <section className="dossier" aria-live="polite">
         <p className="dossier-no">Answer <EvidenceLabel text="Computed from PSI tables (no AI)" /></p>
         <label className="check"><input type="checkbox" checked={stream} onChange={(e) => setStream(e.target.checked)} />
-          Count burner oxidizer-stream O2 (inverse flames). It is labelled, because it is not the cabin atmosphere.</label>
+          Count burner oxidizer-stream O₂ (inverse flames). It is labelled, because it is not the cabin atmosphere.</label>
         {!cov ? <Loading /> : (<>
           <p className="answer">{cov.answer_text}</p>
           <div className="table-wrap"><table>
@@ -58,7 +58,7 @@ export default function Lunar() {
                 <td className="small">{Object.entries(r.full_match_by_subtable).map(([k, v]: any) => `${k}: ${v}`).join("; ")}</td>
                 <td className="small">{r.match_notes.join(" ")}</td>
                 <td className="small">{r.matching_runs.slice(0, 3).map((m: any) => (
-                  <span key={m.id} className="block">CSV record {m.source.row} · {m.run_label}: O2 “{m.oxygen.source_text}”, p “{m.pressure.source_text}”{m.oxygen_is_stream ? " (stream)" : ""}</span>))}</td>
+                  <span key={m.id} className="block">CSV record {m.source.row} · {m.run_label}: O₂ “{m.oxygen.source_text}”, p “{m.pressure.source_text}”{m.oxygen_is_stream ? " (stream)" : ""}</span>))}</td>
               </tr>))}</tbody>
           </table></div>
           {misses.length > 0 && (<><h3>Closest misses</h3><ul className="evidence-list">{misses.map((r: any) => (

@@ -9,7 +9,7 @@ import { AskQuota, type Quota } from "@/components/AskQuota";
 import { Markdown, citeHref } from "@/components/Markdown";
 
 const EXAMPLES = [
-  "Has any PSI test been run at a lunar-habitat-like atmosphere (O2 >= 30% and pressure <= 10.2 psi)?",
+  "Has any PSI test been run at a lunar-habitat-like atmosphere (O₂ ≥ 30% and pressure ≤ 10.2 psi)?",
   "How many fuel samples were burned in Saffire-II, and which materials?",
   "What was the largest initial droplet diameter in FLEX, and which test was it?",
   "How did the ISS fine water-mist extinguishers come about, according to official sources?",

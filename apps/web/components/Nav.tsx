@@ -29,7 +29,7 @@ const RESEARCH_APPS: AppItem[] = [
   {
     href: "/coverage",
     title: "Coverage Matrix",
-    desc: "Test target O2, pressure & airflow coverage",
+    desc: "Test target O₂, pressure & airflow coverage",
     category: "Analysis",
     color: "#EAFE07",
     icon: (
@@ -59,18 +59,6 @@ const RESEARCH_APPS: AppItem[] = [
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="8" r="6" /><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
-      </svg>
-    ),
-  },
-  {
-    href: "/earth",
-    title: "Earth vs Freefall",
-    desc: "1g buoyant convection vs 0g diffusive physics",
-    category: "Physics",
-    color: "#2E96F5",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" />
       </svg>
     ),
   },

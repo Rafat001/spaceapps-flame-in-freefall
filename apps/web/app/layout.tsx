@@ -3,6 +3,7 @@ import { Fira_Code, Fira_Sans, Overpass } from "next/font/google";
 import Link from "next/link";
 import Mark from "@/components/Mark";
 import Nav from "@/components/Nav";
+import ChemText from "@/components/ChemText";
 import "./globals.css";
 
 // NASA Space Apps Brand Guidelines (June 25, 2026), p.11: Fira Sans (titles & headings), Overpass (body copy),
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </dl>
           </div>
         </footer>
+        <ChemText />
       </body>
     </html>
   );

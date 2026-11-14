@@ -16,7 +16,7 @@ const INSTRUMENTS = [
     title: "Coverage Matrix",
     badge: "02 · Analysis",
     tagline: "Test planned study conditions against real flight rows",
-    desc: "Enter target O2 %, pressure, and airflow to see exactly which investigations report data at those parameters, and identify uncharted microgravity gaps.",
+    desc: "Enter target O₂ %, pressure, and airflow to see exactly which investigations report data at those parameters, and identify uncharted microgravity gaps.",
   },
   {
     href: "/compare",
@@ -40,23 +40,16 @@ const INSTRUMENTS = [
     desc: "Query the entire corpus with strict evidence grounding. Answers cite specific test rows [S#] and NASA publications with zero hallucinations.",
   },
   {
-    href: "/earth",
-    title: "Earth vs Freefall",
-    badge: "06 · Physics",
-    tagline: "1g buoyant convection vs 0g diffusive combustion",
-    desc: "Fundamental physics contrasts: why Earth fire safety rules do not work in orbit, and how spherical diffusion flames alter ignition and extinction.",
-  },
-  {
     href: "/spacefire",
     title: "SpaceFire Evolution",
-    badge: "07 · History",
+    badge: "06 · History",
     tagline: "Timeline from early Spacelab to Artemis exploration",
     desc: "The 50-year flight experiment roadmap tracing how NASA evolved microgravity combustion research toward deep-space human exploration.",
   },
   {
     href: "/beyond-psi",
     title: "Beyond PSI",
-    badge: "08 · Programs",
+    badge: "07 · Programs",
     tagline: "External flight tests & complementary flight programs",
     desc: "Index of international and commercial microgravity combustion projects (Saffire, Sounding Rockets, Drop Towers, and ESA/JAXA collaborations).",
   },
@@ -178,6 +171,7 @@ export default function AndroFlamePage() {
           <li><strong>Data Absence is Not Non-Flammability:</strong> An absence of documented experimental rows at a specific pressure or oxygen level in the PSI archive indicates a data gap—it is <em>not proof</em> that a material will not ignite or that no hazard exists.</li>
           <li><strong>Scale &amp; Geometry Effects:</strong> Small-scale glovebox/chamber samples (droplets, narrow fuel cards) do not capture full-scale turbulent vehicle fire dynamics or complex ventilation duct geometries without coupled computational fluid dynamics (CFD).</li>
           <li><strong>Zero Hallucination Policy:</strong> The AI synthesis answers cite only verbatim PSI records and official publications [S#]. When a topic is not addressed in NASA records, the system explicitly abstains rather than inventing speculative extrapolations.</li>
+          <li><strong>Verify AI Results Before Use:</strong> Answers from the AI chatbot and the Ask feature are generated from model confidence, not certainty, so no AI output should be trusted 100%. Check every result precisely against the cited sources [S#] before using it in research, design, or safety decisions.</li>
         </ul>
       </section>
 
@@ -185,7 +179,7 @@ export default function AndroFlamePage() {
       <section className="intro-panel" aria-labelledby="tips-title">
         <h2 id="tips-title" className="intro-panel-title">Tips and Tricks (Top Module Guide by Researcher Level)</h2>
         <p>
-          The navigation bar and the <strong>Apps</strong> menu at the top of the interface provide 7 specialized research modules. Here is how different levels of researchers can get the most value from each module:
+          The navigation bar and the <strong>Apps</strong> menu at the top of the interface provide 6 specialized research modules. Here is how different levels of researchers can get the most value from each module:
         </p>
 
         <div className="tips-levels-grid">
@@ -196,12 +190,6 @@ export default function AndroFlamePage() {
               Focus on fundamental physical differences and historical context:
             </p>
             <ul className="tips-modules-list">
-              <li>
-                <Link href="/earth" className="tips-module-link">
-                  <span className="tips-module-name">Earth vs Freefall ↗</span>
-                  <span className="tips-module-desc">Understand why 1g fire rules fail in 0g and how spherical flames burn without buoyant updrafts.</span>
-                </Link>
-              </li>
               <li>
                 <Link href="/spacefire" className="tips-module-link">
                   <span className="tips-module-name">SpaceFire Evolution ↗</span>

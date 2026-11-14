@@ -97,11 +97,11 @@ function Detail() {
       <h2>Conditions by test run <span className="muted small">({d.test_runs.length}{d.test_runs_truncated ? "+ shown, truncated" : ""} rows from PSI experimental tables)</span></h2>
       {d.test_runs.length === 0 ? <p className="cond-unknown">No experimental table rows ingested.</p> : (
         <div className="table-wrap"><table>
-          <thead><tr><th>Run</th><th>Table</th><th>Material / fuel</th><th>Geometry</th><th>O2</th><th>Pressure</th><th>Airflow</th><th>Measured</th><th>Source row</th></tr></thead>
+          <thead><tr><th>Run</th><th>Table</th><th>Material / fuel</th><th>Geometry</th><th>O₂</th><th>Pressure</th><th>Airflow</th><th>Measured</th><th>Source row</th></tr></thead>
           <tbody>{d.test_runs.map((r: any) => (
             <tr key={r.id}><td className="num">{r.run_label}{r.row_kind !== "test" && <span className="muted small block">{r.row_kind.replace(/_/g, " ")}</span>}
               {r.flags?.length > 0 && <span className="label label-nr small block">{r.flags.length} flag(s)</span>}</td>
-              <td className="small">{r.subtable || "—"}{r.oxygen_is_stream && <span className="muted block">O2 = burner stream</span>}</td>
+              <td className="small">{r.subtable || "—"}{r.oxygen_is_stream && <span className="muted block">O₂ = burner stream</span>}</td>
               <td>{r.material}{r.material_normalized && r.material_normalized !== r.material && <span className="muted small block">alias: {r.material_normalized}</span>}</td><td className="small">{r.sample_geometry}</td>
               <td><CondCell c={r.oxygen} showSource /></td><td><CondCell c={r.pressure} showSource /></td><td><CondCell c={r.airflow} showSource /></td>
               <td className="small">{r.measurements.length ? r.measurements.map((m: any) => `${m.variable.replace(/_/g, " ")}: ${m.value_text} ${m.unit}`).join("; ") : "—"}</td>

@@ -37,7 +37,7 @@ export default function Coverage() {
 
   return (
     <>
-      <PageHead no="02" kicker="Coverage" title="Has this work already been done?">
+      <PageHead no="02" kicker="Coverage" title="Parameter coverage" hideTitle>
         Enter the parameters of the study you are planning. The catalog checks every PSI table row and reports
         which investigations document them, where they partially overlap, and what is <em>Not reported</em>.
       </PageHead>
@@ -51,12 +51,12 @@ export default function Coverage() {
         <fieldset>
           <legend>Atmosphere and flow</legend>
           <div className="console-grid">
-            {num("oxygen_min", "O2 min (% by volume)")}{num("oxygen_max", "O2 max (% by volume)")}<div />
+            {num("oxygen_min", "O₂ min (% by volume)")}{num("oxygen_max", "O₂ max (% by volume)")}<div />
             {num("pressure_min", "Pressure min")}{num("pressure_max", "Pressure max")}
             <div><label htmlFor="pressure_unit">Pressure unit</label><select id="pressure_unit" value={f.pressure_unit} onChange={(e) => set("pressure_unit", e.target.value)}>{["kPa", "psi", "atm", "bar", "mmHg"].map((u) => <option key={u}>{u}</option>)}</select></div>
             {num("airflow_min", "Airflow min")}{num("airflow_max", "Airflow max")}
             <div><label htmlFor="diluent">Diluent / suppressant present</label><select id="diluent" value={f.diluent || ""} onChange={(e) => set("diluent", e.target.value)}>
-              <option value="">Any</option><option value="He">Helium (He)</option><option value="CO2">Carbon dioxide (CO2)</option><option value="N2">Nitrogen (N2)</option></select></div>
+              <option value="">Any</option><option value="He">Helium (He)</option><option value="CO2">Carbon dioxide (CO₂)</option><option value="N2">Nitrogen (N₂)</option></select></div>
             <div><label htmlFor="airflow_unit">Airflow unit</label><select id="airflow_unit" value={f.airflow_unit} onChange={(e) => set("airflow_unit", e.target.value)}>{["m/s", "cm/s", "mm/s"].map((u) => <option key={u}>{u}</option>)}</select></div>
           </div>
         </fieldset>
@@ -73,7 +73,7 @@ export default function Coverage() {
         </fieldset>
         <div className="actions">
           <button type="submit" disabled={busy}>{busy ? "Checking…" : "Check coverage"}</button>
-          <button type="button" className="secondary" onClick={() => { setF(EXAMPLE); run(undefined, EXAMPLE); }}>Example: solid material, ≥30 % O2, ≤10.2 psi (lunar)</button>
+          <button type="button" className="secondary" onClick={() => { setF(EXAMPLE); run(undefined, EXAMPLE); }}>Example: solid material, ≥30 % O₂, ≤10.2 psi (lunar)</button>
           <button type="button" className="secondary" onClick={() => { setF(EMPTY); setOut(null); }}>Reset</button>
         </div>
       </form>
@@ -102,7 +102,7 @@ export default function Coverage() {
                     {r.unknown_parameters.length > 0 && <p className="small st-unknown gap-top">Not reported for: {r.unknown_parameters.map(humanize).join(", ")}</p>}
                     {r.matching_runs.length > 0 && (
                       <details><summary>{r.n_runs_full_match > 0 ? `${r.n_runs_full_match} PSI table row(s) meet all row-level parameters` : "Closest PSI table rows"}</summary>
-                        <div className="table-wrap"><table><thead><tr><th>Run</th><th>Material</th><th>O2</th><th>Pressure</th><th>Airflow</th><th>Row</th></tr></thead>
+                        <div className="table-wrap"><table><thead><tr><th>Run</th><th>Material</th><th>O₂</th><th>Pressure</th><th>Airflow</th><th>Row</th></tr></thead>
                           <tbody>{r.matching_runs.map((m: any) => <tr key={m.id}><td className="num">{m.run_label}</td><td>{m.material}</td>
                             <td><CondCell c={m.oxygen} showSource /></td><td><CondCell c={m.pressure} showSource /></td><td><CondCell c={m.airflow} showSource /></td><td className="num">{m.source.row}</td></tr>)}</tbody></table></div>
                       </details>

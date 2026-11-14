@@ -6,7 +6,7 @@ import { assistantHeaders } from "@/lib/byok";
 import { ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
 import { Citations, Flags } from "@/components/Citations";
 import { AskQuota, type Quota } from "@/components/AskQuota";
-import { Markdown } from "@/components/Markdown";
+import { Markdown, citeHref } from "@/components/Markdown";
 
 const EXAMPLES = [
   "Has any PSI test been run at a lunar-habitat-like atmosphere (O2 >= 30% and pressure <= 10.2 psi)?",
@@ -98,7 +98,7 @@ export default function Assistant() {
                   {c.injection_flagged && <span className="label label-nr">instruction-like text removed</span>}
                 </div>
                 <blockquote>{c.excerpt}</blockquote>
-                <span className="source-links">{c.source_url && <a href={c.source_url} target="_blank" rel="noreferrer">source ↗</a>}
+                <span className="source-links">{c.source_url && <a href={citeHref(c) || c.source_url} target="_blank" rel="noreferrer">source ↗</a>}
                   {c.investigation_id && <Link href={`/investigations/${c.investigation_id}${r.question ? `?q=${encodeURIComponent(r.question)}` : ""}`}>record</Link>}
                   <span>page: {c.page}</span></span>
               </li>))}</ol>

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Markdown } from "@/components/Markdown";
+import { Markdown, citeHref } from "@/components/Markdown";
 import { api, qs, API_BASE } from "@/lib/api";
 import { EvidenceLabel } from "@/components/ui";
 import { assistantHeaders } from "@/lib/byok";
@@ -121,7 +121,7 @@ export default function InvestigationOverview({ invId, query }: OverviewProps) {
                       {c.locator || c.page}
                     </span>
                     {c.source_url && (
-                      <> · <a href={c.source_url} target="_blank" rel="noreferrer" className="small">source ↗</a></>
+                      <> · <a href={citeHref(c) || c.source_url} target="_blank" rel="noreferrer" className="small">source ↗</a></>
                     )}
                     {c.excerpt && (
                       <blockquote className="cite-excerpt small muted">

@@ -1,7 +1,9 @@
 "use client";
 import Link from "next/link";
+import { citeHref } from "@/components/Markdown";
 
 export function Citation({ c }: { c: any }) {
+  const to = citeHref(c);
   return (
     <li className="source">
       <div className="source-head">
@@ -13,7 +15,7 @@ export function Citation({ c }: { c: any }) {
       </div>
       {c.quote && <blockquote>{c.quote}</blockquote>}
       <span className="source-links">
-        {c.url && <a href={c.url} target="_blank" rel="noreferrer">source ↗</a>}
+        {to && /^https?:/.test(to) && <a href={to} target="_blank" rel="noreferrer">source ↗</a>}
         {c.investigation_id && <Link href={`/investigations/${c.investigation_id}`}>record</Link>}
         {c.file && <span className="muted small">{c.file}</span>}
       </span>

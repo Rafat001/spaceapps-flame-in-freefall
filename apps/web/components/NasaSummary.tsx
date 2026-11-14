@@ -1,5 +1,6 @@
 "use client";
 import { EvidenceLabel } from "./ui";
+import { citeHref } from "./Markdown";
 
 type Cite = { label: string; title: string; locator: string; url: string };
 type Fact = { kind: string; label: string; quote: string; citation: Cite };
@@ -12,8 +13,8 @@ export function citeName(c: Cite) {
   return c.locator && c.locator !== "page text" ? `${doc}, ${c.locator}` : doc;
 }
 
-export function CiteLink({ c }: { c: Cite }) {
-  return <a className="cite-link" href={c.url} target="_blank" rel="noreferrer">{citeName(c)} ↗</a>;
+export function CiteLink({ c, quote }: { c: Cite; quote?: string }) {
+  return <a className="cite-link" href={citeHref({ source_url: c.url, quote }) || c.url} target="_blank" rel="noreferrer">{citeName(c)} ↗</a>;
 }
 
 /** Facts grouped under their label, in the order the API sends them. */
@@ -28,7 +29,7 @@ export function FactList({ facts }: { facts: Fact[] }) {
       {groups.map(([label, fs]) => (
         <div key={label}>
           <dt>{label}</dt>
-          <dd>{fs.map((f, i) => <p key={i}><q>{f.quote}</q> <CiteLink c={f.citation} /></p>)}</dd>
+          <dd>{fs.map((f, i) => <p key={i}><q>{f.quote}</q> <CiteLink c={f.citation} quote={f.quote} /></p>)}</dd>
         </div>
       ))}
     </dl>
@@ -46,7 +47,7 @@ export function SourceNotes({ notes, title }: { notes: Note[]; title: string }) 
             <p className="nasa-note-text">{n.text}</p>
             <div className="vs">
               {n.quotes.map((q, k) => (
-                <div key={k} className="vs-side"><span className="vs-tag">NASA</span><q>{q.quote}</q> <CiteLink c={q.citation} /></div>
+                <div key={k} className="vs-side"><span className="vs-tag">NASA</span><q>{q.quote}</q> <CiteLink c={q.citation} quote={q.quote} /></div>
               ))}
               {n.psi_value && <div className="vs-side"><span className="vs-tag vs-psi">PSI</span><span>{n.psi_value}</span></div>}
             </div>
@@ -66,7 +67,7 @@ export default function NasaSummary({ s, acronym }: { s: any; acronym: string })
       {s.lead && (
         <figure className="nasa-lead">
           <blockquote>{s.lead.quote}</blockquote>
-          <figcaption><CiteLink c={s.lead.citation} /></figcaption>
+          <figcaption><CiteLink c={s.lead.citation} quote={s.lead.quote} /></figcaption>
         </figure>
       )}
       <FactList facts={s.facts} />

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { citeHref } from "@/components/Markdown";
 import { ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
 
 function Insights() {
@@ -47,7 +48,7 @@ function Insights() {
                       <tr key={c.criterion}><td>{c.label}</td><td className="num">{Math.round(c.weight * 100)}%</td>
                         <td className="num"><div className="bar" aria-label={`match ${c.match}`}><span style={{ width: `${c.match * 100}%` }} /></div>{c.match}</td>
                         <td className="num">{c.contribution}</td>
-                        <td className="small">{c.citations.map((ci: any, i: number) => <div key={i} className="cite-line"><EvidenceLabel text={ci.label} /> {ci.excerpt} {ci.url && <a href={ci.url} target="_blank" rel="noreferrer">↗</a>}</div>)}
+                        <td className="small">{c.citations.map((ci: any, i: number) => <div key={i} className="cite-line"><EvidenceLabel text={ci.label} /> {ci.excerpt} {ci.url && <a href={citeHref(ci) || ci.url} target="_blank" rel="noreferrer">↗</a>}</div>)}
                           {c.flags.map((fl: string) => <div key={fl} className="st-unknown">{fl}</div>)}</td></tr>))}</tbody></table></div>
                 </details>
               </li>

@@ -1,21 +1,27 @@
 "use client";
 import ReactMarkdown from "react-markdown";
+import { withTextFragment } from "@/lib/textFragment";
 
-export type CiteSource = { ref: string; source_url?: string | null; investigation_id?: string | null; acronym?: string | null;
-  section?: string | null; label?: string | null; excerpt?: string | null; locator?: string | null };
+export type CiteSource = { ref?: string; source_url?: string | null; url?: string | null; investigation_id?: string | null; acronym?: string | null;
+  section?: string | null; label?: string | null; excerpt?: string | null; quote?: string | null; locator?: string | null };
 
-/** Where a citation marker should take the reader: the source itself, else the investigation page. */
+/** Where a citation marker should take the reader: the source itself (with a text fragment when possible), else the investigation page. */
 export function citeHref(c: CiteSource | undefined): string | null {
   if (!c) return null;
-  if (c.source_url) return c.source_url;
+  const raw = c.source_url || c.url || null;
+  if (raw) {
+    if (/^https?:\/\//i.test(raw)) return withTextFragment(raw, c.quote || c.excerpt);
+    return raw;
+  }
   if (c.investigation_id) return `/investigations/${encodeURIComponent(c.investigation_id)}`;
   return null;
 }
 
 function citeTitle(c: CiteSource): string {
   const who = [c.acronym, c.section].filter(Boolean).join(" · ");
-  const ex = (c.excerpt || "").replace(/\s+/g, " ").slice(0, 220);
-  return [who, c.label, ex && `“${ex}${(c.excerpt || "").length > 220 ? "…" : ""}”`].filter(Boolean).join("\n");
+  const ex = (c.excerpt || c.quote || "").replace(/\s+/g, " ").slice(0, 220);
+  const full = c.excerpt || c.quote || "";
+  return [who, c.label, ex && `“${ex}${full.length > 220 ? "…" : ""}”`].filter(Boolean).join("\n");
 }
 
 /**

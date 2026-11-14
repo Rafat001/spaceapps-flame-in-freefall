@@ -99,7 +99,7 @@ export default function Assistant() {
                 </div>
                 <blockquote>{c.excerpt}</blockquote>
                 <span className="source-links">{c.source_url && <a href={c.source_url} target="_blank" rel="noreferrer">source ↗</a>}
-                  {c.investigation_id && <Link href={`/investigations/${c.investigation_id}`}>record</Link>}
+                  {c.investigation_id && <Link href={`/investigations/${c.investigation_id}${r.question ? `?q=${encodeURIComponent(r.question)}` : ""}`}>record</Link>}
                   <span>page: {c.page}</span></span>
               </li>))}</ol>
           )}

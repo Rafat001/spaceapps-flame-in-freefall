@@ -47,8 +47,24 @@ Introduced query-aware AI overviews for individual combustion investigations, gr
 - **Top Rail**: Removed the `PSI catalog 24 inv.` status badge from `apps/web/app/layout.tsx` and updated `apps/web/app/globals.css`.
 - Frees horizontal space for the 10 main navigation links on laptop and tablet viewports without cluttering the wordmark.
 
-#### 6. Documentation
+#### 6. Navigation Redesign & AndroFlame Intro Page
+- **AndroFlame Intro Page (`/androflame` & `/intro`)**: Dedicated mission overview covering the 2026 Space Apps Challenge, microgravity combustion physics (buoyancy absence, spherical diffusion, cool flames, partial-gravity exploration targets), and zero-hallucination grounding standards.
+- **Waffle Apps Launcher (Microsoft 365 style)**: Collapsed 7 research tools (Catalog Explorer, Coverage Matrix, Compare Studies, Scenario Ranking, Earth vs Freefall, SpaceFire Evolution, Beyond PSI) into an interactive 9-dot dropdown popover.
+- **Fully Opaque Backdrop & Hover Fixes**: Made `.apps-popover` and `.app-card` 100% solid (`#07173F` / `#0B2154`) with `z-index: 999` on `.rail` to prevent underlying page text bleed-through, and overrode button hover to remove generic white backgrounds.
+- **Clean 4-Tab Navbar**: Structured as `AndroFlame` (00), `Apps` (Waffle Launcher), `Ask` (01), and `AI Config` (02, renamed from Settings).
+- **Team & Academic Collaboration Section**: Documented project team members (Sayket Dey & Kapilkumar Patil from Ghent University Fire Safety Science & Engineering, Mohammed Majharul Islam from Genesys USA, and Md Emrul Chowdhury from Amazon UK — Software Development Engineer L5) on the AndroFlame intro page.
+- **Removed Lunar Tab**: Retired the standalone `/lunar` navbar item and redirected home page discovery directly to Scenario Ranking (`/insights`).
+
+#### 7. Search Synthesis, Query Routing & Introduction Page Enhancements
+- **Search Findings & Evidence Synthesis**: Added a prominent AI evidence synthesis card on `/explorer?q=...` that renders literature synthesis, cited investigation badges (SAME, DAFT-2, etc.), and match indicators (`Match #n for "query"`).
+- **Query Parameter Passing**: Passing `?q=...` from search cards, chips, and Ask citations into `/investigations/[id]`, which powers query-scoped AI overviews and contextual back navigation.
+- **Ask Page Suggested Questions Background Fix**: Reverted button selector specificity in `globals.css` and enforced transparent backgrounds on `.prompts button`.
+- **Navbar Alignment & Apps Popover Fix**: Fixed logo and tab alignment across viewports (single-line horizon layout) and anchored the Apps launcher directly under the 9-dot waffle button.
+- **AndroFlame Intro Page (PDF Spec)**: Formatted `/androflame` with split Objective & embedded YouTube video (*NASA ScienceCasts: The Power of Studying Combustion on the ISS*), Scope & Target Audience, Limitations, and 3-tier researcher level tips & tricks.
+
+#### 8. Documentation
 - Created `docs/AI_OVERVIEW.md` detailing endpoint contracts, context building pipeline, citation format specifications, and error handling.
+- Created `CHANGELOG.md` maintaining persistent architectural and PR context for developers and AI agents.
 
 ---
 

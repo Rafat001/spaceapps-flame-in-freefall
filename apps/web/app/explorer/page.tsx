@@ -2,9 +2,11 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { api, qs } from "@/lib/api";
+import { api, qs, API_BASE } from "@/lib/api";
 import { humanize, readCompare, toggleCompare } from "@/lib/format";
-import { CondCell, ErrorBox, Loading, Notice, PageHead } from "@/components/ui";
+import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
+import { Markdown } from "@/components/Markdown";
+import { assistantHeaders } from "@/lib/byok";
 
 const FIELDS = ["q", "family", "fuel_class", "topic", "measurement_type", "material", "hardware", "platform", "lens", "oxygen_min", "oxygen_max",
   "pressure_min", "pressure_max", "pressure_unit", "airflow_min", "airflow_max", "airflow_unit", "sort", "scenario"] as const;
@@ -19,6 +21,10 @@ function Explorer() {
   const [data, setData] = useState<any>(null);
   const [err, setErr] = useState<unknown>(null);
   const [cmp, setCmp] = useState<string[]>([]);
+  const [searchAnswer, setSearchAnswer] = useState<any>(null);
+  const [answerLoading, setAnswerLoading] = useState(false);
+
+  const activeQuery = sp.get("q") || "";
 
   useEffect(() => { api("/api/meta").then(setMeta).catch(setErr); setCmp(readCompare()); }, []);
   const key = sp.toString();
@@ -30,6 +36,30 @@ function Explorer() {
     if (params.get("q") && !params.get("sort")) params.set("sort", "match");
     api(`/api/investigations?${params.toString()}`).then(setData).catch(setErr);
   }, [key]);
+
+  // Fetch synthesized AI answer across literature whenever search query ?q= changes
+  useEffect(() => {
+    const qStr = sp.get("q")?.trim();
+    if (!qStr) {
+      setSearchAnswer(null);
+      setAnswerLoading(false);
+      return;
+    }
+    setAnswerLoading(true);
+    setSearchAnswer(null);
+    const headers = assistantHeaders(API_BASE);
+    api("/api/ask", {
+      method: "POST",
+      body: JSON.stringify({ question: qStr }),
+      headers: headers as Record<string, string>,
+    })
+      .then((res) => setSearchAnswer(res))
+      .catch((e) => {
+        console.error("Search answer error:", e);
+        setSearchAnswer(null);
+      })
+      .finally(() => setAnswerLoading(false));
+  }, [sp.get("q")]);
 
   const set = (k: string, v: string) => setF((p) => ({ ...p, [k]: v }));
   const apply = (e?: React.FormEvent) => { e?.preventDefault(); router.push(`/explorer${qs(f)}`); };
@@ -137,16 +167,87 @@ function Explorer() {
                   {" "}<b>Data completeness</b> is how many of 10 key catalog fields NASA’s record fills in (objective, approach, hardware, test rows, materials,
                   oxygen, pressure, airflow, measurements, documents). <Link href="/insights">How scores are built</Link>
                 </p>)}
+              {activeQuery && (
+                <div className="search-synthesis" aria-live="polite">
+                  <div className="search-synthesis-head">
+                    <h3 className="search-synthesis-title">
+                      <span>Synthesized findings for</span>
+                      <span className="search-synthesis-query">“{activeQuery}”</span>
+                    </h3>
+                    <EvidenceLabel text={searchAnswer?.answer_label || "NASA PSI Evidence Synthesis"} />
+                  </div>
+
+                  {answerLoading && (
+                    <div className="overview-shimmer" aria-busy="true">
+                      <p className="muted small" style={{ marginBottom: 8 }}>Searching literature and synthesizing experimental records…</p>
+                      <div className="shimmer-line shimmer-line--long" />
+                      <div className="shimmer-line shimmer-line--mid" />
+                      <div className="shimmer-line shimmer-line--long" />
+                      <div className="shimmer-line shimmer-line--short" />
+                    </div>
+                  )}
+
+                  {!answerLoading && searchAnswer && (
+                    <>
+                      {searchAnswer.answer ? (
+                        <div className="search-synthesis-body md">
+                          <Markdown text={searchAnswer.answer} />
+                        </div>
+                      ) : searchAnswer.template_summary ? (
+                        <p className="search-synthesis-body">{searchAnswer.template_summary}</p>
+                      ) : searchAnswer.direct?.answer ? (
+                        <div className="search-synthesis-body">{searchAnswer.direct.answer}</div>
+                      ) : (
+                        <p className="muted small">No direct written synthesis returned. See matching experimental records below.</p>
+                      )}
+
+                      {(() => {
+                        const invMap = new Map<string, { id: string; acronym: string }>();
+                        (searchAnswer.citations || []).forEach((c: any) => {
+                          if (c.investigation_id && c.acronym && !invMap.has(c.investigation_id)) {
+                            invMap.set(c.investigation_id, { id: c.investigation_id, acronym: c.acronym });
+                          }
+                        });
+                        const citedInvs = Array.from(invMap.values());
+                        if (!citedInvs.length) return null;
+                        return (
+                          <div className="search-synthesis-chips">
+                            <span className="search-synthesis-chips-label">Relevant investigations:</span>
+                            {citedInvs.map((inv) => (
+                              <Link
+                                key={inv.id}
+                                href={`/investigations/${inv.id}?q=${encodeURIComponent(activeQuery)}`}
+                                className="search-chip"
+                                title={`Open AI Overview for ${inv.acronym}`}
+                              >
+                                {inv.acronym} ↗
+                              </Link>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                    </>
+                  )}
+                </div>
+              )}
+
               <ol className="entries">
                 {data.items.map((c: any, idx: number) => {
                   const resultRank = (data.page ? (data.page - 1) * (data.page_size || 50) : 0) + idx + 1;
+                  const itemQuery = activeQuery || f.q;
+                  const itemHref = `/investigations/${c.id}${itemQuery ? `?q=${encodeURIComponent(itemQuery)}` : ""}`;
                   return (
                     <li key={c.id}>
                       <article className="entry">
-                        <h2 className="entry-acr"><Link href={`/investigations/${c.id}${f.q ? `?from_q=${encodeURIComponent(f.q)}` : ""}`}>{c.acronym}</Link>
-                          <span className="entry-acc">#{resultRank} · {c.accession}</span></h2>
+                        <h2 className="entry-acr">
+                          <Link href={itemHref}>{c.acronym}</Link>
+                          <span className="entry-acc">#{resultRank} · {c.accession}</span>
+                          {itemQuery && <span className="entry-match-tag">Match #{resultRank} for “{itemQuery}”</span>}
+                        </h2>
                         <div>
-                          <p className="entry-title">{c.title}</p>
+                          <p className="entry-title">
+                            <Link href={itemHref} style={{ color: "inherit", textDecoration: "none" }}>{c.title}</Link>
+                          </p>
                           <ul className="tags"><li>{c.family}</li><li>{c.fuel_class}</li><li>{c.platform}</li>
                             {c.is_ground && <li className="tag-ground">Ground / modeling</li>}
                             <li>{c.n_test_runs} test rows</li>{c.n_flags > 0 && <li className="tag-flag">{c.n_flags} data flags</li>}</ul>
@@ -179,6 +280,9 @@ function Explorer() {
                               <input type="checkbox" checked={cmp.includes(c.id)} onChange={() => setCmp(toggleCompare(c.id))} />
                               Compare
                             </label>
+                            <Link href={itemHref} className="entry-cta-overview">
+                              View overview{itemQuery ? ` for “${itemQuery}”` : ""} →
+                            </Link>
                             <a href={c.source_url} target="_blank" rel="noreferrer">PSI record ↗</a>
                           </div>
                         </div>

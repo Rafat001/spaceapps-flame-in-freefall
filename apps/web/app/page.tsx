@@ -58,7 +58,7 @@ export default function Home() {
             <div><dt>Test rows (PSI tables)</dt><dd>{n(meta?.counts.test_runs)}</dd></div>
             <div><dt>Data in PSI</dt><dd>{meta?.catalog_stats ? `${meta.catalog_stats.total_tb.toFixed(1)} TB` : "—"}</dd></div>
             <div><dt>Indexed passages</dt><dd>{n(meta?.counts.chunks)}</dd></div>
-            {meta?.catalog_stats && <p className="muted small">Computed from PSI records, as of {meta.catalog_stats.as_of}: {meta.catalog_stats.by_project_type["Microgravity Investigation"]} microgravity + {meta.catalog_stats.by_project_type["Ground Investigation"]} ground investigations.</p>}
+            {meta?.catalog_stats && <p className="plate-note">Computed from PSI records, as of {meta.catalog_stats.as_of}: {meta.catalog_stats.by_project_type["Microgravity Investigation"]} microgravity + {meta.catalog_stats.by_project_type["Ground Investigation"]} ground investigations.</p>}
           </dl>
         </aside>
       </section>
@@ -67,7 +67,7 @@ export default function Home() {
         <p className="kicker"><span className="kicker-no">Lead question</span> Lunar habitat atmosphere (official brief: ≥ 30 % O2, ≤ 10.2 psi)</p>
         <h2 id="lead-title" className="display">Has fire been studied at Moon-base oxygen and pressure?</h2>
         {!lunar ? <Loading /> : <p className="answer">{lunar.answer_text}</p>}
-        <p><Link href="/lunar">See the rows, the chart and the partial-gravity gap →</Link></p>
+        <p><Link href="/insights">See scenario rankings, rows, and research scores →</Link></p>
       </section>
 
       <section className="film" aria-labelledby="film-title">

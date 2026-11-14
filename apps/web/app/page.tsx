@@ -5,12 +5,9 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { PointsLine, RankingExplainer, TargetAtmosphere } from "@/components/RankingExplainer";
 import Mark from "@/components/Mark";
-import VideoFacade from "@/components/VideoFacade";
 import { SpaceFireTeaser } from "@/components/SpaceFire";
 import { Disclaimer, ErrorBox, EvidenceLabel, Loading } from "@/components/ui";
 
-const VIDEO = { id: "W1oXykoz9zg", title: "NASA ScienceCasts: The Power of Studying Combustion on the ISS" };
-const GLENN = "https://www.nasa.gov/glenn/glenn-expertise-space-exploration/physical-sciences-program/combustion-science/";
 const TRY = ["PMMA flame spread", "smoke detection", "BASS-II"];
 const n = (v?: number) => (typeof v === "number" ? v.toLocaleString("en-US") : "—");
 
@@ -57,21 +54,6 @@ export default function Home() {
             {meta?.catalog_stats && <p className="plate-note">Computed from PSI records, as of {meta.catalog_stats.as_of}: {meta.catalog_stats.by_project_type["Microgravity Investigation"]} microgravity + {meta.catalog_stats.by_project_type["Ground Investigation"]} ground investigations.</p>}
           </dl>
         </aside>
-      </section>
-
-      <section className="film" aria-labelledby="film-title">
-        <VideoFacade id={VIDEO.id} title={VIDEO.title} />
-        <div className="film-copy">
-          <p className="kicker"><span className="kicker-no">Fig. 2</span> Before you search</p>
-          <h2 id="film-title" className="display">The power of studying combustion on the ISS</h2>
-          <p className="film-meta">NASA ScienceCasts · 3:39 · official challenge resource</p>
-          <blockquote className="film-quote">The Space Station environment also provides an important test-bed for studying spacecraft fire risk.
-            <cite><a href={GLENN} target="_blank" rel="noreferrer">NASA Combustion Science page ↗</a></cite></blockquote>
-          <p className="film-links">
-            <a href={`https://www.youtube.com/watch?v=${VIDEO.id}`} target="_blank" rel="noreferrer">Watch on YouTube ↗</a>
-            <Link href="/beyond-psi">NASA experiments not in PSI →</Link>
-          </p>
-        </div>
       </section>
 
       <SpaceFireTeaser />

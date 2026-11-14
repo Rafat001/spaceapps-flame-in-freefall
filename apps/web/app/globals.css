@@ -254,6 +254,8 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 .entry-foot { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center; margin-top: 12px; font-size: .85rem; }
 .entry-foot .score-inline { font-family: var(--f-mono); color: var(--ash); }
 .entry-foot .score-inline b { color: var(--signal); font-weight: 500; font-size: 1rem; }
+.entry-foot .tag-target { color: var(--signal); }
+.score-legend { max-width: 72ch; margin: 0 0 18px; line-height: 1.5; }
 .check { display: inline-flex; align-items: center; gap: 8px; margin: 0; color: var(--ink-2); font-size: .85rem; min-height: 40px; cursor: pointer; }
 
 .tags { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0 0 10px; padding: 0; list-style: none; font-family: var(--f-mono); font-size: .74rem; color: var(--ash); }

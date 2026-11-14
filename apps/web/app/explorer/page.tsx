@@ -93,7 +93,7 @@ function Explorer() {
             {sel("scenario", meta ? Object.keys(meta.scenarios) : [], "Relevance scenario")}
             <label htmlFor="sort">Sort by</label>
             <select id="sort" value={f.sort || "relevance"} onChange={(e) => set("sort", e.target.value)}>
-              <option value="relevance">Relevance (scenario)</option><option value="title">Title</option>
+              <option value="relevance">Most relevant first</option>{f.q && <option value="match">Best text match</option>}<option value="title">Title</option>
               <option value="completeness">Data completeness</option><option value="accession">PSI accession</option>
             </select>
           </fieldset>
@@ -112,7 +112,16 @@ function Explorer() {
           )}
           {!data ? <Loading /> : (
             <>
-              <p className="result-count"><b>{data.total}</b> investigation(s) match. {data.total === 0 && "No documented work in this catalog matches all filters — this is not proof that none exists."}</p>
+              <p className="result-count"><b>{data.total}</b> investigation(s) match. {data.total === 0 && "No documented work in this catalog matches all filters — this is not proof that none exists."}
+                {data.total > 0 && data.sort === "relevance" && data.scenario_label && <> Most relevant to <b>{data.scenario_label}</b> first.</>}</p>
+              {data.total > 0 && data.scenario_label && (
+                <p className="score-legend muted small">
+                  <b>Relevance</b> (0–100) is how closely an investigation’s documented fuel, oxygen and pressure, flame behavior, suppression work and habitat use match
+                  the <i>{data.scenario_label}</i> scenario. It is research relevance, not a hazard or safety score.
+                  {" "}<b>Rank</b> puts investigations with table rows that meet the scenario’s oxygen and pressure target first, then orders by score.
+                  {" "}<b>Data completeness</b> is how many of 10 key catalog fields NASA’s record fills in (objective, approach, hardware, test rows, materials,
+                  oxygen, pressure, airflow, measurements, documents). <Link href="/insights">How scores are built</Link>
+                </p>)}
               <ol className="entries">
                 {data.items.map((c: any) => (
                   <li key={c.id}>
@@ -131,7 +140,12 @@ function Explorer() {
                           <div><dt>Airflow</dt><dd><CondCell c={c.conditions.airflow} /></dd></div>
                         </dl>
                         <div className="entry-foot">
-                          <span className="score-inline">Relevance <b>{c.relevance_score ?? "—"}</b> · completeness {Math.round(c.data_completeness * 100)}%</span>
+                          <span className="score-inline" title="Research relevance to the selected scenario, out of 100. Not a hazard score.">
+                            {c.relevance_rank ? <>Rank <b>#{c.relevance_rank}</b> of {data.ranked_total} · relevance <b>{c.relevance_score}</b>/100</> : <>Relevance —</>}
+                            {c.relevance_tier === "documented_at_target" && <span className="tag-target"> · meets target on same row</span>}
+                          </span>
+                          <span className="score-inline" title="Share of 10 key catalog fields that NASA's record fills in.">
+                            Data completeness {Math.round(c.data_completeness * 10)}/10 fields</span>
                           <label className="check">
                             <input type="checkbox" checked={cmp.includes(c.id)} onChange={() => setCmp(toggleCompare(c.id))} />
                             Compare

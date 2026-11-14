@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <dl className="colophon-notes">
               <div><dt>Built for</dt><dd>The 2026 NASA Space Apps Challenge — <i>Flame in Freefall</i> challenge. Prototype. <span className="hashtag">#SpaceApps</span></dd></div>
               <div><dt>Sources</dt><dd>NASA Physical Sciences Informatics (PSI) public records and experimental tables (CC0), plus the official challenge brief.</dd></div>
-              <div><dt>Scope</dt><dd>Research relevance only — not a hazard score or safety certification. Official challenge resources arrive Friday 13 Nov 2026 and are not yet included.</dd></div>
+              <div><dt>Scope</dt><dd>Research relevance only — not a hazard score or safety certification. Answers stay within the official challenge resources and the references they cite.</dd></div>
               <div><dt>Independence</dt><dd>An independent participant project. It is not affiliated with, sponsored by, or endorsed by NASA or the NASA Space Apps Challenge; NASA names appear only to describe our participation and to cite NASA data.</dd></div>
             </dl>
           </div>

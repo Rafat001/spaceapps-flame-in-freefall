@@ -89,7 +89,7 @@ def list_investigations(
     pressure_min: float | None = Query(None, ge=0), pressure_max: float | None = Query(None, ge=0),
     pressure_unit: PressureUnit = "kPa",
     airflow_min: float | None = Query(None, ge=0), airflow_max: float | None = Query(None, ge=0), airflow_unit: FlowUnit = "m/s",
-    sort: Literal["relevance", "title", "completeness", "accession"] = "relevance",
+    sort: Literal["relevance", "match", "title", "completeness", "accession"] = "relevance",
     scenario: str = "lunar_habitat", page: int = Query(1, ge=1), page_size: int = Query(50, ge=1, le=100),
     s: Session = Depends(get_session),
 ):
@@ -100,21 +100,32 @@ def list_investigations(
         pressure=catalog.NumericRange(to_kpa(pressure_min, pressure_unit), to_kpa(pressure_max, pressure_unit)),
         airflow=catalog.NumericRange(to_m_s(airflow_min, airflow_unit), to_m_s(airflow_max, airflow_unit)))
     cards = [inv_card(i) for i in invs]
+    scenario_label, ranked_total = None, 0
     if scenario in SCENARIOS:
-        scores = {r["investigation"]["id"]: r["score"] for r in ranking.rank(s, scenario, [i.id for i in invs])["results"]}
+        ranked = ranking.rank(s, scenario)  # rank against the whole catalog so "#n" means the same on every page
+        scenario_label, ranked_total = ranked["scenario_label"], len(ranked["results"])
+        by_id = {r["investigation"]["id"]: r for r in ranked["results"]}
         for c in cards:
-            c["relevance_score"] = scores.get(c["id"])
+            r = by_id.get(c["id"])
+            c["relevance_score"] = r["score"] if r else None
+            c["relevance_rank"] = r["rank"] if r else None
+            c["relevance_tier"] = r["tier"] if r else None
     if sort == "title":
         cards.sort(key=lambda c: c["title"])
     elif sort == "completeness":
         cards.sort(key=lambda c: (-c["data_completeness"], c["accession"]))
     elif sort == "accession":
         cards.sort(key=lambda c: int(c["accession"].split("-")[1]))
-    elif not q:
-        cards.sort(key=lambda c: (-(c.get("relevance_score") or 0), c["id"]))
+    elif sort == "match":
+        pass  # keep full-text (BM25) order from catalog.search
+    else:
+        # Same order as the scenario ranking: same-row target matches first, then weighted score.
+        cards.sort(key=lambda c: (c.get("relevance_rank") or 10_000, c["id"]))
     total = len(cards)
     start = (page - 1) * page_size
     return {"total": total, "page": page, "page_size": page_size, "items": cards[start:start + page_size],
+            "sort": sort, "scenario": scenario, "scenario_label": scenario_label,
+            "ranked_total": ranked_total,
             "applied_filters": {k: v for k, v in dict(q=q, family=family, fuel_class=fuel_class, hardware=hardware,
                                 gravity_regime=gravity_regime, topic=topic, measurement_type=measurement_type,
                                 material=material, platform=platform, lens=lens, oxygen_min=oxygen_min, oxygen_max=oxygen_max, pressure_min=pressure_min,

@@ -37,7 +37,7 @@ export default function Coverage() {
 
   return (
     <>
-      <PageHead no="02" kicker="Coverage" title="Has this work already been done?">
+      <PageHead no="02" kicker="Coverage" title="Parameter coverage" hideTitle>
         Enter the parameters of the study you are planning. The catalog checks every PSI table row and reports
         which investigations document them, where they partially overlap, and what is <em>Not reported</em>.
       </PageHead>

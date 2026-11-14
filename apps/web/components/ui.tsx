@@ -47,11 +47,11 @@ export function InvLink({ id, children }: { id: string; children: ReactNode }) {
 }
 
 /** Editorial page head: section number + kicker in the margin, display title, optional lede. */
-export function PageHead({ no, kicker, title, children }: { no: string; kicker: string; title: ReactNode; children?: ReactNode }) {
+export function PageHead({ no, kicker, title, hideTitle, children }: { no: string; kicker: string; title: ReactNode; hideTitle?: boolean; children?: ReactNode }) {
   return (
     <header className="page-head">
       <p className="kicker"><span className="kicker-no">§ {no}</span> {kicker}</p>
-      <h1 className="display">{title}</h1>
+      <h1 className={hideTitle ? "sr-only" : "display"}>{title}</h1>
       {children && <div className="lede">{children}</div>}
     </header>
   );

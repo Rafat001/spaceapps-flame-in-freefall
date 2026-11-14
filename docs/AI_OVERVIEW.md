@@ -16,12 +16,17 @@ summarises what FLEX-2 reports about heat release rate, with citations.
    The "← Explorer" link returns to `/explorer?q=<from_q>`.
 3. `InvestigationOverview` (`apps/web/components/InvestigationOverview.tsx`)
    calls `GET /api/investigations/{id}/overview?q=<query>` with the BYOK
-   headers from `lib/byok.ts` (`assistantHeaders`).
+   headers from `lib/byok.ts` (`assistantHeaders`) when the visitor has saved
+   their own key in Settings. The API accepts the key on this endpoint and on
+   `POST /api/ask` only, under the same rules (HTTPS, model allowlist, used for
+   that one request, never stored or echoed).
 4. The API handler (`investigation_overview` in
    `apps/api/app/routers/api.py`) builds a focused question from the
    investigation acronym, title and query, then calls `ask_svc.ask(...)` with
    `k=8` and `investigation_ids=[id]`, so retrieval is limited to that
-   investigation.
+   investigation. With the server key, the result is cached per
+   (investigation, normalised query) for up to 6 hours, so a repeat view is
+   instant and makes no new AI call (`app/services/answer_cache.py`).
 5. The response is the normal ask result plus `investigation_id`, `acronym`,
    `title`, `query`.
 
@@ -74,16 +79,20 @@ Without a key the overview falls back to retrieval-only. Two options:
   API reads `.env` at startup, and auto-reload does not pick up `.env` changes.
   Other providers remain available in the API for local/dev: `gemini`, `openai`,
   `anthropic`, `local` (Ollama).
-- **Bring your own key:** paste a Groq key in Settings. It is kept in
-  sessionStorage only and sent per request. Only GPT OSS 120B is offered.
+- **Bring your own key:** paste a Groq key in Settings (the only provider the
+  Settings page offers; model GPT OSS 120B). It is kept in sessionStorage only
+  and sent per request with Assistant questions, the Explorer search synthesis
+  and investigation overviews. Own-key answers are not limited by the site and
+  are never cached.
 
-## Known gaps
+## Quota and caching
 
-- The overview endpoint uses the same `QuotaGuardLLM` site limits as `/api/ask`
-  (failed provider calls are refunded).
-- Results are not cached; each page view makes an LLM call.
-- The detail page uses `useSearchParams` without a `<Suspense>` boundary, which
-  may fail `next build`.
+- With the server key, the overview uses the same `QuotaGuardLLM` site limits
+  as `/api/ask`. Failed provider calls are refunded. Answers served from the
+  cache use no quota.
+- Only clean answers are cached: never a provider failure, a quota notice, an
+  abstention, or an own-key answer. The cache is in memory, so it is emptied on
+  restart and when the catalog is reloaded.
 
 ## Styling notes
 

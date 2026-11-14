@@ -64,8 +64,9 @@ interpretation, plus retrieved sources.
 The production site and the Settings UI offer only **GPT OSS 120B on Groq** (`openai/gpt-oss-120b`). A user can optionally
 paste their own **Groq** key (https://console.groq.com/keys; their own account's limits and charges apply). Rules (decision D3):
 - kept only in `sessionStorage` in that browser tab (cleared when the tab closes);
-- sent over HTTPS in the `X-LLM-Key` header (plus `X-LLM-Provider`, optional `X-LLM-Model`) **only** with assistant
-  requests (`POST /api/ask`); the API refuses the header on every other endpoint;
+- sent over HTTPS in the `X-LLM-Key` header (plus `X-LLM-Provider`, optional `X-LLM-Model`) **only** with AI requests:
+  Assistant questions and the Explorer search synthesis (`POST /api/ask`) and investigation overviews
+  (`GET /api/investigations/{id}/overview`); the API refuses the header on every other endpoint;
 - used for that one request on a per-request provider object; never stored, logged or returned; log records and errors are
   redacted; provider base URLs are fixed server-side, so a key cannot be redirected to another host.
 The templated, no-key answer is always the default. `PUT /api/settings/ai` and `POST /api/ingest/rebuild` need
@@ -132,7 +133,7 @@ rebuild vectors (`make ingest` or the button in AI settings) — the API detects
 
 | Screen | API |
 | --- | --- |
-| **Lunar (lead demo)** — rows meeting O2 ≥ 30 % and ≤ 10.2 psi on the same row, burner-stream toggle, closest misses, O2-vs-pressure chart, ranking agreement, partial-gravity gap | `POST /api/coverage`, `GET /api/lunar/points`, `GET /api/rank`, `GET /api/stats` |
+| **Lunar (lead demo, `/lunar`; still served but not linked from the current nav)** — rows meeting O2 ≥ 30 % and ≤ 10.2 psi on the same row, burner-stream toggle, closest misses, O2-vs-pressure chart, ranking agreement, partial-gravity gap | `POST /api/coverage`, `GET /api/lunar/points`, `GET /api/rank`, `GET /api/stats` |
 | **Home** — lead lunar answer, catalog stats with as-of date, search, top research-relevant investigations | `GET /api/meta`, `GET /api/rank` |
 | **Earth** — Documented vs Inferred links from spinoffs / Researcher's Guide / video to PSI investigations; explainer quotes | `GET /api/earth`, `GET /api/explainer` |
 | **Explorer** — filters (family, fuel class, topic, measurement type, material, O2 %, pressure kPa/psi/atm/bar, airflow m/s/cm/s), sort, compare picks, CSV export | `GET /api/investigations`, `GET /api/export.csv` |
@@ -202,6 +203,10 @@ not counted. LUCI and FM2 appear only as the partial-gravity gap named in the br
 - Some tables list no oxygen/pressure/airflow (e.g. BASS, SLICE, E-FIELD) → Not reported, so coverage is conservative.
 - Range-valued rows (FLEX-2 test matrix, per-day session sets) match by range overlap and are labelled.
 - Ranking weights are hypotheses for the domain lead.
+- The API runs on Render Free: one small instance that sleeps after 15 minutes without traffic, so the first request after
+  a quiet spell waits for it to wake (typically under a minute). Once awake, catalog searches answer in about 0.1 s; a
+  new AI synthesis takes about 1–3 s (the Groq call), and a repeated one comes from an in-memory cache. The cache and the
+  quota counters reset on restart.
 
 ## Brand, attribution and independence
 
@@ -224,9 +229,9 @@ the rules we apply and where, with page numbers, are in [`docs/BRAND.md`](docs/B
 DESIGN.md     High-level architecture
 apps/api      FastAPI app (app/), tests/, requirements*.txt, Dockerfile
 apps/web      Next.js app (app/, components/, lib/), tests/ (vitest)
-data/sources  raw sources (PSI JSON/CSV, challenge text, official/ placeholder)
+data/sources  raw sources (PSI JSON/CSV, challenge text, official/ challenge resources with MANIFEST.md)
 data/seed     versioned seed JSON
-docs/         AI_OVERVIEW.md, ARCHITECTURE.md (early draft), PRD.md, brand guide
+docs/         AI_OVERVIEW.md, ARCHITECTURE.md (one-page summary of DESIGN.md), PRD.md, brand guide
 scripts/dev.sh, Makefile, docker-compose.yml, .env.example
 ```
 

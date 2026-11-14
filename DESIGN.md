@@ -3,7 +3,7 @@
 Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion Data  
 2026 NASA Space Apps Challenge · independent participant project (not affiliated with or endorsed by NASA)
 
-This document describes how the running app is put together. Every statement is grounded in the current code and config. For local setup commands, see [README.md](README.md). For the investigation-page AI overview in more detail, see [docs/AI_OVERVIEW.md](docs/AI_OVERVIEW.md). [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) is the 10 November 2026 first draft; several stack choices later changed, and this file is the current description.
+This document describes how the running app is put together. Every statement is grounded in the current code and config. For local setup commands, see [README.md](README.md). For the investigation-page AI overview in more detail, see [docs/AI_OVERVIEW.md](docs/AI_OVERVIEW.md). [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) is a one-page summary of this file (the 10 November 2026 first draft it replaced is in git history).
 
 ---
 
@@ -32,7 +32,7 @@ flowchart LR
   API --> DB["SQLite<br/>investigations, documents,<br/>chunks, test_runs, measurements<br/>FTS5 BM25"]
   API --> VEC["Vector index<br/>FAISS or NumPy<br/>hash embeddings by default"]
   API --> LLM["Groq LLM<br/>openai/gpt-oss-120b"]
-  Seed["data/seed + official sources"] --> Ingest["python -m app.ingest<br/>runs at API boot"]
+  Seed["data/seed + official sources"] --> Ingest["python -m app.ingest<br/>runs at image build"]
   Ingest --> DB
   Ingest --> VEC
 ```
@@ -67,18 +67,18 @@ The nav (`components/Nav.tsx`) groups the research tools under a menu: Explorer,
 
 ### 3.2 API (`apps/api`)
 
-FastAPI app in `app/main.py` (title “Flame in Freefall API”, version `0.1.0`). Routes live under `/api` in `app/routers/api.py`. BYOK key headers are refused on every path except `POST /api/ask`. Unhandled exceptions return `{"detail": "Internal error (details withheld)."}`.
+FastAPI app in `app/main.py` (title “Flame in Freefall API”, version `0.1.0`). Routes live under `/api` in `app/routers/api.py`. BYOK key headers are accepted only on the two AI endpoints, `POST /api/ask` and `GET /api/investigations/{id}/overview`, and refused everywhere else. At startup a background thread warms the in-process caches (section 7.1). Unhandled exceptions return `{"detail": "Internal error (details withheld)."}`.
 
 | Method | Path | Role |
 | --- | --- | --- |
 | `GET` | `/` | Name, docs and health links |
-| `GET` | `/api/health` | Liveness: `{ok, investigations, ai, notices}` |
+| `GET` | `/api/health` | Liveness: `{ok, investigations, ai, answer_cache, notices}` (`answer_cache` = entries, hits, misses) |
 | `GET` | `/api/stats` | Catalog counts from the seed and the live database |
 | `GET` | `/api/meta` | Filter vocabularies, lenses, scenarios, reference atmospheres, counts |
 | `GET` | `/api/investigations` | Catalog search and filters; optional scenario ranks and pagination |
 | `GET` | `/api/investigations/{id}` | Full investigation record |
-| `GET` | `/api/investigations/{id}/overview` | AI / computed overview, optionally scoped to `q` (calls the ask service with `investigation_ids`) |
-| `POST` | `/api/ask` | Assistant (structured QA + hybrid retrieval + optional LLM). Accepts BYOK headers |
+| `GET` | `/api/investigations/{id}/overview` | AI / computed overview, optionally scoped to `q` (calls the ask service with `investigation_ids`). Accepts BYOK headers; server-key results cached |
+| `POST` | `/api/ask` | Assistant and Explorer search synthesis (structured QA + hybrid retrieval + optional LLM). Accepts BYOK headers; server-key results cached |
 | `GET` | `/api/ask/quota` | Remaining server-key AI answers; does not consume quota |
 | `POST` | `/api/qa` | Structured QA only (no retrieval, no LLM) |
 | `POST` | `/api/coverage` | Parameter coverage (“has this been done?”) |
@@ -95,7 +95,7 @@ FastAPI app in `app/main.py` (title “Flame in Freefall API”, version `0.1.0`
 | `GET` | `/api/export/modeling.csv` | Every countable table row, SI-normalised, with verbatim cells and flags |
 | `GET` | `/api/export/dictionary` | Column dictionary for the modeling export |
 
-Ranking and coverage never call an LLM. They are pure functions of the database.
+Ranking and coverage never call an LLM. They are pure functions of the database, so their results are memoised per loaded catalog (section 7.1).
 
 ### 3.3 Data model
 
@@ -117,15 +117,15 @@ Data completeness on a catalog card is the share of ten fields that are filled: 
 Two steps, both idempotent.
 
 1. **Build seed** (offline, when sources change): `make seed` → `python -m app.ingest.build_seed`. Reads `data/sources/psi/` (record JSON + experimental-table CSV), the challenge brief, and curator rules, and writes versioned `data/seed/investigations.v2.json` and `challenge_brief_chunks.v2.json`.
-2. **Load and index** (every API boot in the Docker image, and via `make ingest` or `POST /api/ingest/rebuild`): `python -m app.ingest` (`app/ingest/load.py`). Drops and recreates tables, loads the seed, chunks PSI metadata / table summaries / each table row, loads official documents and the guidance-video transcript from `official_sources.py`, adds NASA programme excerpts (verbatim, verified against stored files), rebuilds FTS5, and embeds every chunk into `data/index` (FAISS or NumPy). Chunk size is about 900 characters with 150-character overlap.
+2. **Load and index** (when the API Docker image is built, and via `make ingest` or `POST /api/ingest/rebuild`): `python -m app.ingest` (`app/ingest/load.py`). Drops and recreates tables, loads the seed, chunks PSI metadata / table summaries / each table row, loads official documents and the guidance-video transcript from `official_sources.py`, adds NASA programme excerpts (verbatim, verified against stored files), rebuilds FTS5, and embeds every chunk into `data/index` (FAISS or NumPy). Chunk size is about 900 characters with 150-character overlap.
 
-The Docker API command is:
+The Docker image runs `python -m app.ingest` at build time (build arg `AI_EMBEDDING_PROVIDER`, default `hash`), so the database and vector index ship inside the image. The start command is:
 
 ```text
-python -m app.ingest && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+python -m app.ingest --if-needed && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
 ```
 
-So a Render restart always rebuilds SQLite and the vector index from the seed copied into the image. `data/db/` and `data/index/` are gitignored.
+`--if-needed` skips the load when the baked database has investigations and the index signature matches the runtime embedder; otherwise it rebuilds from the seed in the image, as every boot did before. Loading (at build, at boot, or through the admin rebuild) also clears the in-process catalog snapshot and answer cache. `data/db/` and `data/index/` are gitignored.
 
 The scope registry is the combination of `official_sources.py`, provenance on every row, `app/qa/scope.py` (abstention rules with cited justifications), and `test_provenance.py`.
 
@@ -186,6 +186,8 @@ Details that the diagram compresses:
 
 Response `mode` values: `direct`, `llm`, `retrieval_only`, `abstained`.
 
+**Answer cache.** With the shared server key, the router first looks up `app/services/answer_cache.py`: an in-memory LRU (256 entries, 6-hour TTL) keyed by the normalised question (case, spacing and trailing `?.!` ignored), `k`, scoped investigation ids, provider, model and reasoning effort. A hit returns the stored answer with `cache: {hit: true, age_s, note}` and makes no LLM call, so it costs no tokens and no quota; the stored `llm_usage` describes the original call. Only clean answers are stored: never a provider failure or quota notice, a setup message, an abstention (an LLM "insufficient evidence" verdict can vary between calls), or an answer made with a visitor's own key. The Assistant and the Explorer synthesis share entries (same prompt and model). Each request also gets its own copy of the server provider object, so `llm_usage` always belongs to that answer.
+
 ### 4.2 Explorer search
 
 ```mermaid
@@ -208,11 +210,13 @@ sequenceDiagram
   Rank-->>C: tier and score
   C-->>W: items with relevance_rank and relevance_tier
   W->>W: two labelled lists when sort is relevance
-  opt non-empty query
-    W->>S: same ask pipeline as Assistant
+  par in parallel with the catalog search, non-empty query only
+    W->>S: same ask pipeline as Assistant (answer cache first)
     S-->>W: search synthesis plus source links
   end
 ```
+
+The two requests run in parallel and the result list renders as soon as `GET /api/investigations` returns; the synthesis box shows a loading state until `POST /api/ask` answers. If the query changes while a request is in flight, its late response is ignored. The catalog search filters the in-process catalog snapshot and reuses the memoised whole-catalog ranking and cards, so it does no ORM loading per request (section 7.1).
 
 Catalog search (`app/services/catalog.py`):
 
@@ -241,7 +245,7 @@ Explorer links to `/investigations/<id>?from_q=<query>` (the page also accepts `
 
 `overview_context.py` adds two structured citations when an investigation is in scope: experimental-table rows that mention the query (or the first rows), and the PSI publication list ranked by title/author overlap. These appear as ordinary `[S#]` sources. Publication entries are titles only; the prompt says not to claim findings beyond the title. See [docs/AI_OVERVIEW.md](docs/AI_OVERVIEW.md).
 
-The overview page currently also sends BYOK headers. The API middleware accepts `X-LLM-Key` only on `POST /api/ask`, so a visitor’s own key is not used for overviews (the request would be rejected if those headers are present). The server key, when configured, is used instead.
+If the visitor saved their own key in Settings, the overview request carries the BYOK headers and the API uses that key, under the same rules as `POST /api/ask` (HTTPS, model allowlist, per-request, never stored). Otherwise the server key is used with the site quota, and the result is cached per (investigation, normalised query), so a repeat view is instant.
 
 ---
 
@@ -258,13 +262,13 @@ Provider construction is in `app/ai/providers/llm.py` and `app/ai/registry.py`. 
 
 Embeddings (`app/ai/providers/embeddings.py`): `local` (sentence-transformers, falls back if missing), `openai`, or `hash` (deterministic feature hashing, dim 512, no download, lower quality). A signature mismatch disables the vector stage until `make ingest`; lexical and SQL search still work. The API Docker image does not install sentence-transformers unless built with `LOCAL_AI=1`, so a typical Render boot falls back to hash embeddings if `AI_EMBEDDING_PROVIDER=local`.
 
-**Chat settings are fixed in code, not visitor-tunable.** Groq calls use `temperature=0`, `reasoning_effort=medium`, `include_reasoning=false`, `max_completion_tokens=3000`. Timeout is `LLM_TIMEOUT_S` (default 60 s).
+**Chat settings are fixed in code, not visitor-tunable.** Groq calls use `temperature=0`, `reasoning_effort=medium`, `include_reasoning=false`, `max_completion_tokens=3000`. Timeout is `LLM_TIMEOUT_S` (default 60 s). `reasoning_effort=low` was tried for the Explorer synthesis on 2026-11-14: it saved about 0.5–2 s per new query but abstained on a question the sources partly answer, so every AI answer stays on `medium`.
 
-**Bring your own key.** The Settings UI offers only Groq GPT OSS 120B. The key is stored in `sessionStorage` for that tab, sent over HTTPS as `X-LLM-Key` / `X-LLM-Provider` / `X-LLM-Model` only with `POST /api/ask`, used on a per-request provider object, and never stored. Provider base URLs are fixed server-side. A visitor’s own key does not count against site limits.
+**Bring your own key.** The Settings UI offers only Groq GPT OSS 120B. The key is stored in `sessionStorage` for that tab, sent over HTTPS as `X-LLM-Key` / `X-LLM-Provider` / `X-LLM-Model` only with `POST /api/ask` (Assistant and Explorer synthesis) and `GET /api/investigations/{id}/overview`, used on a per-request provider object, and never stored or cached. The middleware (`byok_allowed` in `app/security.py`) refuses the header on every other method and path. Provider base URLs are fixed server-side. A visitor’s own key does not count against site limits.
 
 **Admin lock.** `PUT /api/settings/ai` and `POST /api/ingest/rebuild` require `X-Admin-Token` = `ADMIN_TOKEN`. If `ADMIN_TOKEN` is unset they are disabled in production (`APP_ENV=production` or `RENDER` set) and open in local development.
 
-**Quota.** `QuotaGuardLLM` wraps the shared server key. Limits (config defaults, overridable by env): 20 AI summaries per minute and 300 per day per visitor IP; 60 per minute and 1,200 per day site-wide. Counters are in-process memory and reset when the server restarts. A provider call that fails (auth, payment, 429, 5xx, timeout, empty reply) is refunded. Computed answers, DOI lookups, and retrieval-only responses do not consume quota. `GET /api/ask/quota` reports remaining answers without consuming any.
+**Quota.** `QuotaGuardLLM` wraps the shared server key. Limits (config defaults, overridable by env): 20 AI summaries per minute and 300 per day per visitor IP; 60 per minute and 1,200 per day site-wide. Counters are in-process memory and reset when the server restarts. A provider call that fails (auth, payment, 429, 5xx, timeout, empty reply) is refunded. Computed answers, DOI lookups, retrieval-only responses and answers served from the answer cache do not consume quota. `GET /api/ask/quota` reports remaining answers without consuming any.
 
 **Cost bound (Groq Developer plan, prices checked 2026-11-14).** $0.15 / 1M input tokens and $0.60 / 1M output tokens. Worst case per call is treated as 4K input + 3K output ≈ $0.0024, so 1,200 calls/day ≤ about $2.88/day (typical measured use is lower, around $1/day at the cap). Observed Groq rate-limit headers for the server key are surfaced as `provider_limits_observed` on `GET /api/settings/ai`.
 
@@ -292,11 +296,38 @@ PSI record pages also receive a fragment, but the passage often fails to highlig
 | Layer | Hosting | How it starts |
 | --- | --- | --- |
 | Web | Vercel Hobby, auto-deploy from `master` | Next.js app in `apps/web`; `NEXT_PUBLIC_API_URL` points at the API |
-| API | Render Free, Docker, auto-deploy on push | `apps/api/Dockerfile` (context is the repo root); ingest, then one `uvicorn` worker |
+| API | Render Free, Docker, auto-deploy on push | `apps/api/Dockerfile` (context is the repo root); database and index built into the image, then one `uvicorn` worker |
 
 There is no `vercel.json` in the repo. Vercel Hobby does not deploy commits whose author is not a project owner or member. Teammate commits therefore need a follow-up no-op commit authored by the owner. `.deploy-trigger` exists for that workaround (see commit `0656d32`).
 
-The API image runs a single `uvicorn` process with the default one worker, on a single free instance. Concurrent assistant requests therefore queue on that process. Render Free also cold-starts after idle; `/api/health` is the readiness check (`ok`, investigation count, AI status, the two standing notices). In-memory quota counters reset on every restart, including a cold start.
+The API image runs a single `uvicorn` process with the default one worker, on a single free instance. Endpoints are synchronous and run in the worker's thread pool, so simultaneous requests share one small CPU allowance; the Groq call itself is network wait, not CPU. Render Free sleeps the service after 15 minutes without traffic and wakes it on the next request. `/api/health` is the readiness check (`ok`, investigation count, AI status, answer-cache counters, the two standing notices). In-memory quota counters, the catalog snapshot and the answer cache reset on every restart, including a wake from sleep.
+
+### 7.1 Performance
+
+Measured on the live site on 2026-11-14 (warm instance; times from the box with `curl -w` and a Playwright page timer):
+
+| Step | Before | After |
+| --- | --- | --- |
+| `GET /api/investigations?q=PMMA+flame+spread&sort=match` alone | 1.78–2.20 s | 0.09–0.11 s |
+| `GET /api/investigations` (no query) | 1.89 s | 0.07–0.09 s |
+| `GET /api/meta` | 0.37 s | 0.07–0.10 s |
+| `POST /api/ask`, new question (Groq call included) | 2.25 s | 1.2–2.1 s |
+| `POST /api/ask`, repeated question | same as new | 0.07–0.09 s (cache) |
+| Explorer page: results visible, “PMMA flame spread” | 5.0 s | 1.1–1.5 s |
+| Explorer page: AI synthesis visible, new query | 5.2–6.3 s | 2.7–3.2 s |
+| Explorer page: results and synthesis, repeated query | 5.2 s | about 1.0 s |
+
+What was slow: every catalog request re-read all 24 investigations with their 2,009 table rows from SQLite and rebuilt the same ORM objects three times (search, whole-catalog ranking, cards), and every `/api/ask` did it again for structured QA. Locally that was about 100 ms per search; on Render Free’s fraction of a CPU it was about 1.8 s, and the Explorer’s three parallel requests competed for the same CPU, so results took about 5 s.
+
+What fixed it:
+
+- `app/services/snapshot.py` loads the catalog once per process, detached from the session with test runs, measurements and documents already loaded, and memoises cards, each scenario ranking and `/api/meta`. Catalog search, ranking, structured QA (`qa/core.Ctx`), citations and acronym matching read from it. It is treated as read-only and cleared whenever data is reloaded.
+- `app/main.py` warms the snapshot, rankings, cards, `/api/meta`, the embedder and the vector index in a background thread at startup.
+- The answer cache (section 4.1) makes repeated searches and overviews instant.
+- The database is built into the image, so a boot or wake no longer re-ingests (about 1.5 s locally, longer on Render).
+- The FTS5 index, the BM25 top-k (400 hits for catalog search, 40 per retriever for ask) and the prompt (about 1.2–1.4K input tokens) were already bounded; no query was unindexed or unbounded.
+
+Remaining cost: a new AI synthesis is bounded by the Groq call (about 1–3 s with `medium` reasoning). A wake from sleep after 15 idle minutes adds Render’s spin-up time to the first request. A keep-warm ping was not added: a GitHub Actions cron every 10 minutes is about 4,300 job runs a month, and each run bills at least one minute, well over the 2,000 free minutes for a private repo. A free external uptime monitor pinging `/api/health` would keep the service awake within Render Free’s 750 instance hours a month, if the team wants it.
 
 ### Environment variables (names only)
 
@@ -344,8 +375,9 @@ Equivalent scripts: `./scripts/setup.sh`, `./scripts/dev.sh`, `./scripts/test.sh
 | `test_golden.py` | Golden questions in `tests/fixtures/golden_questions.json` |
 | `test_qa.py` | Structured QA beyond the golden phrasings |
 | `test_ask.py` | Ask modes, citation cleaning, notices, fallbacks |
-| `test_byok.py` | BYOK rules and admin lock (HTTP mocked; no real keys) |
+| `test_byok.py` | BYOK rules on `/api/ask` and the investigation overview, refused elsewhere, and the admin lock (HTTP mocked; no real keys) |
 | `test_ratelimit.py` | Per-IP and site-wide quota, refunds |
+| `test_perf_cache.py` | Answer cache (repeat served without a provider call or quota, failures, abstentions and own-key answers never cached, LRU/TTL), per-request usage, catalog snapshot reuse and reset |
 | `test_explorer_order.py` | Relevance order, DOI and accession exact lookup |
 | `test_ranking.py` | Reproducible `sfsri-v0.3` ranking |
 | `test_coverage.py`, `test_filters.py` | Coverage verdicts; unknown values never pass filters |
@@ -370,11 +402,9 @@ Grounded in the current code, [README.md](README.md) “Current limitations”, 
 - Range-valued rows (FLEX-2 test matrix, per-day session sets) match by range overlap and are labelled.
 - Hash embeddings (typical on Render Free) are a weaker semantic signal than sentence-transformers; lexical search still runs.
 - Official publication text is usually metadata only (title, authors, DOI). The model is told not to invent findings from a title; this is still a residual risk if it over-reads a title.
-- Investigation overviews are not cached; each page view can make an LLM call and counts against the shared quota.
-- A visitor’s own key is accepted only on `POST /api/ask`. The overview client currently sends the same headers, which the middleware rejects.
-- `/investigations/[id]` uses `useSearchParams` without a `<Suspense>` boundary (Explorer, Compare and Insights already wrap theirs).
+- The AI answer cache, the catalog snapshot and the quota counters live in one process and reset on restart or wake from sleep. The first new AI answer for a question still waits for Groq (about 1–3 s).
 - `/lunar` remains as a lead-demo page but is not linked from the current nav.
-- Quota counters live in one process and reset on restart. The free API host is a single instance and a single uvicorn worker, so several simultaneous AI requests wait on one another.
+- The free API host is a single small instance with one uvicorn worker: simultaneous requests share its CPU, and it sleeps after 15 idle minutes, so the first visit after a quiet spell waits for it to wake.
 - The Settings UI can still switch embedding providers and rebuild indexes; chat-provider choices in that UI are only Groq or none, even though the API implements others.
 
 Out of scope on purpose: hosting the multi-terabyte PSI zip/video archives; using the ranking as a safety or certification score; answering from general knowledge.
@@ -402,7 +432,7 @@ Top two levels (generated and secret paths omitted):
 │   ├── seed/                 Versioned investigations.v2.json and brief chunks
 │   ├── sources/              PSI JSON/CSV, official HTML/PDF/transcript, brief
 │   └── README.md             Provenance notes for those trees
-├── docs/                     AI_OVERVIEW, ARCHITECTURE (draft), PRD, brand, plans
+├── docs/                     AI_OVERVIEW, ARCHITECTURE (summary), PRD, brand, plans
 └── scripts/                  setup.sh, dev.sh, test.sh, verify_golden.py
 ```
 

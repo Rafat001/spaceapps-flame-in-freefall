@@ -1,6 +1,7 @@
 // Bring-your-own-key (decision D3).
 // - The key lives only in sessionStorage, in this browser tab (cleared when the tab closes). Never localStorage, never cookies.
-// - It is attached only to assistant requests (POST /api/ask), only over HTTPS (or to a local dev API).
+// - It is attached only to AI requests (POST /api/ask for the Assistant and Explorer synthesis, and
+//   GET /api/investigations/{id}/overview), only over HTTPS (or to a local dev API).
 // - The server uses it for that one request and never stores, logs or returns it.
 
 export type Provider = "groq" | "gemini" | "openai" | "anthropic";
@@ -57,7 +58,8 @@ export function safeTransport(apiBase: string): boolean {
   }
 }
 
-/** Headers for an assistant request. Empty unless a key is set and the transport is safe. Use ONLY for /api/ask. */
+/** Headers for an AI request. Empty unless a key is set and the transport is safe.
+ *  Use ONLY for POST /api/ask and GET /api/investigations/{id}/overview (the API refuses the key anywhere else). */
 export function assistantHeaders(apiBase: string, s: StoreLike | null = store()): Record<string, string> {
   const b = getByok(s);
   if (!b || !safeTransport(apiBase)) return {};

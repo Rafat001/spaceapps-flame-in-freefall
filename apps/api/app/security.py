@@ -2,7 +2,8 @@
 
 BYOK rules
 - The browser keeps the key in sessionStorage (that tab only) and sends it in ``X-LLM-Key`` over HTTPS,
-  only with assistant requests (POST /api/ask).
+  only with AI requests: the Assistant and Explorer search synthesis (POST /api/ask) and investigation
+  overviews (GET /api/investigations/{id}/overview).
 - The server uses it for that one request: it lives on a per-request provider object, is never stored,
   logged, or echoed, and is only sent to the fixed provider base URL.
 - The header is refused on every other endpoint, so a client mistake is visible instead of silent.
@@ -29,7 +30,9 @@ KEY_HEADER = "x-llm-key"
 PROVIDER_HEADER = "x-llm-provider"
 MODEL_HEADER = "x-llm-model"
 ADMIN_HEADER = "x-admin-token"
-BYOK_PATHS = {"/api/ask"}
+BYOK_ENDPOINTS = [("POST", re.compile(r"^/api/ask$")),
+                  ("GET", re.compile(r"^/api/investigations/[A-Za-z0-9_\-]{1,64}/overview$"))]
+BYOK_ENDPOINTS_TEXT = "POST /api/ask and GET /api/investigations/{id}/overview"
 ALLOWED_HEADERS = ["Content-Type", "X-LLM-Key", "X-LLM-Provider", "X-LLM-Model", "X-Admin-Token"]
 
 _current_secrets: contextvars.ContextVar[tuple[str, ...]] = contextvars.ContextVar("secrets", default=())
@@ -130,14 +133,20 @@ def byok_from_request(request: Request) -> BYOK | None:
     return BYOK(provider, key, model)
 
 
+def byok_allowed(method: str, path: str) -> bool:
+    """True for the AI endpoints that may use a visitor's own key."""
+    return any(method == m and rx.match(path) for m, rx in BYOK_ENDPOINTS)
+
+
 async def byok_guard(request: Request, call_next):
-    """Middleware: refuse the key header outside assistant endpoints; scrub secrets from the request context."""
+    """Middleware: refuse the key header outside the AI endpoints; scrub secrets from the request context."""
     token = _current_secrets.set(())
     try:
-        if request.headers.get(KEY_HEADER) and request.url.path not in BYOK_PATHS and request.method != "OPTIONS":
+        if request.headers.get(KEY_HEADER) and request.method != "OPTIONS" and \
+                not byok_allowed(request.method, request.url.path):
             from fastapi.responses import JSONResponse
 
-            return JSONResponse({"detail": "X-LLM-Key is only accepted on the assistant endpoint (POST /api/ask). "
+            return JSONResponse({"detail": f"X-LLM-Key is only accepted on the AI endpoints ({BYOK_ENDPOINTS_TEXT}). "
                                            "It was not used or stored."}, status_code=400)
         return await call_next(request)
     finally:

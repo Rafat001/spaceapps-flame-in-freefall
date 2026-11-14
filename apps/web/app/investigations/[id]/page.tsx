@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { humanize, readCompare, toggleCompare } from "@/lib/format";
 import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice } from "@/components/ui";
@@ -11,7 +11,7 @@ import InvestigationOverview from "@/components/InvestigationOverview";
 
 const fmtBytes = (b?: number) => (b ? (b >= 1e12 ? `${(b / 1e12).toFixed(2)} TB` : b >= 1e9 ? `${(b / 1e9).toFixed(2)} GB` : `${(b / 1e6).toFixed(1)} MB`) : "—");
 
-export default function Detail() {
+function Detail() {
   const { id } = useParams<{ id: string }>();
   const sp = useSearchParams();
   const fromQ = sp.get("q") || sp.get("from_q") || null;
@@ -118,4 +118,9 @@ export default function Detail() {
       <p className="muted small">Publication titles are as listed in the PSI record; page numbers are not available for PSI metadata.</p>
     </>
   );
+}
+
+// useSearchParams needs a Suspense boundary (Next.js App Router), as on the Explorer, Compare and Insights pages.
+export default function Page() {
+  return <Suspense fallback={<Loading />}><Detail /></Suspense>;
 }

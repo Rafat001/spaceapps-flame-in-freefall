@@ -203,8 +203,42 @@ def test_provider_error_echoing_key_is_redacted(client, monkeypatch, caplog):
         assert "status=401" in caplog.text  # raw detail is logged server-side only
 
 
+def test_byok_used_for_investigation_overview(client, rec, caplog):
+    """The overview page sends the visitor's key too; it must be used (not rejected) under the same rules."""
+    caplog.set_level(logging.DEBUG)
+    r = client.get("/api/investigations/psi-117/overview", params={"q": "flame spread"}, headers=_hdr("groq"))
+    assert r.status_code == 200, r.text
+    assert len(rec.calls) == 1 and rec.calls[0]["url"] == "https://api.groq.com/openai/v1/chat/completions"
+    assert FAKE["groq"] in rec.calls[0]["headers"]["Authorization"]
+    assert FAKE["groq"] not in r.text and FAKE["groq"] not in caplog.text
+    assert r.json()["llm"]["byok"] is True
+    # same validation as /api/ask: bad provider / model are refused before any provider call
+    assert client.get("/api/investigations/psi-117/overview", headers={"X-LLM-Provider": "evil",
+                                                                      "X-LLM-Key": FAKE["groq"]}).status_code == 400
+    assert client.get("/api/investigations/psi-117/overview",
+                      headers=_hdr("groq", model="llama-3.3-70b-versatile")).status_code == 400
+    assert len(rec.calls) == 1
+
+
+def test_byok_overview_requires_https_in_production(client, rec, monkeypatch):
+    from app import security
+
+    monkeypatch.setattr(security.settings, "app_env", "production")
+    r = client.get("/api/investigations/psi-117/overview", headers={**_hdr("groq"), "X-Forwarded-Proto": "http"})
+    assert r.status_code == 400 and "HTTPS" in r.text and rec.calls == []
+
+
+def test_assistant_and_overview_use_medium_reasoning(client, rec):
+    client.post("/api/ask", json=Q, headers=_hdr("groq"))
+    assert rec.calls[-1]["json"]["reasoning_effort"] == "medium"
+    client.get("/api/investigations/psi-117/overview", headers=_hdr("groq"))
+    assert rec.calls[-1]["json"]["reasoning_effort"] == "medium"
+
+
 def test_key_header_refused_on_other_endpoints(client, rec):
-    for method, path in [("get", "/api/investigations"), ("get", "/api/health"), ("post", "/api/coverage"), ("get", "/api/rank")]:
+    for method, path in [("get", "/api/investigations"), ("get", "/api/health"), ("post", "/api/coverage"), ("get", "/api/rank"),
+                         ("get", "/api/investigations/psi-117"), ("post", "/api/investigations/psi-117/overview"),
+                         ("get", "/api/investigations/psi-117/overview/x"), ("get", "/api/ask/quota")]:
         kw = {"json": {}} if method == "post" else {}
         r = getattr(client, method)(path, headers=_hdr("openai"), **kw)
         assert r.status_code == 400 and FAKE["openai"] not in r.text

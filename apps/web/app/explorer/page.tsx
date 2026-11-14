@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Fragment, Suspense, useEffect, useState } from "react";
 import { api, qs, API_BASE } from "@/lib/api";
 import { humanize, readCompare, toggleCompare } from "@/lib/format";
 import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
@@ -258,8 +258,23 @@ function Explorer() {
                   const resultRank = (data.page ? (data.page - 1) * (data.page_size || 50) : 0) + idx + 1;
                   const itemQuery = activeQuery || f.q;
                   const itemHref = `/investigations/${c.id}${itemQuery ? `?q=${encodeURIComponent(itemQuery)}` : ""}`;
+                  const tiered = data.sort === "relevance" && !!c.relevance_tier;
+                  const prevTier = idx > 0 ? data.items[idx - 1].relevance_tier : null;
+                  const tierCount = tiered ? data.items.filter((x: any) => x.relevance_tier === c.relevance_tier).length : 0;
+                  const tierHead = tiered && c.relevance_tier !== prevTier ? (
+                    <li key={`tier-${c.relevance_tier}`} className="tier-head">
+                      <h3>{c.relevance_tier === "documented_at_target"
+                        ? "Has tests at target conditions"
+                        : "Related, no tests at target conditions"} <span className="tier-count">{tierCount}</span></h3>
+                      <p className="muted small">{c.relevance_tier === "documented_at_target"
+                        ? <>At least one test row meets the {data.scenario_label} oxygen and pressure target on the same row. Ordered by relevance.</>
+                        : <>Relevant to {data.scenario_label} by fuel, flame behavior, suppression or habitat use, but no single test row meets both the oxygen and pressure target. Ordered by relevance, so a higher score here can still rank below the group above.</>}</p>
+                    </li>
+                  ) : null;
                   return (
-                    <li key={c.id}>
+                    <Fragment key={c.id}>
+                    {tierHead}
+                    <li>
                       <article className="entry">
                         <h2 className="entry-acr">
                           <Link href={itemHref}>{c.acronym}</Link>
@@ -310,6 +325,7 @@ function Explorer() {
                         </div>
                       </article>
                     </li>
+                    </Fragment>
                   );
                 })}
               </ol>

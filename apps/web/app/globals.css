@@ -1051,3 +1051,8 @@ a.cite-ref:hover { color: var(--accent); text-decoration: underline; }
 .search-synthesis-sources summary { cursor: pointer; font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--signal); }
 .search-synthesis-sources ol { margin: 8px 0 0; padding-left: 0; list-style: none; }
 .search-synthesis-sources li { margin: 4px 0; }
+.entries > li.tier-head { border: 0; padding: 22px 0 6px; margin-top: 8px; border-bottom: 1px solid var(--rule-strong); }
+.entries > li.tier-head:first-child { margin-top: 0; padding-top: 4px; }
+.tier-head h3 { font-family: var(--f-mono); font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--signal); margin: 0 0 4px; }
+.tier-head .tier-count { display: inline-block; margin-left: 6px; padding: 0 6px; border: 1px solid var(--rule-strong); color: var(--ink, inherit); font-size: .72rem; }
+.tier-head p { margin: 0; max-width: 72ch; }

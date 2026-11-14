@@ -65,14 +65,14 @@ const INSTRUMENTS = [
 const TEAM_MEMBERS = [
   {
     name: "Sayket Dey",
-    role: "Member of Research group of Fire Safety Science and Engineering",
+    role: "Doctoral Student · Member of Research group of Fire Safety Science and Engineering",
     affiliation: "Ghent University",
     location: "Belgium",
     tag: "Fire Science Research",
   },
   {
     name: "Kapilkumar Patil",
-    role: "Member of Research group of Fire Safety Science and Engineering",
+    role: "Doctoral Student · Member of Research group of Fire Safety Science and Engineering",
     affiliation: "Ghent University",
     location: "Belgium",
     tag: "Fire Science Research",

@@ -127,7 +127,7 @@ export default function Nav() {
 
   // Check if current route is one of the grouped research tools
   const isToolActive = RESEARCH_APPS.some((app) => path?.startsWith(app.href)) || path?.startsWith("/investigations");
-  const isIntroActive = path === "/" || path?.startsWith("/androflame") || path?.startsWith("/intro");
+  const isIntroActive = path?.startsWith("/androflame") || path?.startsWith("/intro");
   const isAskActive = path?.startsWith("/assistant");
   const isConfigActive = path?.startsWith("/settings");
 

@@ -52,7 +52,7 @@ Introduced query-aware AI overviews for individual combustion investigations, gr
 - **Waffle Apps Launcher (Microsoft 365 style)**: Collapsed 7 research tools (Catalog Explorer, Coverage Matrix, Compare Studies, Scenario Ranking, Earth vs Freefall, SpaceFire Evolution, Beyond PSI) into an interactive 9-dot dropdown popover.
 - **Fully Opaque Backdrop & Hover Fixes**: Made `.apps-popover` and `.app-card` 100% solid (`#07173F` / `#0B2154`) with `z-index: 999` on `.rail` to prevent underlying page text bleed-through, and overrode button hover to remove generic white backgrounds.
 - **Clean 4-Tab Navbar**: Structured as `AndroFlame` (00), `Apps` (Waffle Launcher), `Ask` (01), and `AI Config` (02, renamed from Settings).
-- **Team & Academic Collaboration Section**: Documented project team members (Sayket Dey & Kapilkumar Patil from Ghent University Fire Safety Science & Engineering, Mohammed Majharul Islam from Genesys USA, and Md Emrul Chowdhury from Amazon UK — Software Development Engineer L5) on the AndroFlame intro page.
+- **Team & Academic Collaboration Section**: Documented project team members (Sayket Dey & Kapilkumar Patil — Doctoral Students & Members of Research group of Fire Safety Science & Engineering, Ghent University, Belgium; Mohammed Majharul Islam from Genesys USA; and Md Emrul Chowdhury from Amazon UK — Software Development Engineer L5) on the AndroFlame intro page.
 - **Removed Lunar Tab**: Retired the standalone `/lunar` navbar item and redirected home page discovery directly to Scenario Ranking (`/insights`).
 
 #### 7. Search Synthesis, Query Routing & Introduction Page Enhancements

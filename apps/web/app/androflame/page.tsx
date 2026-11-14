@@ -40,23 +40,16 @@ const INSTRUMENTS = [
     desc: "Query the entire corpus with strict evidence grounding. Answers cite specific test rows [S#] and NASA publications with zero hallucinations.",
   },
   {
-    href: "/earth",
-    title: "Earth vs Freefall",
-    badge: "06 · Physics",
-    tagline: "1g buoyant convection vs 0g diffusive combustion",
-    desc: "Fundamental physics contrasts: why Earth fire safety rules do not work in orbit, and how spherical diffusion flames alter ignition and extinction.",
-  },
-  {
     href: "/spacefire",
     title: "SpaceFire Evolution",
-    badge: "07 · History",
+    badge: "06 · History",
     tagline: "Timeline from early Spacelab to Artemis exploration",
     desc: "The 50-year flight experiment roadmap tracing how NASA evolved microgravity combustion research toward deep-space human exploration.",
   },
   {
     href: "/beyond-psi",
     title: "Beyond PSI",
-    badge: "08 · Programs",
+    badge: "07 · Programs",
     tagline: "External flight tests & complementary flight programs",
     desc: "Index of international and commercial microgravity combustion projects (Saffire, Sounding Rockets, Drop Towers, and ESA/JAXA collaborations).",
   },
@@ -186,7 +179,7 @@ export default function AndroFlamePage() {
       <section className="intro-panel" aria-labelledby="tips-title">
         <h2 id="tips-title" className="intro-panel-title">Tips and Tricks (Top Module Guide by Researcher Level)</h2>
         <p>
-          The navigation bar and the <strong>Apps</strong> menu at the top of the interface provide 7 specialized research modules. Here is how different levels of researchers can get the most value from each module:
+          The navigation bar and the <strong>Apps</strong> menu at the top of the interface provide 6 specialized research modules. Here is how different levels of researchers can get the most value from each module:
         </p>
 
         <div className="tips-levels-grid">
@@ -197,12 +190,6 @@ export default function AndroFlamePage() {
               Focus on fundamental physical differences and historical context:
             </p>
             <ul className="tips-modules-list">
-              <li>
-                <Link href="/earth" className="tips-module-link">
-                  <span className="tips-module-name">Earth vs Freefall ↗</span>
-                  <span className="tips-module-desc">Understand why 1g fire rules fail in 0g and how spherical flames burn without buoyant updrafts.</span>
-                </Link>
-              </li>
               <li>
                 <Link href="/spacefire" className="tips-module-link">
                   <span className="tips-module-name">SpaceFire Evolution ↗</span>

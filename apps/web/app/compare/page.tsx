@@ -9,7 +9,7 @@ import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/
 function Cell({ v }: { v: any }) {
   if (v && typeof v === "object" && "known" in v) return <><CondCell c={v} /> <EvidenceLabel text={v.label} />{v.note && <span className="muted small block">{v.note}</span>}</>;
   const val = v?.value;
-  return <>{Array.isArray(val) ? val.join("; ") : typeof val === "number" && v.label?.startsWith("Catalog") ? `${Math.round(val * 100)}%` : String(val)}
+  return <>{Array.isArray(val) ? val.join("; ") : String(val)}
     {" "}<EvidenceLabel text={v?.label} /></>;
 }
 

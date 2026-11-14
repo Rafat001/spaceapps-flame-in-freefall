@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, Suspense, useEffect, useState } from "react";
 import { api, qs, API_BASE } from "@/lib/api";
 import { humanize, readCompare, toggleCompare } from "@/lib/format";
-import { PointsLine, RankingExplainer, TargetAtmosphere } from "@/components/RankingExplainer";
+import { PointsLine, RankingExplainer } from "@/components/RankingExplainer";
 import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
 import { Markdown, citeHref } from "@/components/Markdown";
 import { assistantHeaders } from "@/lib/byok";
@@ -171,10 +171,7 @@ function Explorer() {
                   {" "}<b>Data completeness</b> is how many of 10 key catalog fields NASA’s record fills in (objective, approach, hardware, test rows, materials,
                   oxygen, pressure, airflow, measurements, documents). <Link href={`/insights?scenario=${data.scenario}`}>Full ranking with evidence</Link>
                 </p>)}
-              {data.total > 0 && data.ranking && (<>
-                <TargetAtmosphere atm={data.ranking.scenario_atmosphere} />
-                <RankingExplainer lines={data.ranking.explainer} />
-              </>)}
+              {data.total > 0 && data.ranking && <RankingExplainer lines={data.ranking.explainer} />}
               {activeQuery && (
                 <div className="search-synthesis" aria-live="polite">
                   <div className="search-synthesis-head">

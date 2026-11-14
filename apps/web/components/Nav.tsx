@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 
 const LINKS = [
   ["/lunar", "Lunar"], ["/explorer", "Catalog"], ["/coverage", "Coverage"], ["/compare", "Compare"],
-  ["/insights", "Ranking"], ["/assistant", "Ask"], ["/earth", "Earth"], ["/settings", "Settings"],
+  ["/insights", "Ranking"], ["/assistant", "Ask"], ["/earth", "Earth"], ["/beyond-psi", "Beyond PSI"], ["/settings", "Settings"],
 ] as const;
 
 export default function Nav() {

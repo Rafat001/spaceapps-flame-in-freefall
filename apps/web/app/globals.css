@@ -508,3 +508,72 @@ h2 .label, h3 .label { margin-left: 8px; }
 .quota-count { margin: 0 0 4px; font-family: var(--f-mono); font-size: .8rem; color: var(--white); }
 .quota-note { margin: 0; font-size: .82rem; color: var(--ash); line-height: 1.5; }
 .quota-note a { color: var(--blue-yonder); }
+
+/* ---------- home: ScienceCasts film (click-to-load) ---------- */
+.film { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 36px; align-items: center; margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule); }
+.video-frame { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; background: #02081c; border: 1px solid var(--rule-strong); overflow: hidden; }
+.video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-facade { padding: 0; cursor: pointer; border-radius: 0; color: var(--ink); }
+.video-facade img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: .9; transition: opacity .2s ease, transform .4s ease; }
+.video-facade:hover img, .video-facade:focus-visible img { opacity: 1; transform: scale(1.015); }
+.video-facade:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.video-play { position: absolute; left: 22px; bottom: 22px; width: 58px; height: 58px; display: grid; place-items: center; border: 1px solid var(--accent); color: var(--accent); background: rgba(7, 23, 63, .72); }
+.video-play svg { margin-left: 3px; }
+.video-facade:hover .video-play, .video-facade:focus-visible .video-play { background: var(--accent); color: var(--accent-ink); }
+.video-hint { position: absolute; left: 94px; bottom: 39px; font-family: var(--f-mono); font-size: .72rem; letter-spacing: .06em; color: var(--ink-2); text-shadow: 0 1px 2px #000; }
+.film-copy h2 { margin: .2em 0 .25em; font-size: clamp(1.6rem, 2.6vw, 2.2rem); font-weight: 400; line-height: 1.15; max-width: 20ch; }
+.film-meta { font-family: var(--f-mono); font-size: .76rem; letter-spacing: .04em; color: var(--ash); margin: 0 0 16px; }
+.film-quote { font-size: 1rem; margin: 0 0 16px; }
+.film-quote cite { display: block; font-style: normal; font-family: var(--f-mono); font-size: .72rem; margin-top: 6px; }
+.film-links { display: flex; flex-wrap: wrap; gap: 10px 26px; font-size: .95rem; margin: 0; }
+@media (max-width: 860px) { .film { grid-template-columns: 1fr; gap: 20px; } }
+
+/* ---------- investigation: NASA program summary ---------- */
+.nasa { margin-top: 48px; padding-top: 22px; border-top: 2px solid var(--rule-strong); max-width: 980px; }
+.nasa h2 { margin: 0 0 18px; font-size: clamp(1.5rem, 2.6vw, 2.1rem); font-weight: 380; line-height: 1.15; }
+.nasa-lead { margin: 0 0 24px; padding-left: 18px; border-left: 2px solid var(--accent); }
+.nasa-lead blockquote { border: 0; padding: 0; margin: 0 0 8px; font-style: normal; font-size: 1.15rem; line-height: 1.55; color: var(--ink); max-width: 68ch; }
+.nasa-lead blockquote::before { content: "“"; } .nasa-lead blockquote::after { content: "”"; }
+.nasa-lead figcaption { font-family: var(--f-mono); font-size: .74rem; }
+.cite-link { font-family: var(--f-mono); font-size: .72rem; white-space: nowrap; color: var(--signal); text-decoration-color: var(--rule-strong); }
+.cite-link:hover { color: var(--accent); }
+.nasa-facts { margin: 0; border-top: 1px solid var(--rule); }
+.nasa-facts > div { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: 4px 24px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.nasa-facts dt { font-family: var(--f-mono); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ash); padding-top: .3em; }
+.nasa-facts dd { margin: 0; color: var(--ink-2); line-height: 1.55; max-width: 72ch; }
+.nasa-facts dd p { margin: 0 0 8px; } .nasa-facts dd p:last-child { margin-bottom: 0; }
+.nasa-notes { margin-top: 26px; }
+.nasa-notes h3 { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--warn); font-weight: 400; margin: 0 0 8px; }
+.nasa-notes ul { list-style: none; margin: 0; padding: 0; }
+.nasa-notes li { padding: 12px 0; border-bottom: 1px dotted var(--rule-strong); }
+.nasa-note-text { margin: 0 0 8px; font-size: .92rem; color: var(--ink-2); }
+.vs { display: grid; gap: 6px; }
+.vs-side { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: 2px 10px; font-size: .9rem; color: var(--ash); align-items: baseline; }
+.vs-side > :nth-child(n + 3) { grid-column: 2; }
+.vs-tag { font-family: var(--f-mono); font-size: .66rem; letter-spacing: .1em; color: var(--signal); border: 1px solid currentColor; padding: 1px 5px; justify-self: start; }
+.vs-tag.vs-psi { color: var(--ink-2); }
+.nasa-program { margin-top: 22px; }
+.nasa-program summary { cursor: pointer; font-family: var(--f-mono); font-size: .78rem; letter-spacing: .04em; color: var(--ink-2); }
+.nasa-program[open] summary { margin-bottom: 12px; }
+.nasa-foot { margin-top: 18px; max-width: 72ch; }
+@media (max-width: 720px) { .nasa-facts > div { grid-template-columns: 1fr; } }
+
+/* ---------- explorer: one-line NASA hint ---------- */
+.entry-nasa { margin: -4px 0 12px; font-size: .86rem; color: var(--ink-2); max-width: 70ch; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.entry-nasa-tag { font-family: var(--f-mono); font-size: .64rem; letter-spacing: .1em; color: var(--signal); border: 1px solid currentColor; padding: 0 5px; margin-right: 8px; vertical-align: 1px; }
+.entry-nasa a { font-family: var(--f-mono); font-size: .72rem; margin-left: 4px; }
+
+/* ---------- beyond PSI ---------- */
+.xp .entry-acr { font-size: clamp(1.5rem, 2.4vw, 2rem); }
+.tag-nopsi { color: var(--warn); }
+.xp-status { margin: 0 0 12px; font-size: .92rem; color: var(--ink-2); }
+.xp-more { margin-top: 8px; }
+.xp-more summary { cursor: pointer; font-family: var(--f-mono); font-size: .74rem; color: var(--ash); }
+.xp-subs { margin-top: 18px; }
+.xp-subs h4 { font-family: var(--f-mono); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ash); font-weight: 400; margin: 0 0 6px; }
+.xp-subs ul { list-style: none; margin: 0; padding: 0; }
+.xp-subs li { padding: 10px 0; border-top: 1px solid var(--rule); font-size: .92rem; }
+.xp-subs li p { margin: 4px 0 0; color: var(--ink-2); }
+.xp-related { margin: 14px 0 0; font-size: .88rem; }
+.xp-related-tag { font-family: var(--f-mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ash); margin-right: 10px; }
+q { quotes: "“" "”"; }

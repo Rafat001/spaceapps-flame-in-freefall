@@ -134,6 +134,10 @@ function Explorer() {
                           {c.is_ground && <li className="tag-ground">Ground / modeling</li>}
                           <li>{c.n_test_runs} test rows</li>{c.n_flags > 0 && <li className="tag-flag">{c.n_flags} data flags</li>}</ul>
                         <p className="entry-obj">{c.objective_short}</p>
+                        {c.nasa_hint && (
+                          <p className="entry-nasa"><span className="entry-nasa-tag">NASA</span>
+                            <q>{c.nasa_hint.quote}</q> <a href={c.nasa_hint.citation.url} target="_blank" rel="noreferrer"
+                              title={`${c.nasa_hint.citation.title}, ${c.nasa_hint.citation.locator}`}>source ↗</a></p>)}
                         <dl className="cond-strip">
                           <div><dt>O2</dt><dd><CondCell c={c.conditions.oxygen} /></dd></div>
                           <div><dt>Pressure</dt><dd><CondCell c={c.conditions.pressure} /></dd></div>

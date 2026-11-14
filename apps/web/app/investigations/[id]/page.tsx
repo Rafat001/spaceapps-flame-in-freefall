@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import { humanize, readCompare, toggleCompare } from "@/lib/format";
 import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice } from "@/components/ui";
 import { Flags } from "@/components/Citations";
+import NasaSummary from "@/components/NasaSummary";
 
 const fmtBytes = (b?: number) => (b ? (b >= 1e12 ? `${(b / 1e12).toFixed(2)} TB` : b >= 1e9 ? `${(b / 1e9).toFixed(2)} GB` : `${(b / 1e6).toFixed(1)} MB`) : "—");
 
@@ -40,6 +41,7 @@ export default function Detail() {
         <p className="dossier-no">What this record tells us <EvidenceLabel text={d.interpretation.label} /></p>
         <ul className="interp">{d.interpretation.sentences.map((x: any, i: number) => <li key={i}>{x.text}</li>)}</ul>
       </section>
+      <NasaSummary s={d.nasa_program} acronym={d.acronym} />
       {d.relationships?.length > 0 && (<><h2>{d.is_ground ? "Reuses flight data of" : "Related in PSI"} <EvidenceLabel text="PSI record (related_glds)" /></h2>
         <ul className="evidence-list">{d.relationships.map((r: any) => <li key={r.to}><Link href={`/investigations/${r.to.toLowerCase()}`}>{r.to_acronym || r.to}</Link>
           <span className="muted small"> {r.to} · {r.kind.replace(/_/g, " ")}</span>{r.quote && <blockquote>{r.quote.slice(0, 300)}</blockquote>}</li>)}</ul></>)}

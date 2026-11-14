@@ -107,13 +107,15 @@ function Explorer() {
         <section aria-live="polite" aria-label="Results">
           <ErrorBox error={err} />
           {cmp.length > 0 && (
-            <Notice>Selected for comparison: <span className="mono">{cmp.join(", ")}</span> — <Link href={`/compare?ids=${cmp.join(",")}`}>compare ({cmp.length}/3)</Link>
-              {cmp.length >= 2 && <> · <a href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/export.csv?ids=${cmp.join(",")}`}>export CSV</a></>}</Notice>
+            <Notice>{cmp.length} of 3 selected for comparison (<span className="mono">{cmp.map((x) => x.toUpperCase()).join(", ")}</span>).{" "}
+              {cmp.length >= 2 ? <><Link href={`/compare?ids=${cmp.join(",")}`}>Compare them side by side</Link> · <a href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/export.csv?ids=${cmp.join(",")}`}>export CSV</a></>
+                : <>Tick Compare on one or two more investigations to compare them side by side.</>}</Notice>
           )}
           {!data ? <Loading /> : (
             <>
-              <p className="result-count"><b>{data.total}</b> investigation(s) match. {data.total === 0 && "No documented work in this catalog matches all filters — this is not proof that none exists."}
-                {data.total > 0 && data.sort === "relevance" && data.scenario_label && <> Most relevant to <b>{data.scenario_label}</b> first.</>}</p>
+              {(data.total === 0 || Object.keys(data.applied_filters || {}).some((k) => !k.endsWith("_unit"))) && (
+                <p className="result-count">{data.total === 0 ? "No documented work in this catalog matches all filters. That is not proof that none exists."
+                  : <><b>{data.total}</b> investigation(s) match your filters.</>}</p>)}
               {data.total > 0 && data.scenario_label && (
                 <p className="score-legend muted small">
                   <b>Relevance</b> (0–100) is how closely an investigation’s documented fuel, oxygen and pressure, flame behavior, suppression work and habitat use match

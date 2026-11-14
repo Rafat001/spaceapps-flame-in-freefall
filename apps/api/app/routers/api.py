@@ -120,7 +120,9 @@ def list_investigations(
         pass  # keep full-text (BM25) order from catalog.search
     else:
         # Same order as the scenario ranking: same-row target matches first, then weighted score.
-        cards.sort(key=lambda c: (c.get("relevance_rank") or 10_000, c["id"]))
+        # An exact ID / acronym hit from the search box is always listed first.
+        cards.sort(key=lambda c: (0 if text_scores.get(c["id"], 0) >= catalog.EXACT_MATCH else 1,
+                                  c.get("relevance_rank") or 10_000, c["id"]))
     total = len(cards)
     start = (page - 1) * page_size
     return {"total": total, "page": page, "page_size": page_size, "items": cards[start:start + page_size],

@@ -1,6 +1,7 @@
 """Catalog search & filters. Unknown values never pass a numeric filter."""
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 from sqlalchemy import and_, or_, select
@@ -10,6 +11,12 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.models import Investigation, TestRun
 from app.retrieval import lexical
+
+EXACT_MATCH = 1e9
+
+
+def _norm(t: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", t.lower())
 
 
 @dataclass
@@ -87,6 +94,13 @@ def search(session: Session, *, q: str | None = None, family: str | None = None,
     text_scores: dict[str, float] = {}
     if q and q.strip():
         ql = q.strip().lower()
+        # A PSI accession ("PSI 10", "psi-10", "PSI10") is an exact lookup, not a keyword search.
+        acc = re.fullmatch(r"psi[\s\-_#]*0*(\d+)", ql)
+        if acc:
+            want = f"PSI-{int(acc.group(1))}"
+            invs = [i for i in invs if i.accession.upper() == want]
+            return invs, {i.id: EXACT_MATCH for i in invs}
+        norm = _norm(ql)
         hits = lexical.search(session, q, k=400)
         from app.models import Chunk
         cmap = dict(session.execute(select(Chunk.id, Chunk.investigation_id).where(Chunk.id.in_([c for c, _ in hits]))).all())
@@ -95,7 +109,9 @@ def search(session: Session, *, q: str | None = None, family: str | None = None,
             if iid:
                 text_scores[iid] = text_scores.get(iid, 0.0) + max(s, 0.0)
         for i in invs:
-            if ql in (i.acronym or "").lower() or ql in i.title.lower():
+            if norm and norm in (_norm(i.acronym or ""), _norm(i.id)):
+                text_scores[i.id] = EXACT_MATCH  # exact acronym ("FLEX-2", "acme cfi-g") always comes first
+            elif ql in (i.acronym or "").lower() or ql in i.title.lower():
                 text_scores[i.id] = text_scores.get(i.id, 0.0) + 100.0
         invs = [i for i in invs if i.id in text_scores]
         invs.sort(key=lambda i: (-text_scores[i.id], i.accession))

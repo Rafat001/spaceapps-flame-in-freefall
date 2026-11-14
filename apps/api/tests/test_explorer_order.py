@@ -19,3 +19,14 @@ def test_default_sort_follows_ranking(client):
 def test_text_query_still_sorted_by_relevance(client):
     ranks, _ = _ranks(client, q="flame")
     assert ranks == sorted(ranks)
+
+
+def test_accession_query_is_exact_lookup(client):
+    for q in ("PSI 10", "psi-10", "PSI10"):
+        items = client.get("/api/investigations", params={"q": q}).json()["items"]
+        assert [c["accession"] for c in items] == ["PSI-10"], q
+
+
+def test_exact_acronym_listed_first(client):
+    items = client.get("/api/investigations", params={"q": "FLEX-2"}).json()["items"]
+    assert items[0]["acronym"] == "FLEX-2"

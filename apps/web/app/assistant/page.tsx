@@ -45,7 +45,7 @@ export default function Assistant() {
       <PageHead no="05" kicker="Ask" title="Ask the evidence">
         Answers come only from the official resources: PSI records and experimental tables, NASA fact sheets, the Researcher&apos;s Guide,
         the brief, incident and spinoff pages, and the guidance video. Exact answers are computed from the data with row, page or
-        timestamp citations; no key is needed. When AI is available (this site&apos;s free Groq quota, or your own key), a short summary is added and labeled <EvidenceLabel text="AI interpretation" />.
+        timestamp citations; no key is needed. When AI is available (this site&apos;s free quota, or your own Groq or Gemini key), a short summary is added and labeled <EvidenceLabel text="AI interpretation" />.
       </PageHead>
       <form onSubmit={(e) => { e.preventDefault(); ask(q); }} className="ask">
         <label htmlFor="question">Question</label>

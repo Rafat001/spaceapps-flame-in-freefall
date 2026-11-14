@@ -157,7 +157,7 @@ def investigation_overview(inv_id: str, request: Request, q: str | None = Query(
     what this record contributes in relation to the query (e.g. 'Heat Release Rate').
     Falls back to a templated answer when no LLM is configured.
     """
-    from app.ai.providers.llm import build_byok_llm, GROQ_FREE_MODELS
+    from app.ai.providers.llm import build_byok_llm, model_not_allowed_message
     from app.security import byok_from_request
 
     inv_id_lower = inv_id.lower()
@@ -189,7 +189,7 @@ def investigation_overview(inv_id: str, request: Request, q: str | None = Query(
         try:
             llm = build_byok_llm(state.cfg, byok.provider, byok.key, byok.model)
         except ValueError:
-            raise HTTPException(400, f"Model not allowed for {byok.provider}. Free Groq models: {', '.join(GROQ_FREE_MODELS)}.") from None
+            raise HTTPException(400, model_not_allowed_message(byok.provider)) from None
     else:
         llm = state.llm
 
@@ -272,7 +272,7 @@ def ask(body: AskIn, request: Request, s: Session = Depends(get_session)):
     from app.ai.providers.llm import build_byok_llm
     from app.security import byok_from_request
 
-    from app.ai.providers.llm import GROQ_FREE_MODELS, QuotaGuardLLM
+    from app.ai.providers.llm import QuotaGuardLLM, model_not_allowed_message
     from app.ratelimit import allow, client_ip
 
     emb, _ = state.embedder
@@ -282,8 +282,7 @@ def ask(body: AskIn, request: Request, s: Session = Depends(get_session)):
         try:
             llm = build_byok_llm(state.cfg, byok.provider, byok.key, byok.model)
         except ValueError:
-            raise HTTPException(400, f"Model not allowed for {byok.provider}. Free Groq models: {', '.join(GROQ_FREE_MODELS)}. "
-                                     "The key was not used or stored.") from None
+            raise HTTPException(400, model_not_allowed_message(byok.provider)) from None
     else:
         llm = state.llm
         if _server_ai_on():
@@ -383,21 +382,24 @@ def ai_settings():
 
 
 class AISettingsIn(BaseModel):
-    ai_llm_provider: Literal["local", "openai", "anthropic", "groq", "none"] | None = None
+    ai_llm_provider: Literal["local", "openai", "anthropic", "groq", "gemini", "none"] | None = None
     ai_embedding_provider: Literal["local", "openai", "hash"] | None = None
     ollama_model: str | None = Field(None, max_length=100)
     openai_model: str | None = Field(None, max_length=100)
     anthropic_model: str | None = Field(None, max_length=100)
     groq_model: str | None = Field(None, max_length=100)
+    gemini_model: str | None = Field(None, max_length=100)
 
 
 @router.put("/settings/ai", dependencies=[Depends(require_admin)])
 def update_ai_settings(body: AISettingsIn):
     """Switch providers/models at runtime (in-memory; .env stays the default). API keys are env-only by design."""
-    from app.ai.providers.llm import GROQ_FREE_MODELS
+    from app.ai.providers.llm import GEMINI_FREE_MODELS, GROQ_FREE_MODELS
 
     if body.groq_model and body.groq_model not in GROQ_FREE_MODELS:
         raise HTTPException(400, f"groq_model must be a free-plan model: {', '.join(GROQ_FREE_MODELS)}")
+    if body.gemini_model and body.gemini_model not in GEMINI_FREE_MODELS:
+        raise HTTPException(400, f"gemini_model must be a free-tier model: {', '.join(GEMINI_FREE_MODELS)}")
     state.reset(**body.model_dump())
     return state.status()
 

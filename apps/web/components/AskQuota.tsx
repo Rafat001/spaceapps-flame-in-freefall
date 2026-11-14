@@ -6,7 +6,7 @@ export type Quota = {
   you?: { minute: Win; day: Win }; site?: { minute: Win; day: Win };
 };
 
-const PROVIDER_NAMES: Record<string, string> = { groq: "Groq", openai: "OpenAI", anthropic: "Anthropic" };
+const PROVIDER_NAMES: Record<string, string> = { groq: "Groq", gemini: "Gemini", openai: "OpenAI", anthropic: "Anthropic" };
 const clock = (t: number) => new Date(t * 1000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 const frac = (w: Win) => `${w.remaining ?? w.limit}/${w.limit}`;
 
@@ -28,8 +28,7 @@ export function AskQuota({ quota, ownKey }: { quota: Quota | null; ownKey: boole
       <p className="quota-count" role="status" aria-live="polite">{quotaText(quota, ownKey)}</p>
       <p className="quota-note">
         This is a hackathon prototype, so AI summaries run on {prov}&apos;s free plan, which allows only a limited number of
-        requests. Computed answers and citations are always free and unlimited. For more AI answers, add your own Groq (or
-        OpenAI/Anthropic) key in <Link href="/settings">Settings</Link>; it stays in this browser tab only.
+        requests. Computed answers and citations are always free and unlimited. For more AI answers, add your own Groq, Gemini, OpenAI, or Anthropic key in <Link href="/settings">Settings</Link>; it stays in this browser tab only.
       </p>
     </div>
   );

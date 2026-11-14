@@ -37,6 +37,7 @@ _KEY_PATTERNS = [
     re.compile(r"sk-ant-[A-Za-z0-9_\-]{8,}"),
     re.compile(r"sk-[A-Za-z0-9_\-]{8,}"),
     re.compile(r"gsk_[A-Za-z0-9]{8,}"),
+    re.compile(r"AIza[0-9A-Za-z_\-]{8,}"),
     re.compile(r"(?i)(bearer\s+)[A-Za-z0-9._\-]{8,}"),
     re.compile(r"(?i)(x-llm-key|x-api-key|x-admin-token|authorization)(['\"]?\s*[:=]\s*['\"]?)[^\s'\",}]+"),
 ]

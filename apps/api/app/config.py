@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     index_path: Path | None = None  # default data/index
 
     # --- AI provider switch (first-class, see README) ---
-    ai_llm_provider: Literal["local", "openai", "anthropic", "groq", "none"] = "local"
+    ai_llm_provider: Literal["local", "openai", "anthropic", "groq", "gemini", "none"] = "local"
     ai_embedding_provider: Literal["local", "openai", "hash"] = "local"
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3.2"
@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     anthropic_model: str = "claude-3-5-haiku-latest"
     groq_api_key: str | None = None
     groq_model: str = "openai/gpt-oss-120b"  # must be in GROQ_FREE_MODELS (app/ai/providers/llm.py)
+    gemini_api_key: str | None = None
+    gemini_model: str = "gemini-3.8-flash"  # must be in GEMINI_FREE_MODELS (app/ai/providers/llm.py)
     llm_timeout_s: float = 60.0
 
     # --- admin lock (D3): settings PUT and /api/ingest/rebuild ---

@@ -125,15 +125,17 @@ CONTEXT_INSTRUCTION = ("\nSources whose section is 'Experimental table (dataset)
 def setup_message(health: dict) -> str:
     return ("No LLM is available, so the answer above is the templated, computed interpretation and the snippets below "
             "are the best-matching sources, with no AI-written text. To add an AI summary: paste your own key in Settings "
-            "(Groq is free; OpenAI and Anthropic also work; the key is kept only in this browser tab and used for one request at a "
-            "time), or set AI_LLM_PROVIDER=groq|local|openai|anthropic with the matching key in the server env. "
+            "(Groq and Gemini have a free tier; OpenAI and Anthropic also work; the key is kept only in this browser tab and used for one request at a "
+            "time), or set AI_LLM_PROVIDER=groq|gemini|local|openai|anthropic with the matching key in the server env. "
             f"Provider status: {health.get('message', 'unknown')}")
 
 
 def rate_limit_notice(e: LLMRateLimited) -> str:
+    docs = {"Groq": "https://console.groq.com/docs/rate-limits",
+            "Gemini": "https://ai.google.dev/gemini-api/docs/rate-limits"}.get(e.provider, "https://console.groq.com/docs/rate-limits")
     return (f"AI summary skipped: {e.provider} returned a rate-limit response (HTTP 429)"
             + (f"; it suggests retrying in {e.retry_after} s" if e.retry_after else "")
-            + ". Showing the computed, templated answer instead (no AI). Free-plan limits: https://console.groq.com/docs/rate-limits")
+            + f". Showing the computed, templated answer instead (no AI). Free-plan limits: {docs}")
 
 
 def ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: int = 6,

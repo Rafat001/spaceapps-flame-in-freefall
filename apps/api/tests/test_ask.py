@@ -68,6 +68,11 @@ def test_retrieved_text_is_not_instructions(session):
 def test_settings_switch(client):
     r = client.put("/api/settings/ai", json={"ai_llm_provider": "openai"}).json()
     assert r["llm"]["configured_provider"] == "openai" and r["llm"]["ok"] is False  # no key in tests
+    r = client.put("/api/settings/ai", json={"ai_llm_provider": "gemini"}).json()
+    assert r["llm"]["configured_provider"] == "gemini" and r["llm"]["ok"] is False
+    assert "GEMINI_API_KEY" in r["llm"]["message"]
+    assert "gemini-3.8-flash" in r["llm"]["gemini_free_models"]
+    assert r["keys_present"]["gemini"] is False
     client.put("/api/settings/ai", json={"ai_llm_provider": "none"})
 
 

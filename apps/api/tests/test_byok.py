@@ -8,7 +8,8 @@ from app.ai.providers import llm as llm_mod
 from app.ai.registry import state
 from app.security import redact
 
-FAKE = {"openai": "sk-test-" + "A" * 40, "anthropic": "sk-ant-test-" + "B" * 40, "groq": "gsk_test" + "C" * 44}
+FAKE = {"openai": "sk-test-" + "A" * 40, "anthropic": "sk-ant-test-" + "B" * 40, "groq": "gsk_test" + "C" * 44,
+        "gemini": "AIzaSyTest" + "E" * 28}
 Q = {"question": "How many tests were run in SAFFIRE-II?"}
 
 
@@ -46,6 +47,7 @@ def _hdr(p, key=None, model=None):
     ("openai", "https://api.openai.com/v1/chat/completions", "Authorization"),
     ("anthropic", "https://api.anthropic.com/v1/messages", "x-api-key"),
     ("groq", "https://api.groq.com/openai/v1/chat/completions", "Authorization"),
+    ("gemini", "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", "Authorization"),
 ])
 def test_byok_used_for_that_request_only_and_never_echoed(client, rec, caplog, provider, url, auth):
     caplog.set_level(logging.DEBUG)
@@ -58,7 +60,7 @@ def test_byok_used_for_that_request_only_and_never_echoed(client, rec, caplog, p
     # next request without the header falls back to the server default (none) -> no provider call
     r2 = client.post("/api/ask", json=Q)
     assert len(rec.calls) == 1 and FAKE[provider] not in r2.text
-    assert state.cfg.openai_api_key is None and state.cfg.groq_api_key is None and state.cfg.anthropic_api_key is None
+    assert state.cfg.openai_api_key is None and state.cfg.groq_api_key is None and state.cfg.anthropic_api_key is None and state.cfg.gemini_api_key is None
 
 
 def test_groq_default_model_allowlist_and_free_params(client, rec):
@@ -104,6 +106,62 @@ def test_admin_cannot_switch_to_paid_groq_model(client, monkeypatch):
     assert client.put("/api/settings/ai", json={"groq_model": "llama-3.3-70b-versatile"}).status_code == 400
 
 
+def test_gemini_default_model_allowlist_and_free_params(client, rec):
+    client.post("/api/ask", json=Q, headers=_hdr("gemini"))
+    body = rec.calls[-1]["json"]
+    assert rec.calls[-1]["url"] == "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+    assert body["model"] == "gemini-3.8-flash"
+    assert body["reasoning_effort"] == "low" and body["max_tokens"] <= 1000
+    client.post("/api/ask", json=Q, headers=_hdr("gemini", model="gemini-3.5-flash-lite"))
+    assert rec.calls[-1]["json"]["model"] == "gemini-3.5-flash-lite"
+    n = len(rec.calls)
+    for paid in ("gemini-4-carbon", "gemini-2.5-flash", "gpt-4o"):
+        r = client.post("/api/ask", json=Q, headers=_hdr("gemini", model=paid))
+        assert r.status_code == 400 and FAKE["gemini"] not in r.text
+        assert "gemini-3.8-flash" in r.text
+    assert len(rec.calls) == n
+
+
+def test_gemini_server_env_provider(rec):
+    cfg = state.cfg.model_copy(update={"ai_llm_provider": "gemini", "gemini_api_key": "AIzaSyEnv" + "F" * 28})
+    p = llm_mod.build_llm(cfg)
+    assert isinstance(p, llm_mod.GeminiLLM) and p.base_url == "https://generativelanguage.googleapis.com/v1beta/openai"
+    assert p.model == "gemini-3.8-flash"
+    h = p.health()
+    assert h["ok"] and "AIzaSyEnv" not in str(h) and "AIzaSyEnv" not in repr(p)
+    assert "Free of charge" in h["free_limits"]
+    assert p.chat("s", "u").startswith("Nine")
+    assert rec.calls[-1]["url"] == "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+
+
+def test_gemini_missing_key_is_clear_and_makes_no_http_call(rec):
+    cfg = state.cfg.model_copy(update={"ai_llm_provider": "gemini", "gemini_api_key": None})
+    p = llm_mod.build_llm(cfg)
+    h = p.health()
+    assert h["ok"] is False and "GEMINI_API_KEY" in h["message"]
+    with pytest.raises(llm_mod.LLMUnavailable, match="GEMINI_API_KEY"):
+        p.chat("s", "u")
+    assert rec.calls == []
+
+
+def test_gemini_env_model_outside_allowlist_is_refused(rec):
+    cfg = state.cfg.model_copy(update={"ai_llm_provider": "gemini", "gemini_api_key": "AIzaSyEnv" + "F" * 28,
+                                       "gemini_model": "gemini-4-carbon"})
+    p = llm_mod.build_llm(cfg)
+    assert not p.health()["ok"] and "gemini-3.8-flash" in p.health()["message"]
+    with pytest.raises(llm_mod.LLMUnavailable):
+        p.chat("s", "u")
+    assert rec.calls == []
+
+
+def test_admin_cannot_switch_to_paid_gemini_model(client, monkeypatch):
+    from app import security
+
+    monkeypatch.setattr(security.settings, "app_env", "development")
+    monkeypatch.setattr(state, "cfg", state.cfg.model_copy(update={"admin_token": None}))
+    assert client.put("/api/settings/ai", json={"gemini_model": "gemini-4-carbon"}).status_code == 400
+
+
 def test_groq_429_falls_back_to_template_with_notice(client, monkeypatch, caplog):
     caplog.set_level(logging.DEBUG)
     r = Recorder(status=429, echo_key=True, headers={"retry-after": "7"})
@@ -124,7 +182,7 @@ def test_provider_error_echoing_key_is_redacted(client, monkeypatch, caplog):
     caplog.set_level(logging.DEBUG)
     r = Recorder(status=401, echo_key=True)
     monkeypatch.setattr(llm_mod.httpx, "post", r)
-    for p in ("openai", "groq", "anthropic"):
+    for p in ("openai", "groq", "gemini", "anthropic"):
         resp = client.post("/api/ask", json=Q, headers=_hdr(p))
         assert resp.status_code == 200
         assert FAKE[p] not in resp.text and FAKE[p] not in caplog.text
@@ -165,7 +223,7 @@ def test_client_cannot_redirect_key_to_another_host(client, rec):
 
 
 def test_redact_patterns():
-    s = f"Authorization: Bearer {FAKE['openai']} x-api-key={FAKE['anthropic']} {FAKE['groq']}"
+    s = f"Authorization: Bearer {FAKE['openai']} x-api-key={FAKE['anthropic']} {FAKE['groq']} {FAKE['gemini']}"
     out = redact(s)
     assert all(v not in out for v in FAKE.values())
 

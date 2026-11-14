@@ -1,4 +1,4 @@
-"""LLM providers: local (Ollama, free) | groq (free plan) | openai | anthropic | none.
+"""LLM providers: local (Ollama, free) | groq (free plan) | gemini (free tier) | openai | anthropic | none.
 
 All providers implement ``chat(system, user) -> str``. ``health()`` never raises.
 """
@@ -40,6 +40,26 @@ GROQ_FREE_MODELS = {
 }
 GROQ_DEFAULT_MODEL = "openai/gpt-oss-120b"
 
+# Gemini API Free tier, text chat models only. Source (checked 2026-11-14):
+#   https://ai.google.dev/gemini-api/docs/pricing
+#   https://ai.google.dev/gemini-api/docs/models
+#   https://ai.google.dev/gemini-api/docs/openai  (OpenAI-compatible endpoint)
+# gemini-2.5-flash is deprecated (API limited to existing users until 2026-12-01, then routes to
+# gemini-3.5-flash-lite) and is not allowlisted. gemini-4-carbon / gemini-4-argon have no free tier.
+GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai"
+GEMINI_FREE_MODELS = {
+    "gemini-3.8-flash": {
+        "label": "Gemini 3.8 Flash",
+        "free_limits": "Free of charge on the Gemini API Free tier (project rate limits are shown in Google AI Studio)",
+    },
+    "gemini-3.5-flash-lite": {
+        "label": "Gemini 3.5 Flash-Lite",
+        "free_limits": "Free of charge on the Gemini API Free tier (project rate limits are shown in Google AI Studio)",
+    },
+}
+GEMINI_DEFAULT_MODEL = "gemini-3.8-flash"
+GEMINI_DOCS = "https://ai.google.dev/gemini-api/docs/pricing"
+
 
 class LLMProvider:
     name = "none"
@@ -74,7 +94,7 @@ class QuotaGuardLLM(LLMProvider):
         ok, why = self._take()
         if not ok:
             raise LLMQuotaExceeded(f"AI summary skipped: this site's shared AI key is limited to {why}. The computed answer and "
-                                   "sources are unaffected. Try again later, or add your own free Groq key in Settings.")
+                                   "sources are unaffected. Try again later, or add your own free Groq or Gemini key in Settings.")
         return self.inner.chat(system, user)
 
 
@@ -163,7 +183,7 @@ class OpenAICompatLLM(LLMProvider):
 
     @property
     def label(self) -> str:
-        return {"openai": "OpenAI", "groq": "Groq"}.get(self.name, self.name)
+        return {"openai": "OpenAI", "groq": "Groq", "gemini": "Gemini"}.get(self.name, self.name)
 
 
 class OpenAILLM(OpenAICompatLLM):
@@ -201,6 +221,37 @@ class GroqLLM(OpenAICompatLLM):
         return super().chat(system, user)
 
 
+class GeminiLLM(OpenAICompatLLM):
+    """Gemini via its OpenAI-compatible API
+    (https://generativelanguage.googleapis.com/v1beta/openai/), free-tier text models only."""
+
+    name = "gemini"
+    env_var = "GEMINI_API_KEY"
+
+    def __init__(self, api_key: str | None, model: str, timeout: float, byok: bool = False):
+        super().__init__(api_key, model, timeout, GEMINI_BASE_URL, byok)
+
+    def health(self) -> dict:
+        if self.model not in GEMINI_FREE_MODELS:
+            return {"ok": False, "provider": self.name, "model": self.model, "byok": self.byok,
+                    "message": f"GEMINI_MODEL '{self.model}' is not an allowed free-tier model. Use one of: "
+                               + ", ".join(GEMINI_FREE_MODELS)}
+        h = super().health()
+        return {**h, "free_limits": GEMINI_FREE_MODELS[self.model]["free_limits"]}
+
+    def _body(self, system: str, user: str) -> dict:
+        body = super()._body(system, user)
+        # Keep thinking short (OpenAI-compat maps reasoning_effort to Gemini thinking) and cap output.
+        # https://ai.google.dev/gemini-api/docs/openai#thinking
+        body.update(reasoning_effort="low", max_tokens=700)
+        return body
+
+    def chat(self, system: str, user: str) -> str:
+        if self.model not in GEMINI_FREE_MODELS:
+            raise LLMUnavailable("Gemini model is not on the free-tier allowlist")
+        return super().chat(system, user)
+
+
 class AnthropicLLM(LLMProvider):
     name = "anthropic"
     env_var = "ANTHROPIC_API_KEY"
@@ -234,7 +285,7 @@ class AnthropicLLM(LLMProvider):
             raise _redact_error("Anthropic", e) from None
 
 
-BYOK_PROVIDERS = ("groq", "openai", "anthropic")
+BYOK_PROVIDERS = ("groq", "gemini", "openai", "anthropic")
 
 
 def build_byok_llm(cfg: Settings, provider: str, key: str, model: str | None = None) -> LLMProvider:
@@ -249,6 +300,11 @@ def build_byok_llm(cfg: Settings, provider: str, key: str, model: str | None = N
         if m not in GROQ_FREE_MODELS:
             raise ValueError("model not allowed")
         return GroqLLM(key, m, cfg.llm_timeout_s, byok=True)
+    if provider == "gemini":
+        m = model or cfg.gemini_model
+        if m not in GEMINI_FREE_MODELS:
+            raise ValueError("model not allowed")
+        return GeminiLLM(key, m, cfg.llm_timeout_s, byok=True)
     raise ValueError("unsupported provider")
 
 
@@ -262,4 +318,20 @@ def build_llm(cfg: Settings) -> LLMProvider:
         return AnthropicLLM(cfg.anthropic_api_key, cfg.anthropic_model, cfg.llm_timeout_s)
     if p == "groq":
         return GroqLLM(cfg.groq_api_key, cfg.groq_model, cfg.llm_timeout_s)
+    if p == "gemini":
+        return GeminiLLM(cfg.gemini_api_key, cfg.gemini_model, cfg.llm_timeout_s)
     return NoLLM()
+
+
+def model_not_allowed_message(provider: str) -> str:
+    """Client-facing error when X-LLM-Model is outside the free-tier allowlist. Never includes the key."""
+    if provider == "groq":
+        allowed = ", ".join(GROQ_FREE_MODELS)
+        kind = "Free Groq models"
+    elif provider == "gemini":
+        allowed = ", ".join(GEMINI_FREE_MODELS)
+        kind = "Free-tier Gemini models"
+    else:
+        return f"Model not allowed for {provider}. The key was not used or stored."
+    return f"Model not allowed for {provider}. {kind}: {allowed}. The key was not used or stored."
+

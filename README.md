@@ -58,8 +58,8 @@ interpretation, plus retrieved sources.
 
 ## Bring your own key (optional AI summary)
 
-On **Settings** a user can paste a **Groq** key (recommended: free plan, key at https://console.groq.com/keys), or an
-OpenAI or Anthropic key. Rules (decision D3):
+On **Settings** a user can paste a **Groq** key (recommended: free plan, key at https://console.groq.com/keys), a
+**Gemini** key (free tier, key at https://aistudio.google.com/apikey), or an OpenAI or Anthropic key. Rules (decision D3):
 - kept only in `sessionStorage` in that browser tab (cleared when the tab closes);
 - sent over HTTPS in the `X-LLM-Key` header (plus `X-LLM-Provider`, optional `X-LLM-Model`) **only** with assistant
   requests (`POST /api/ask`); the API refuses the header on every other endpoint;
@@ -86,8 +86,28 @@ every visitor, AI summaries that use it are limited per IP (`ASK_RATE_PER_MIN=10
 computed answer and sources, with a notice. Only real AI calls with the server key count (abstentions and computed-only
 answers do not). Counters are in memory and reset on restart. `GET /api/ask/quota` returns the caller's and the site's
 limits, remaining answers and reset times without using any quota; `POST /api/ask` returns the same `quota` object, and the
-Ask page shows it as a live counter with a note that this prototype runs on Groq's free plan and that a visitor's own key
+Ask page shows it as a live counter with a note that this prototype runs on the configured provider's free plan and that a visitor's own key
 (Settings) is not limited by the site.
+
+### Gemini (free tier) on the server
+
+Set `AI_LLM_PROVIDER=gemini` and `GEMINI_API_KEY` (optional `GEMINI_MODEL`). Gemini is called through its
+OpenAI-compatible API at `https://generativelanguage.googleapis.com/v1beta/openai/`
+([docs](https://ai.google.dev/gemini-api/docs/openai)). Only free-tier text chat models are allowed, for both the server
+and user keys (source: [pricing](https://ai.google.dev/gemini-api/docs/pricing), checked 2026-11-14).
+`gemini-2.5-flash` is deprecated (API limited to existing users until 1 Dec 2026, then routed to `gemini-3.5-flash-lite`)
+and is not allowlisted.
+
+| `GEMINI_MODEL` | Free tier |
+| --- | --- |
+| `gemini-3.8-flash` (default) | Input and output free of charge on the Gemini API Free tier |
+| `gemini-3.5-flash-lite` | Input and output free of charge on the Gemini API Free tier |
+
+Requests use `reasoning_effort=low` and at most 700 output tokens. If Gemini answers 429, the assistant returns the
+computed, templated answer with a notice instead of failing. Site rate limits above still apply when the shared server
+key is used. A visitor's own Gemini key in Settings is not limited by the site. To set the server key on Render: open
+the API service → Environment → add `GEMINI_API_KEY` (leave `GEMINI_MODEL` blank to use the default) → Save. Do not
+commit the key. Groq remains the default provider unless you also set `AI_LLM_PROVIDER=gemini`.
 
 ## Docker
 
@@ -104,7 +124,7 @@ Switch in `.env` (or at runtime on the **AI settings** page / `PUT /api/settings
 
 | Purpose | Free / local | Paid |
 | --- | --- | --- |
-| LLM for `/api/ask` | `AI_LLM_PROVIDER=groq` + `GROQ_API_KEY` (free plan, recommended; see above) or `local` → Ollama (`OLLAMA_MODEL=llama3.2`, `OLLAMA_BASE_URL`) | `openai` + `OPENAI_API_KEY` (`OPENAI_MODEL`) or `anthropic` + `ANTHROPIC_API_KEY` (`ANTHROPIC_MODEL`) |
+| LLM for `/api/ask` | `AI_LLM_PROVIDER=groq` + `GROQ_API_KEY` (free plan, recommended; see above), `gemini` + `GEMINI_API_KEY` (free tier; see above), or `local` → Ollama (`OLLAMA_MODEL=llama3.2`, `OLLAMA_BASE_URL`) | `openai` + `OPENAI_API_KEY` (`OPENAI_MODEL`) or `anthropic` + `ANTHROPIC_API_KEY` (`ANTHROPIC_MODEL`) |
 | Embeddings | `AI_EMBEDDING_PROVIDER=local` → sentence-transformers `all-MiniLM-L6-v2`; or `hash` (offline fallback) | `AI_EMBEDDING_PROVIDER=openai` (`text-embedding-3-small`) |
 | No AI at all | `AI_LLM_PROVIDER=none` | — |
 
@@ -134,7 +154,7 @@ apps/web  (Next.js App Router, TypeScript)  ──HTTP──>  apps/api (FastAPI
                                                      ├─ SQLite (SQLAlchemy): investigations, documents, chunks, test_runs, measurements
                                                      ├─ SQLite FTS5 (BM25)                 ← lexical
                                                      ├─ data/index (FAISS / NumPy)          ← vector
-                                                     ├─ app/ai/providers: embeddings (local|openai|hash), llm (local|openai|anthropic|none)
+                                                     ├─ app/ai/providers: embeddings (local|openai|hash), llm (local|groq|gemini|openai|anthropic|none)
                                                      └─ services: catalog, coverage, ranking, compare, ask (hybrid RAG)
 ingestion: data/sources (PSI JSON + CSV, official PDFs/HTML/transcript) → app.ingest.build_seed → data/seed/*.v2.json → app.ingest → DB + indexes
 ```

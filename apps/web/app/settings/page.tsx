@@ -21,7 +21,10 @@ function ByokPanel() {
       <Notice><b>Recommended free option: Groq.</b> Create a free key at <a href="https://console.groq.com/keys" target="_blank" rel="noreferrer">console.groq.com/keys</a>.
         Only Groq&apos;s free-plan production models are allowed (GPT OSS 120B, GPT OSS 20B; free plan 30 requests/min, 1,000/day,
         8K tokens/min — <a href="https://console.groq.com/docs/rate-limits" target="_blank" rel="noreferrer">Groq rate limits</a>).
-        If Groq says the limit is reached, you get the computed answer without the AI summary.</Notice>
+        <b>Gemini</b> is also free-tier: create a key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer">Google AI Studio</a>.
+        Allowed models are Gemini 3.8 Flash (default) and Gemini 3.5 Flash-Lite
+        (free of charge on the Gemini API Free tier — <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noreferrer">pricing</a>, checked 14 Nov 2026).
+        If the provider says the limit is reached, you get the computed answer without the AI summary.</Notice>
       <ul className="kv">
         <li>Kept only in this browser tab (sessionStorage). Closing the tab removes it.</li>
         <li>Sent over HTTPS in a request header, only with assistant questions.</li>
@@ -89,13 +92,14 @@ export default function Settings() {
         <label htmlFor="llm">Provider</label>
         <select id="llm" disabled={busy || locked} value={s.llm.configured_provider} onChange={(e) => update({ ai_llm_provider: e.target.value })}>
           <option value="groq">Groq, free plan — recommended ({s.models.groq}) — needs GROQ_API_KEY</option>
+          <option value="gemini">Gemini, free tier ({s.models.gemini}) — needs GEMINI_API_KEY</option>
           <option value="local">Local / free — Ollama ({s.models.ollama})</option>
           <option value="openai">OpenAI ({s.models.openai}) — needs OPENAI_API_KEY</option>
           <option value="anthropic">Anthropic ({s.models.anthropic}) — needs ANTHROPIC_API_KEY</option>
           <option value="none">None — computed answers only</option>
         </select>
         <Notice kind={s.llm.ok ? "info" : "warn"}>{s.llm.ok ? "Ready: " : "Not ready: "}{s.llm.message}</Notice>
-        <p className="kv">Server keys present: Groq <b>{s.keys_present.groq ? "yes" : "no"}</b> · OpenAI <b>{s.keys_present.openai ? "yes" : "no"}</b> · Anthropic <b>{s.keys_present.anthropic ? "yes" : "no"}</b></p>
+        <p className="kv">Server keys present: Groq <b>{s.keys_present.groq ? "yes" : "no"}</b> · Gemini <b>{s.keys_present.gemini ? "yes" : "no"}</b> · OpenAI <b>{s.keys_present.openai ? "yes" : "no"}</b> · Anthropic <b>{s.keys_present.anthropic ? "yes" : "no"}</b></p>
         {s.ask_limits && <p className="small muted">Shared server key limits for AI summaries: {s.ask_limits.per_ip_per_min}/min and {s.ask_limits.per_ip_per_day}/day per visitor;
           site-wide {s.ask_limits.global_per_min}/min and {s.ask_limits.global_per_day}/day. Your own key is not counted.</p>}
       </section>

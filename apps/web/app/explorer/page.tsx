@@ -189,6 +189,7 @@ function Explorer() {
 
                   {!answerLoading && searchAnswer && (
                     <>
+                      {searchAnswer.llm_notice && <Notice kind="warn">{searchAnswer.llm_notice}</Notice>}
                       {searchAnswer.answer ? (
                         <div className="search-synthesis-body md">
                           <Markdown text={searchAnswer.answer} citations={searchAnswer.citations} />

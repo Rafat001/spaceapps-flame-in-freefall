@@ -80,7 +80,7 @@ export default function Assistant() {
           </>)}
           {r.mode === "direct" && r.setup_message && <p className="muted small">AI summary off: add your own key in <Link href="/settings">Settings</Link> (optional).</p>}
           {r.mode === "retrieval_only" && (<>{r.template_summary && <p className="answer">{r.template_summary}</p>}
-            <Notice>{r.setup_message} <Link href="/settings">AI settings →</Link></Notice></>)}
+            {r.setup_message && <Notice>{r.setup_message} <Link href="/settings">AI settings →</Link></Notice>}</>)}
           {r.mode === "llm" && (<>
             <p className="answer-meta"><EvidenceLabel text={r.answer_label} /> <span>{r.llm.provider} · {r.llm.model}</span></p>
             <Markdown className="answer" text={r.answer} citations={r.citations} />

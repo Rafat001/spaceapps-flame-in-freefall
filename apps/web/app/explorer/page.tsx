@@ -122,50 +122,70 @@ function Explorer() {
                   : <><b>{data.total}</b> investigation(s) match your filters.</>}</p>)}
               {data.total > 0 && data.scenario_label && (
                 <p className="score-legend muted small">
-                  <b>Relevance</b> (0–100) is how closely an investigation’s documented fuel, oxygen and pressure, flame behavior, suppression work and habitat use match
-                  the <i>{data.scenario_label}</i> scenario. It is research relevance, not a hazard or safety score.
-                  {" "}<b>Rank</b> puts investigations with table rows that meet the scenario’s oxygen and pressure target first, then orders by score.
+                  {data.sort === "match" ? (
+                    <>
+                      Ordered by <b>Best text match</b> for your search. <b>Match rank</b> shows each investigation’s position in the search results (top match is #1).
+                      {" "}<b>Scenario rank</b> shows research relevance (0–100) to the <i>{data.scenario_label}</i> scenario.
+                    </>
+                  ) : (
+                    <>
+                      <b>Relevance</b> (0–100) is how closely an investigation’s documented fuel, oxygen and pressure, flame behavior, suppression work and habitat use match
+                      the <i>{data.scenario_label}</i> scenario. It is research relevance, not a hazard or safety score.
+                      {" "}<b>Rank</b> puts investigations with table rows that meet the scenario’s oxygen and pressure target first, then orders by score.
+                    </>
+                  )}
                   {" "}<b>Data completeness</b> is how many of 10 key catalog fields NASA’s record fills in (objective, approach, hardware, test rows, materials,
                   oxygen, pressure, airflow, measurements, documents). <Link href="/insights">How scores are built</Link>
                 </p>)}
               <ol className="entries">
-                {data.items.map((c: any) => (
-                  <li key={c.id}>
-                    <article className="entry">
-                      <h2 className="entry-acr"><Link href={`/investigations/${c.id}${f.q ? `?from_q=${encodeURIComponent(f.q)}` : ""}`}>{c.acronym}</Link>
-                        <span className="entry-acc">{c.accession}</span></h2>
-                      <div>
-                        <p className="entry-title">{c.title}</p>
-                        <ul className="tags"><li>{c.family}</li><li>{c.fuel_class}</li><li>{c.platform}</li>
-                          {c.is_ground && <li className="tag-ground">Ground / modeling</li>}
-                          <li>{c.n_test_runs} test rows</li>{c.n_flags > 0 && <li className="tag-flag">{c.n_flags} data flags</li>}</ul>
-                        <p className="entry-obj">{c.objective_short}</p>
-                        {c.nasa_hint && (
-                          <p className="entry-nasa"><span className="entry-nasa-tag">NASA</span>
-                            <q>{c.nasa_hint.quote}</q> <a href={c.nasa_hint.citation.url} target="_blank" rel="noreferrer"
-                              title={`${c.nasa_hint.citation.title}, ${c.nasa_hint.citation.locator}`}>source ↗</a></p>)}
-                        <dl className="cond-strip">
-                          <div><dt>O2</dt><dd><CondCell c={c.conditions.oxygen} /></dd></div>
-                          <div><dt>Pressure</dt><dd><CondCell c={c.conditions.pressure} /></dd></div>
-                          <div><dt>Airflow</dt><dd><CondCell c={c.conditions.airflow} /></dd></div>
-                        </dl>
-                        <div className="entry-foot">
-                          <span className="score-inline" title="Research relevance to the selected scenario, out of 100. Not a hazard score.">
-                            {c.relevance_rank ? <>Rank <b>#{c.relevance_rank}</b> of {data.ranked_total} · relevance <b>{c.relevance_score}</b>/100</> : <>Relevance —</>}
-                            {c.relevance_tier === "documented_at_target" && <span className="tag-target"> · meets target on same row</span>}
-                          </span>
-                          <span className="score-inline" title="Share of 10 key catalog fields that NASA's record fills in.">
-                            Data completeness {Math.round(c.data_completeness * 10)}/10 fields</span>
-                          <label className="check">
-                            <input type="checkbox" checked={cmp.includes(c.id)} onChange={() => setCmp(toggleCompare(c.id))} />
-                            Compare
-                          </label>
-                          <a href={c.source_url} target="_blank" rel="noreferrer">PSI record ↗</a>
+                {data.items.map((c: any, idx: number) => {
+                  const resultRank = (data.page ? (data.page - 1) * (data.page_size || 50) : 0) + idx + 1;
+                  return (
+                    <li key={c.id}>
+                      <article className="entry">
+                        <h2 className="entry-acr"><Link href={`/investigations/${c.id}${f.q ? `?from_q=${encodeURIComponent(f.q)}` : ""}`}>{c.acronym}</Link>
+                          <span className="entry-acc">#{resultRank} · {c.accession}</span></h2>
+                        <div>
+                          <p className="entry-title">{c.title}</p>
+                          <ul className="tags"><li>{c.family}</li><li>{c.fuel_class}</li><li>{c.platform}</li>
+                            {c.is_ground && <li className="tag-ground">Ground / modeling</li>}
+                            <li>{c.n_test_runs} test rows</li>{c.n_flags > 0 && <li className="tag-flag">{c.n_flags} data flags</li>}</ul>
+                          <p className="entry-obj">{c.objective_short}</p>
+                          {c.nasa_hint && (
+                            <p className="entry-nasa"><span className="entry-nasa-tag">NASA</span>
+                              <q>{c.nasa_hint.quote}</q> <a href={c.nasa_hint.citation.url} target="_blank" rel="noreferrer"
+                                title={`${c.nasa_hint.citation.title}, ${c.nasa_hint.citation.locator}`}>source ↗</a></p>)}
+                          <dl className="cond-strip">
+                            <div><dt>O2</dt><dd><CondCell c={c.conditions.oxygen} /></dd></div>
+                            <div><dt>Pressure</dt><dd><CondCell c={c.conditions.pressure} /></dd></div>
+                            <div><dt>Airflow</dt><dd><CondCell c={c.conditions.airflow} /></dd></div>
+                          </dl>
+                          <div className="entry-foot">
+                            <span className="score-inline" title={data.sort === "match" ? "Full-text search match rank in this query, alongside scenario research relevance." : "Research relevance to the selected scenario, out of 100. Not a hazard score."}>
+                              {data.sort === "match" ? (
+                                <>Match rank <b>#{resultRank}</b> of {data.total}{c.relevance_rank ? <> · Scenario rank #{c.relevance_rank} (relevance <b>{c.relevance_score}</b>/100)</> : null}</>
+                              ) : (
+                                c.relevance_rank ? (
+                                  <>{(data.total < data.ranked_total || (data.applied_filters && Object.keys(data.applied_filters).length > 0)) ? <>Result <b>#{resultRank}</b> · scenario rank <b>#{c.relevance_rank}</b> of {data.ranked_total}</> : <>Rank <b>#{c.relevance_rank}</b> of {data.ranked_total}</>} · relevance <b>{c.relevance_score}</b>/100</>
+                                ) : (
+                                  <>Relevance —</>
+                                )
+                              )}
+                              {c.relevance_tier === "documented_at_target" && <span className="tag-target"> · meets target on same row</span>}
+                            </span>
+                            <span className="score-inline" title="Share of 10 key catalog fields that NASA's record fills in.">
+                              Data completeness {Math.round(c.data_completeness * 10)}/10 fields</span>
+                            <label className="check">
+                              <input type="checkbox" checked={cmp.includes(c.id)} onChange={() => setCmp(toggleCompare(c.id))} />
+                              Compare
+                            </label>
+                            <a href={c.source_url} target="_blank" rel="noreferrer">PSI record ↗</a>
+                          </div>
                         </div>
-                      </div>
-                    </article>
-                  </li>
-                ))}
+                      </article>
+                    </li>
+                  );
+                })}
               </ol>
             </>
           )}

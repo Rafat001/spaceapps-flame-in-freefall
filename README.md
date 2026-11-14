@@ -209,3 +209,4 @@ data/seed     versioned seed JSON
 docs/         FOUNDATION_BRIEF.md, PRD.md, chatgpt-session.md
 scripts/dev.sh, Makefile, docker-compose.yml, .env.example
 ```
+

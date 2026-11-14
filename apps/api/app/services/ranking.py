@@ -1,10 +1,16 @@
-"""Deterministic, explainable research-relevance ranking (PRD section 9).
+"""Deterministic, explainable scenario-fit ranking (PRD section 9), version sfsri-v0.4.
 
-Score = 100 x sum(weight x match), match in [0, 1]. Weights are product hypotheses to be
-reviewed by a fire-safety domain expert; they are NOT hazard coefficients. Unknown evidence
-receives no positive match and is flagged. Every non-zero criterion carries >= 1 citation.
+Scenario fit = 100 x sum(weight x match), match in [0, 1], weights sum to 1. The score alone fixes the order
+(highest first; ties -> more rows at target, then data completeness, then acronym), so a higher number is never
+listed below a lower one. When the official brief gives a target atmosphere (Moon Base / pressurized rover), one
+criterion is "Tests at target conditions": PSI experimental-table rows meeting the O2 AND pressure target on the
+SAME row, log-scaled by row count and saturating at TARGET_SATURATION_ROWS. Weights are product hypotheses to be
+reviewed by a fire-safety domain expert; they are NOT hazard coefficients. Unknown evidence receives no positive
+match and is flagged. Every non-zero criterion carries >= 1 citation.
 """
 from __future__ import annotations
+
+import math
 
 from sqlalchemy.orm import Session
 
@@ -13,22 +19,53 @@ from app.labels import PARTIAL_GRAVITY_WARNING, RELEVANCE_DISCLAIMER, label
 from app.models import Investigation
 from app.scenarios import SCENARIOS
 
-WEIGHTS = {
+# Scenarios whose official brief gives a target atmosphere (lunar habitat, pressurized rover).
+WEIGHTS_TARGET = {
+    "target_conditions": 0.35,
+    "material_fuel": 0.20,
+    "oxygen_atmosphere": 0.10,
+    "prevention_flame_behavior": 0.15,
+    "detection_suppression": 0.10,
+    "habitat_applicability": 0.10,
+}
+# Scenarios with no atmosphere target in the brief (spacecraft cabin, Mars): no target criterion exists.
+WEIGHTS_NO_TARGET = {
     "material_fuel": 0.25,
     "oxygen_atmosphere": 0.25,
     "prevention_flame_behavior": 0.20,
     "detection_suppression": 0.15,
     "habitat_applicability": 0.15,
 }
+WEIGHTS = WEIGHTS_TARGET
+# Rows at target needed for a full "Tests at target conditions" match. Log scale: the first rows count most
+# (1 row = 0.18, 8 rows = 0.56, 18 rows = 0.75, 48 rows = 0.99, >= 50 rows = 1.0).
+TARGET_SATURATION_ROWS = 50
 CRITERIA_LABELS = {
+    "target_conditions": "Tests at target conditions",
     "material_fuel": "Material / fuel match",
     "oxygen_atmosphere": "Oxygen / atmosphere match",
     "prevention_flame_behavior": "Prevention / flame behavior",
     "detection_suppression": "Detection / suppression",
     "habitat_applicability": "Habitat applicability",
 }
+CRITERIA_SHORT = {
+    "target_conditions": "Target tests",
+    "material_fuel": "Fuel",
+    "oxygen_atmosphere": "O2/pressure",
+    "prevention_flame_behavior": "Flame behavior",
+    "detection_suppression": "Detect/suppress",
+    "habitat_applicability": "Habitat",
+}
 FUEL_MATCH = {"solid": 1.0, "liquid": 0.4, "gaseous": 0.3, "aerosol": 0.0}
-RANKING_VERSION = "sfsri-v0.3"
+RANKING_VERSION = "sfsri-v0.4"
+SCORE_LABEL = "scenario fit"
+
+
+def target_match(n_rows: int) -> float:
+    """Evidence strength of n same-row target matches: log(1+n)/log(1+TARGET_SATURATION_ROWS), capped at 1."""
+    if n_rows <= 0:
+        return 0.0
+    return round(min(1.0, math.log1p(n_rows) / math.log1p(TARGET_SATURATION_ROWS)), 3)
 
 
 def _tag_cite(inv: Investigation, tag: str) -> dict:
@@ -105,6 +142,25 @@ def _oxygen(inv: Investigation, scen: dict) -> tuple[float, list[dict], list[str
     return round(m, 3), cites, flags
 
 
+def _target(inv: Investigation, scen: dict) -> tuple[float, list[dict], list[str]]:
+    from app.services.coverage import countable, target_rows
+
+    atm = scen["atmosphere"]
+    o_min, p_max = atm["oxygen_pct_min"], atm["pressure_kpa_max"]
+    runs = countable(inv.test_runs)
+    t = target_rows(runs, o_min, p_max, include_stream=True)
+    n = len(t["both"])
+    if not n:
+        return 0.0, [], [f"No PSI table row meets O2 >= {o_min:g} % and pressure <= {p_max:.2f} kPa on the same row."]
+    m = target_match(n)
+    cites = [{"type": "psi_experimental_table", "label": label("psi_experimental_table"), "url": inv.source_url,
+              "excerpt": (f"{n} of {len(runs)} PSI table rows meet O2 >= {o_min:g} % AND pressure <= {p_max:.2f} kPa on the "
+                          f"same row; match = log(1+{n})/log(1+{TARGET_SATURATION_ROWS}), capped at 1."),
+              "rows": [r.source_row for r in t["both"][:50]]},
+             {"type": "challenge_brief", "label": label("challenge_brief"), "excerpt": atm["source_text"], "url": CHALLENGE_URL}]
+    return m, cites, []
+
+
 def _prevention(inv: Investigation) -> tuple[float, list[dict], list[str]]:
     t = inv.topics or {}
     for tag in ("flame_spread", "flammability"):
@@ -149,7 +205,9 @@ def _habitat(inv: Investigation) -> tuple[float, list[dict], list[str]]:
 
 def score(inv: Investigation, scenario: str) -> dict:
     scen = SCENARIOS[scenario]
+    weights = WEIGHTS_TARGET if scen.get("atmosphere") else WEIGHTS_NO_TARGET
     parts = {
+        **({"target_conditions": _target(inv, scen)} if scen.get("atmosphere") else {}),
         "material_fuel": _material(inv),
         "oxygen_atmosphere": _oxygen(inv, scen),
         "prevention_flame_behavior": _prevention(inv),
@@ -158,10 +216,11 @@ def score(inv: Investigation, scenario: str) -> dict:
     }
     breakdown, total, flags = [], 0.0, []
     for k, (m, cites, fl) in parts.items():
-        contrib = 100 * WEIGHTS[k] * m
+        contrib = 100 * weights[k] * m
         total += contrib
         flags += fl
-        breakdown.append({"criterion": k, "label": CRITERIA_LABELS[k], "weight": WEIGHTS[k], "match": m,
+        breakdown.append({"criterion": k, "label": CRITERIA_LABELS[k], "short_label": CRITERIA_SHORT[k],
+                          "weight": weights[k], "match": m,
                           "contribution": round(contrib, 1), "citations": cites, "flags": fl})
     lunar_rows = None
     if scen.get("atmosphere"):
@@ -170,7 +229,7 @@ def score(inv: Investigation, scenario: str) -> dict:
     return {"investigation": {"id": inv.id, "acronym": inv.acronym, "title": inv.title, "family": inv.family,
                               "fuel_class": inv.fuel_class, "source_url": inv.source_url, "is_ground": inv.is_ground,
                               "platform": inv.platform, "lenses": sorted((inv.lenses or {}).keys())},
-            "score": round(total, 1), "breakdown": breakdown, "flags": flags, "target_rows": lunar_rows}
+            "score": round(total, 1), "score_label": SCORE_LABEL, "breakdown": breakdown, "flags": flags, "target_rows": lunar_rows}
 
 
 def rank(session: Session, scenario: str = "lunar_habitat", ids: list[str] | None = None, lens: str | None = None,
@@ -199,11 +258,16 @@ def _rank(catalog: dict[str, Investigation], scenario: str, ids: list[str] | Non
     scen = SCENARIOS[scenario]
     rows = [score(i, scenario) for i in invs]
     tiered = bool(scen.get("atmosphere"))
-    for r in rows:
+    from app.services.serialize import completeness
+
+    for r, inv in zip(rows, invs):
+        # "tier" is a badge only (does any row meet the target on the same row?); it no longer affects the order.
         r["tier"] = ("documented_at_target" if r["target_rows"] else "not_at_target") if tiered else None
-    # D5: when the brief gives an atmosphere target, investigations with rows meeting it on the same row come first,
-    # so the ranking cannot contradict the "Has it been done?" answer; the weighted score orders within each tier.
-    rows.sort(key=lambda r: (0 if r["tier"] in (None, "documented_at_target") else 1, -r["score"], r["investigation"]["id"]))
+        r["data_completeness"] = completeness(inv)
+    # sfsri-v0.4: the displayed score alone fixes the order (strictly by score, highest first). Ties: more rows at
+    # target, then higher data completeness, then acronym, then id, so the order is deterministic.
+    rows.sort(key=lambda r: (-r["score"], -(r["target_rows"] or 0), -r["data_completeness"],
+                             r["investigation"]["acronym"].lower(), r["investigation"]["id"]))
     for n, r in enumerate(rows, 1):
         r["rank"] = n
     warnings = [RELEVANCE_DISCLAIMER]
@@ -212,9 +276,15 @@ def _rank(catalog: dict[str, Investigation], scenario: str, ids: list[str] | Non
     if not scen.get("atmosphere"):
         warnings.append("Not established: the official brief gives no atmosphere target for this scenario.")
     return {"scenario": scenario, "scenario_label": scen["label"], "scenario_atmosphere": scen.get("atmosphere"),
-            "ranking_version": RANKING_VERSION, "weights": WEIGHTS, "criteria_labels": CRITERIA_LABELS,
-            "score_formula": "score = 100 x sum(weight x match); match in [0,1]",
+            "ranking_version": RANKING_VERSION, "score_label": SCORE_LABEL,
+            "weights": WEIGHTS_TARGET if tiered else WEIGHTS_NO_TARGET, "criteria_labels": CRITERIA_LABELS,
+            "criteria_short": CRITERIA_SHORT,
+            "score_formula": "scenario fit = 100 x sum(weight x match); match in [0,1]",
             "weights_note": "Weights are product hypotheses from the team PRD (section 9), pending domain-expert review.",
-            "tier_note": ("Investigations with PSI table rows that meet the brief's target on the same row are listed first; "
-                          "the weighted score orders investigations within each group.") if tiered else None,
+            "target_rule": (f"Tests at target conditions: match = log(1+n)/log(1+{TARGET_SATURATION_ROWS}), capped at 1, where n is "
+                            "the number of PSI table rows meeting the O2 and pressure target on the same row.") if tiered else None,
+            "order_note": ("Ordered by scenario fit alone, highest first. Ties go to more rows at the target, then higher data "
+                           "completeness, then name."
+                           + (" Tests at the brief's target conditions are part of the score (35 %), so investigations with "
+                              "more such rows score higher." if tiered else "")),
             "warnings": warnings, "results": rows}

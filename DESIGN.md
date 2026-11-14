@@ -11,7 +11,7 @@ This document describes how the running app is put together. Every statement is 
 
 The app is a research-discovery dashboard over NASA Physical Sciences Informatics (PSI) combustion investigations. It answers “has work already been done for these parameters?” (fuel/material, oxygen, pressure, airflow, gravity regime, hardware, measurement type), and lets a researcher inspect, compare, rank by research relevance, and ask evidence-grounded questions.
 
-It is decision support only — not a certified fire-risk calculator, materials qualification system, or spacecraft safety authority. Ranking is research relevance, never a hazard score. PSI has no partial-gravity combustion data; microgravity results are not lunar or Martian performance.
+It is decision support only — not a certified fire-risk calculator, materials qualification system, or spacecraft safety authority. Ranking is research scenario fit, never a hazard score. PSI has no partial-gravity combustion data; microgravity results are not lunar or Martian performance.
 
 **Scope rule.** The app answers only from the challenge Resources tab, the challenge Details/brief page, and references those resources name or link to (PSI records and their publications/DOIs, documents cited in the fact sheets or the Researcher's Guide, pages linked from the incident and spinoff pages). The official guidance-video transcript is included and labelled as a user-supplied challenge guide (YouTube auto-captions, cited by `[mm:ss]`). Outside facts are not used. For referenced papers, only public metadata, abstracts or open-access text are indexed (no paywall bypass); otherwise the app links out. When the corpus cannot answer, the assistant abstains.
 
@@ -51,10 +51,10 @@ Next.js App Router + TypeScript (`output: "standalone"`). Pages are client compo
 | --- | --- |
 | `/` | Home: lead lunar coverage teaser, catalog stats, search box (goes to Explorer), top ranked investigations |
 | `/androflame` | Intro / product story (`/intro` is an alias) |
-| `/explorer` | Catalog search, filters, scenario ranking in two labelled tiers, search synthesis, compare picks |
+| `/explorer` | Catalog search, filters, scenario-fit ranking (one score, highest first; "N rows meet the target" badge), search synthesis, compare picks |
 | `/coverage` | “Has it been done?” parameter coverage form |
 | `/compare` | Side-by-side comparison of 2–3 investigations |
-| `/insights` | Scenario ranking with score breakdown |
+| `/insights` | Scenario-fit ranking with per-criterion score breakdown |
 | `/investigations/[id]` | Investigation detail, optional AI overview (`?from_q=` or `?q=` from Explorer) |
 | `/assistant` | Ask the evidence |
 | `/earth` | Documented vs inferred Earth links; explainer quotes |
@@ -82,7 +82,7 @@ FastAPI app in `app/main.py` (title “Flame in Freefall API”, version `0.1.0`
 | `GET` | `/api/ask/quota` | Remaining server-key AI answers; does not consume quota |
 | `POST` | `/api/qa` | Structured QA only (no retrieval, no LLM) |
 | `POST` | `/api/coverage` | Parameter coverage (“has this been done?”) |
-| `GET` | `/api/rank` | Deterministic scenario ranking (`sfsri-v0.3`) |
+| `GET` | `/api/rank` | Deterministic scenario-fit ranking (`sfsri-v0.4`) |
 | `POST` | `/api/compare` | Compare 2–3 investigations |
 | `GET` | `/api/lunar/points` | Countable rows with known O2 and pressure, for the lunar chart |
 | `GET` | `/api/earth` | Earth / spinoff panel |
@@ -196,7 +196,7 @@ sequenceDiagram
   participant W as Explorer page
   participant C as GET /api/investigations
   participant S as POST /api/ask
-  participant Rank as sfsri-v0.3
+  participant Rank as sfsri-v0.4
 
   B->>W: query and filters
   W->>C: catalog search
@@ -207,9 +207,9 @@ sequenceDiagram
     C-->>W: matching investigations
   end
   C->>Rank: rank whole catalog for the selected scenario
-  Rank-->>C: tier and score
-  C-->>W: items with relevance_rank and relevance_tier
-  W->>W: two labelled lists when sort is relevance
+  Rank-->>C: scenario-fit score, rank, rows at target
+  C-->>W: items with relevance_rank, relevance_score, relevance_parts
+  W->>W: one list ordered by score when sort is relevance
   par in parallel with the catalog search, non-empty query only
     W->>S: same ask pipeline as Assistant (answer cache first)
     S-->>W: search synthesis plus source links
@@ -225,19 +225,26 @@ Catalog search (`app/services/catalog.py`):
 - Other queries use FTS5; an exact acronym or id is forced to the top (`EXACT_MATCH`). Title substring matches are boosted.
 - Numeric filters (O2, pressure, airflow, material) require a **same-row** overlap of known values. `NULL` never matches. Units are converted first (`kPa` / `psi` / `atm` / `bar` / `mmHg`, and `m/s` / `cm/s` / `mm/s`).
 
-Default sort is `relevance`: exact text hits first, then the scenario ranking order. Other sorts: `match` (BM25 order), `title`, `completeness`, `accession`.
+Default sort is `relevance`: exact text hits first, then the scenario-fit ranking order. Other sorts: `match` (BM25 order), `title`, `completeness`, `accession`.
 
-**Ranking (`sfsri-v0.3`).** `score = 100 × Σ (weight × match)`, match in `[0, 1]`. Weights (product hypotheses, pending domain-lead review; not hazard coefficients):
+**Ranking (`sfsri-v0.4`, `app/services/ranking.py`).** One number, the **scenario fit** (0–100), fully determines the order:
 
-| Criterion | Weight |
-| --- | --- |
-| Material / fuel match | 0.25 |
-| Oxygen / atmosphere match | 0.25 |
-| Prevention / flame behavior | 0.20 |
-| Detection / suppression | 0.15 |
-| Habitat applicability | 0.15 |
+`scenario fit = 100 × Σ (weight × match)`, match in `[0, 1]`, weights sum to 1. Results are sorted by the displayed (one-decimal) score, highest first, so a higher number is never listed below a lower one. Ties go to more rows at the target, then higher data completeness (share of 10 key catalog fields), then acronym.
 
-For scenarios with an atmosphere target in the official brief (lunar habitat and pressurized rover: O2 ≥ 30 % and pressure ≤ 10.2 psi on the **same** row), results are split into two tiers: `documented_at_target`, then `not_at_target`. The weighted score orders investigations inside each tier. Burner oxidizer-stream O2 counts but is labelled. Mars and spacecraft scenarios have no brief atmosphere target, so they are not tiered. Explorer renders the two tiers as labelled sections.
+Weights (product hypotheses, pending domain-lead review; not hazard coefficients):
+
+| Criterion | Scenarios with a brief atmosphere target (lunar habitat, pressurized rover) | Scenarios without one (spacecraft, Mars) |
+| --- | --- | --- |
+| Tests at target conditions | 0.35 | — (no target in the brief) |
+| Material / fuel match | 0.20 | 0.25 |
+| Oxygen / atmosphere match | 0.10 | 0.25 |
+| Prevention / flame behavior | 0.15 | 0.20 |
+| Detection / suppression | 0.10 | 0.15 |
+| Habitat applicability | 0.10 | 0.15 |
+
+**Tests at target conditions.** `n` = PSI experimental-table rows that meet O2 ≥ 30 % **and** pressure ≤ 10.2 psi (70.33 kPa) on the **same** row (the official brief's Moon Base / rover expectation; the same `coverage.target_rows` count the "Has it been done?" check uses). Match = `log(1+n) / log(1+50)`, capped at 1: the first rows count most and 50 rows saturate (1 row = 0.18, 8 = 0.56, 18 = 0.75, 48 = 0.99). Burner oxidizer-stream O2 counts but is labelled (D5). Zero rows give zero credit and a flag. The oxygen / atmosphere criterion still gives partial credit when O2 and pressure targets are only met on different rows.
+
+Each ranked row carries `score`, `score_label` ("scenario fit"), `target_rows`, `data_completeness`, `tier` (`documented_at_target` / `not_at_target`, now a badge only; it no longer affects order) and a `breakdown` of `{criterion, label, short_label, weight, match, contribution, citations, flags}`. The response adds `weights`, `criteria_short`, `target_rule` and `order_note`. The home widget and `/insights` show "N rows meet the target" and the per-criterion points (e.g. `Target tests 34.7 + Fuel 6 + O2/pressure 10 + …`); Explorer shows the same points as a tooltip and the row count as a badge. Version history: v0.3 listed every at-target investigation before the rest regardless of score, which put lower numbers above higher ones; v0.4 folds that evidence into the score instead.
 
 ### 4.3 Investigation overview
 
@@ -379,7 +386,7 @@ Equivalent scripts: `./scripts/setup.sh`, `./scripts/dev.sh`, `./scripts/test.sh
 | `test_ratelimit.py` | Per-IP and site-wide quota, refunds |
 | `test_perf_cache.py` | Answer cache (repeat served without a provider call or quota, failures, abstentions and own-key answers never cached, LRU/TTL), per-request usage, catalog snapshot reuse and reset |
 | `test_explorer_order.py` | Relevance order, DOI and accession exact lookup |
-| `test_ranking.py` | Reproducible `sfsri-v0.3` ranking |
+| `test_ranking.py` | Reproducible `sfsri-v0.4` ranking: weights sum to 1, order strictly by score with deterministic ties for every scenario, target match grows with rows and saturates |
 | `test_coverage.py`, `test_filters.py` | Coverage verdicts; unknown values never pass filters |
 | `test_fidelity.py` | Table counts match source CSVs; flags surfaced |
 | `test_provenance.py` | Scope rule on every indexed item |

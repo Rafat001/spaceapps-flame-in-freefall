@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { fitParts, targetLine } from "@/lib/format";
 import Mark from "@/components/Mark";
 import VideoFacade from "@/components/VideoFacade";
 import { SpaceFireTeaser } from "@/components/SpaceFire";
@@ -92,7 +93,7 @@ export default function Home() {
 
       <section className="section" aria-labelledby="rank-title">
         <div className="section-head">
-          <h2 id="rank-title" className="display">Most research-relevant investigations <span className="aside">relevance, not hazard</span></h2>
+          <h2 id="rank-title" className="display">Best scenario fit <span className="aside">research fit, not hazard</span></h2>
           <div className="inline-field">
             <label htmlFor="scenario">Application scenario</label>
             <select id="scenario" value={scenario} onChange={(e) => setScenario(e.target.value)}>
@@ -103,7 +104,7 @@ export default function Home() {
         {top?.scenario_atmosphere ? (
           <p className="atmo">Target atmosphere <span className="mono">{top.scenario_atmosphere.display}</span> <EvidenceLabel text="Official challenge brief" /></p>
         ) : top ? <p className="atmo">Target atmosphere <EvidenceLabel text="Not established" /> (no value in the official brief)</p> : null}
-        {top?.tier_note && <p className="small muted">{top.tier_note}</p>}
+        {top?.order_note && <p className="small muted">{top.order_note}</p>}
         {!top ? <Loading /> : (
           <ol className="ranked">
             {top.results.slice(0, 6).map((r: any, i: number) => (
@@ -111,8 +112,9 @@ export default function Home() {
                 <span className="ranked-no">{String(i + 1).padStart(2, "0")}</span>
                 <Link className="ranked-acr" href={`/investigations/${r.investigation.id}`}>{r.investigation.acronym}</Link>
                 <span className="ranked-title">{r.investigation.title}
-                  <span className="ranked-meta">{r.investigation.family} · {r.investigation.fuel_class}{r.tier === "documented_at_target" ? ` · ${r.target_rows} rows meet the target` : r.tier ? " · no row meets the target" : ""}</span></span>
-                <span className="ranked-score"><b>{r.score}</b><span className="muted"> / 100 relevance</span>
+                  <span className="ranked-meta">{r.investigation.family} · {r.investigation.fuel_class}{targetLine(r.tier, r.target_rows)}</span>
+                  <span className="ranked-parts" title="Points each criterion adds to the scenario fit (weight × match × 100)">{fitParts(r.breakdown)}</span></span>
+                <span className="ranked-score"><b>{r.score}</b><span className="muted"> / 100 scenario fit</span>
                   <span className="meter" aria-hidden="true"><span style={{ width: `${r.score}%` }} /></span></span>
               </li>
             ))}

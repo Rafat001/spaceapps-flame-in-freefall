@@ -140,7 +140,7 @@ rebuild vectors (`make ingest` or the button in AI settings) — the API detects
 | **Investigation detail** — template interpretation, relationships (ground studies → flight data), lenses with quotes, hotlinked PSI images, varied vs constant variables, data-quality flags, conditions per row with source text, file tree, version | `GET /api/investigations/{id}` |
 | **Has it been done?** — parameter coverage form: documented match / partial overlap / no documented overlap, per-parameter status (match, match in other runs, mismatch, unknown), matching rows | `POST /api/coverage` |
 | **Compare** — 2–3 investigations side by side with labels and Not reported cells | `POST /api/compare` |
-| **Relevance ranking** — PRD §9 weighted score with per-criterion citations and flags | `GET /api/rank?scenario=lunar_habitat` |
+| **Scenario-fit ranking** — PRD §9 weighted score (one score fixes the order) with per-criterion citations and flags | `GET /api/rank?scenario=lunar_habitat` |
 | **Ask the evidence** — direct computed answers (counts, ranges, maxima, row lookups, official quotes) with CSV-row / page / `[mm:ss]` citations, abstention, hybrid-RAG passages, optional AI summary | `POST /api/ask`, `POST /api/qa` |
 | **Modeling export** — every countable row with SI units, verbatim cells, flags, source row; data dictionary | `GET /api/export/modeling.csv`, `GET /api/export/dictionary` |
 | **AI settings** — provider status and switch, index status, rebuild | `GET/PUT /api/settings/ai`, `POST /api/ingest/rebuild` |
@@ -176,11 +176,13 @@ are located in the indexed corpus (fails loudly if absent). Golden set: `apps/ap
 **Data quality**: suspicious cells are shown verbatim with a flag (spreadsheet auto-fill, '3400%' percent artifacts,
 0 mmHg pressure, possible dimension swaps, duplicate ids/rows, garbled headers, cp1252 decoding). Nothing is silently corrected.
 
-**Ranking** (`app/services/ranking.py`, version `sfsri-v0.3`): `score = 100 × Σ weight × match`, weights 25/25/20/15/15
-(material, oxygen/atmosphere, prevention/flame behavior, detection/suppression, habitat applicability). Lunar habitat /
-rover targets (O2 ≥ 30 %, ≤ 10.2 psi) come from the official brief; Mars and spacecraft targets are *Not established*.
-The oxygen/atmosphere criterion uses the same same-row match as the coverage check (rows must meet both targets on one row;
-burner oxidizer-stream O2 counts but is labelled), and investigations with rows meeting the target are listed first. Weights and match values are product hypotheses for the domain lead to review.
+**Ranking** (`app/services/ranking.py`, version `sfsri-v0.4`): `scenario fit = 100 × Σ weight × match`, and the score
+alone fixes the order (ties: more rows at target, then data completeness, then name). For lunar habitat / rover, whose
+target (O2 ≥ 30 %, ≤ 10.2 psi) comes from the official brief, weights are 35/20/10/15/10/10 (tests at target conditions,
+material, oxygen/atmosphere, prevention/flame behavior, detection/suppression, habitat applicability). "Tests at target
+conditions" uses the coverage check's same-row count n: match = log(1+n)/log(1+50), capped at 1 (burner oxidizer-stream O2
+counts but is labelled). Mars and spacecraft targets are *Not established*, so those scenarios use 25/25/20/15/15 without
+the target criterion. Weights and match values are product hypotheses for the domain lead to review. See DESIGN.md §4.2.
 
 ### Evidence labels
 `Reported by authors (PSI record)` · `Reported by authors (PSI experimental table)` · `Measured (as listed in PSI experimental table)` ·

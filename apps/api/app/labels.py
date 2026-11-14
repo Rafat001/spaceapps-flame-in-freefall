@@ -14,7 +14,7 @@ LABELS = {
 
 NOT_REPORTED = "Not reported"
 
-RELEVANCE_DISCLAIMER = ("Research relevance score for discovery only. It is NOT a hazard, flammability or safety score, "
+RELEVANCE_DISCLAIMER = ("Scenario-fit score for research discovery only. It is NOT a hazard, flammability or safety score, "
                         "and a low score does not mean low fire risk.")
 PARTIAL_GRAVITY_WARNING = ("PSI currently has no partial-gravity combustion data (official challenge brief). Microgravity "
                            "results do not directly establish lunar or Martian performance; LUCI and FM2 data are expected "

@@ -120,7 +120,10 @@ def list_investigations(
             r = by_id.get(c["id"])
             c["relevance_score"] = r["score"] if r else None
             c["relevance_rank"] = r["rank"] if r else None
-            c["relevance_tier"] = r["tier"] if r else None
+            c["relevance_tier"] = r["tier"] if r else None  # badge only; v0.4 orders by score alone
+            c["relevance_target_rows"] = r["target_rows"] if r else None
+            c["relevance_parts"] = ([{"criterion": b["criterion"], "short_label": b["short_label"], "contribution": b["contribution"]}
+                                     for b in r["breakdown"]] if r else None)
     if sort == "title":
         cards.sort(key=lambda c: c["title"])
     elif sort == "completeness":
@@ -130,7 +133,7 @@ def list_investigations(
     elif sort == "match":
         pass  # keep full-text (BM25) order from catalog.search
     else:
-        # Same order as the scenario ranking: same-row target matches first, then weighted score.
+        # Same order as the scenario ranking (sfsri-v0.4: scenario-fit score alone, deterministic ties).
         # An exact ID / acronym hit from the search box is always listed first.
         cards.sort(key=lambda c: (0 if text_scores.get(c["id"], 0) >= catalog.EXACT_MATCH else 1,
                                   c.get("relevance_rank") or 10_000, c["id"]))
@@ -146,7 +149,7 @@ def list_investigations(
                                 airflow_min=airflow_min, airflow_max=airflow_max,
                                 airflow_unit=airflow_unit if (airflow_min or airflow_max) else None).items() if v is not None},
             "notes": ["Numeric filters use only known, source-backed PSI table values; Not reported values never pass.",
-                      "Relevance score = research relevance for the selected scenario, not hazard."]}
+                      "Scenario fit = research fit for the selected scenario (one score, highest first), not hazard."]}
 
 
 @router.get("/investigations/{inv_id}")

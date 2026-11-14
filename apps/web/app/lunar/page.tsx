@@ -70,16 +70,16 @@ export default function Lunar() {
         <section className="section">
           <h2 className="display">Ranking agrees with the coverage check <span className="aside">same row-matching function</span></h2>
           <div className="table-wrap"><table>
-            <thead><tr><th>Rank</th><th>Investigation</th><th>Relevance score</th><th>Rows meeting the lunar target</th><th>Oxygen / atmosphere criterion</th></tr></thead>
+            <thead><tr><th>Rank</th><th>Investigation</th><th>Scenario fit</th><th>Rows meeting the lunar target</th><th>Tests-at-target criterion</th></tr></thead>
             <tbody>{rank.results.slice(0, 10).map((r: any) => {
-              const atm = r.breakdown.find((b: any) => b.criterion === "oxygen_atmosphere");
+              const atm = r.breakdown.find((b: any) => b.criterion === "target_conditions");
               return (<tr key={r.investigation.id}><td className="num">{r.rank}</td><td><Link href={`/investigations/${r.investigation.id}`}>{r.investigation.acronym}</Link>
                 {r.investigation.is_ground && <span className="muted small block">ground / modeling</span>}</td>
                 <td className="num">{r.score}</td><td className="num">{r.target_rows ?? 0}</td>
-                <td className="small">{atm ? `${atm.match} × weight ${atm.weight}` : "—"}</td></tr>);
+                <td className="small">{atm ? `${atm.match} × weight ${atm.weight} = ${atm.contribution} pts` : "—"}</td></tr>);
             })}</tbody>
           </table></div>
-          <p className="muted small">{rank.tier_note} Relevance is research relevance, not hazard. Ranking version {rank.ranking_version}.</p>
+          <p className="muted small">{rank.order_note} Scenario fit is research fit, not hazard. Ranking version {rank.ranking_version}.</p>
         </section>
       )}
       {stats?.partial_gravity_gap && (

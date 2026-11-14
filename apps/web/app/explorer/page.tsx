@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, Suspense, useEffect, useState } from "react";
 import { api, qs, API_BASE } from "@/lib/api";
-import { humanize, readCompare, toggleCompare } from "@/lib/format";
+import { fitParts, humanize, readCompare, toggleCompare } from "@/lib/format";
 import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/components/ui";
 import { Markdown, citeHref } from "@/components/Markdown";
 import { assistantHeaders } from "@/lib/byok";
@@ -127,10 +127,10 @@ function Explorer() {
           </fieldset>
           <fieldset>
             <legend>Ordering</legend>
-            {sel("scenario", meta ? Object.keys(meta.scenarios) : [], "Relevance scenario")}
+            {sel("scenario", meta ? Object.keys(meta.scenarios) : [], "Scenario")}
             <label htmlFor="sort">Sort by</label>
             <select id="sort" value={f.sort || (f.q ? "match" : "relevance")} onChange={(e) => set("sort", e.target.value)}>
-              <option value="relevance">Most relevant first</option>{f.q && <option value="match">Best text match</option>}<option value="title">Title</option>
+              <option value="relevance">Best scenario fit first</option>{f.q && <option value="match">Best text match</option>}<option value="title">Title</option>
               <option value="completeness">Data completeness</option><option value="accession">PSI accession</option>
             </select>
           </fieldset>
@@ -158,13 +158,13 @@ function Explorer() {
                   {data.sort === "match" ? (
                     <>
                       Ordered by <b>Best text match</b> for your search. <b>Match rank</b> shows each investigation’s position in the search results (top match is #1).
-                      {" "}<b>Scenario rank</b> shows research relevance (0–100) to the <i>{data.scenario_label}</i> scenario.
+                      {" "}<b>Scenario rank</b> is the investigation’s position by <b>scenario fit</b> (0–100) for the <i>{data.scenario_label}</i> scenario.
                     </>
                   ) : (
                     <>
-                      <b>Relevance</b> (0–100) is how closely an investigation’s documented fuel, oxygen and pressure, flame behavior, suppression work and habitat use match
-                      the <i>{data.scenario_label}</i> scenario. It is research relevance, not a hazard or safety score.
-                      {" "}<b>Rank</b> puts investigations with table rows that meet the scenario’s oxygen and pressure target first, then orders by score.
+                      <b>Scenario fit</b> (0–100) scores how well an investigation’s documented tests at the scenario’s target conditions, fuel, oxygen and pressure,
+                      flame behavior, suppression work and habitat use fit the <i>{data.scenario_label}</i> scenario. It is research fit, not a hazard or safety score.
+                      {" "}<b>Rank</b> follows the score alone, highest first (ties go to more rows at the target, then data completeness).
                     </>
                   )}
                   {" "}<b>Data completeness</b> is how many of 10 key catalog fields NASA’s record fills in (objective, approach, hardware, test rows, materials,
@@ -262,22 +262,8 @@ function Explorer() {
                   const resultRank = (data.page ? (data.page - 1) * (data.page_size || 50) : 0) + idx + 1;
                   const itemQuery = activeQuery || f.q;
                   const itemHref = `/investigations/${c.id}${itemQuery ? `?q=${encodeURIComponent(itemQuery)}` : ""}`;
-                  const tiered = data.sort === "relevance" && !!c.relevance_tier;
-                  const prevTier = idx > 0 ? data.items[idx - 1].relevance_tier : null;
-                  const tierCount = tiered ? data.items.filter((x: any) => x.relevance_tier === c.relevance_tier).length : 0;
-                  const tierHead = tiered && c.relevance_tier !== prevTier ? (
-                    <li key={`tier-${c.relevance_tier}`} className="tier-head">
-                      <h3>{c.relevance_tier === "documented_at_target"
-                        ? "Has tests at target conditions"
-                        : "Related, no tests at target conditions"} <span className="tier-count">{tierCount}</span></h3>
-                      <p className="muted small">{c.relevance_tier === "documented_at_target"
-                        ? <>At least one test row meets the {data.scenario_label} oxygen and pressure target on the same row. Ordered by relevance.</>
-                        : <>Relevant to {data.scenario_label} by fuel, flame behavior, suppression or habitat use, but no single test row meets both the oxygen and pressure target. Ordered by relevance, so a higher score here can still rank below the group above.</>}</p>
-                    </li>
-                  ) : null;
                   return (
                     <Fragment key={c.id}>
-                    {tierHead}
                     <li>
                       <article className="entry">
                         <h2 className="entry-acr">
@@ -303,17 +289,17 @@ function Explorer() {
                             <div><dt>Airflow</dt><dd><CondCell c={c.conditions.airflow} /></dd></div>
                           </dl>
                           <div className="entry-foot">
-                            <span className="score-inline" title={data.sort === "match" ? "Full-text search match rank in this query, alongside scenario research relevance." : "Research relevance to the selected scenario, out of 100. Not a hazard score."}>
+                            <span className="score-inline" title={c.relevance_parts ? `Scenario fit = ${fitParts(c.relevance_parts)}` : "Scenario fit to the selected scenario, out of 100. Not a hazard score."}>
                               {data.sort === "match" ? (
-                                <>Match rank <b>#{resultRank}</b> of {data.total}{c.relevance_rank ? <> · Scenario rank #{c.relevance_rank} (relevance <b>{c.relevance_score}</b>/100)</> : null}</>
+                                <>Match rank <b>#{resultRank}</b> of {data.total}{c.relevance_rank ? <> · Scenario rank #{c.relevance_rank} (scenario fit <b>{c.relevance_score}</b>/100)</> : null}</>
                               ) : (
                                 c.relevance_rank ? (
-                                  <>{(data.total < data.ranked_total || (data.applied_filters && Object.keys(data.applied_filters).length > 0)) ? <>Result <b>#{resultRank}</b> · scenario rank <b>#{c.relevance_rank}</b> of {data.ranked_total}</> : <>Rank <b>#{c.relevance_rank}</b> of {data.ranked_total}</>} · relevance <b>{c.relevance_score}</b>/100</>
+                                  <>{(data.total < data.ranked_total || (data.applied_filters && Object.keys(data.applied_filters).length > 0)) ? <>Result <b>#{resultRank}</b> · scenario rank <b>#{c.relevance_rank}</b> of {data.ranked_total}</> : <>Rank <b>#{c.relevance_rank}</b> of {data.ranked_total}</>} · scenario fit <b>{c.relevance_score}</b>/100</>
                                 ) : (
-                                  <>Relevance —</>
+                                  <>Scenario fit —</>
                                 )
                               )}
-                              {c.relevance_tier === "documented_at_target" && <span className="tag-target"> · meets target on same row</span>}
+                              {c.relevance_tier === "documented_at_target" && <span className="tag-target"> · {c.relevance_target_rows} {c.relevance_target_rows === 1 ? "row meets" : "rows meet"} the target</span>}
                             </span>
                             <span className="score-inline" title="Share of 10 key catalog fields that NASA's record fills in.">
                               Data completeness {Math.round(c.data_completeness * 10)}/10 fields</span>

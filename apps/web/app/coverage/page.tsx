@@ -68,7 +68,7 @@ export default function Coverage() {
             {sel("measurement_type", meta?.measurement_types, "Measurement type")}
             {sel("platform", meta?.platforms, "Platform")}
             <div><label htmlFor="hardware">Hardware contains</label><input id="hardware" value={f.hardware || ""} onChange={(e) => set("hardware", e.target.value)} placeholder="MSG, CIR, MDCA…" /></div>
-            {sel("application_scenario", undefined, "Application scenario (adds relevance score)", meta?.scenarios)}
+            {sel("application_scenario", undefined, "Application scenario (adds scenario-fit score)", meta?.scenarios)}
           </div>
         </fieldset>
         <div className="actions">
@@ -92,7 +92,7 @@ export default function Coverage() {
                   <div>
                     <div className="verdict-head">
                       <span className={`verdict verdict-${r.verdict}`}>{humanize(r.verdict)}</span>
-                      <span className="overlap">overlap <b>{Math.round(r.overlap_score * 100)}%</b>{r.relevance_score !== undefined && <> · relevance <b>{r.relevance_score}</b>/100</>}</span>
+                      <span className="overlap">overlap <b>{Math.round(r.overlap_score * 100)}%</b>{r.relevance_score !== undefined && <> · scenario fit <b>{r.relevance_score}</b>/100</>}</span>
                     </div>
                     <ul className="params">
                       {Object.entries(r.parameters).map(([k, v]: any) => <li key={k}><span>{humanize(k)}</span> <span className={`st-${v}`}>{humanize(v)}</span></li>)}

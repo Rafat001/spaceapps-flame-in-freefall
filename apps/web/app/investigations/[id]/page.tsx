@@ -14,7 +14,7 @@ const fmtBytes = (b?: number) => (b ? (b >= 1e12 ? `${(b / 1e12).toFixed(2)} TB`
 export default function Detail() {
   const { id } = useParams<{ id: string }>();
   const sp = useSearchParams();
-  const fromQ = sp.get("from_q") || null;
+  const fromQ = sp.get("q") || sp.get("from_q") || null;
   const [d, setD] = useState<any>(null);
   const [err, setErr] = useState<unknown>(null);
   const [cmp, setCmp] = useState<string[]>([]);

@@ -28,14 +28,27 @@ def split_text(t: str, size: int = 900, overlap: int = 150) -> list[str]:
     while i < len(t):
         j = min(len(t), i + size)
         if j < len(t):
+            # end on a sentence boundary; failing that on a word boundary, never inside a word
             k = t.rfind(". ", i + size // 2, j)
-            j = k + 1 if k > 0 else j
+            if k > 0:
+                j = k + 1
+            else:
+                w = t.rfind(" ", i + size // 2, j)
+                j = w if w > 0 else j
         out.append(t[i:j].strip())
         if j >= len(t):
             break
-        # overlap: restart at the first sentence boundary inside the last `overlap` chars
-        b = t.find(". ", max(j - overlap, i + 1), j)
-        i = b + 2 if b != -1 else j
+        # overlap: restart at the first sentence boundary inside the last `overlap` chars;
+        # failing that, at a word boundary in that window, so a chunk never starts mid-word ("periment: …")
+        lo = max(j - overlap, i + 1)
+        b = t.find(". ", lo, j)
+        if b != -1:
+            i = b + 2
+        else:
+            w = t.find(" ", lo, j)
+            i = w + 1 if w != -1 else j
+        while i < len(t) and t[i] == " ":
+            i += 1
     return out
 
 

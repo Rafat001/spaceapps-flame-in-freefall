@@ -233,6 +233,9 @@ def _ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: 
                                                                                                   "Insufficient evidence"),
                 "abstain_reason": "The language model judged the retrieved sources insufficient."}
     answer, used, bogus = check_citations(raw.replace("INSUFFICIENT_EVIDENCE:", "Insufficient evidence:"), cites)
+    answer, cites, used = renumber_citations(answer, cites, used)
+    cites = anchor_citations(answer, cites)
+    base["citations"] = cites
     warnings = []
     if bogus:
         warnings.append("Removed citation(s) to sources that were not retrieved: " + ", ".join(sorted(bogus)) + ".")
@@ -347,6 +350,65 @@ def check_citations(raw: str, cites: list[dict]) -> tuple[str, set[str], set[str
     for b in bogus:
         text = text.replace(f"[{b}]", "[citation removed: not a retrieved source]")
     return text, used & valid, bogus
+
+
+def renumber_citations(text: str, cites: list[dict], used: set[str] | None = None,
+                       fixed: tuple[str, ...] = ()) -> tuple[str, list[dict], set[str]]:
+    """Renumber [S#] markers so they read S1, S2, S3… in the order they first appear in the text, and reorder
+    `cites` to match (cited sources first, in order of first mention; uncited ones after, in retrieval order).
+    Refs in `fixed` (e.g. the computed answer "S0") are left as they are. Returns new text, cites and used refs."""
+    valid = {c["ref"] for c in cites}
+    order: list[str] = []
+    for r in re.findall(r"\[(S\d+)\]", text):
+        if r in valid and r not in fixed and r not in order:
+            order.append(r)
+    order += [c["ref"] for c in cites if c["ref"] not in order]
+    mapping = {old: f"S{n}" for n, old in enumerate(order, 1)}
+    if all(k == v for k, v in mapping.items()):
+        return text, cites, set(used or ())
+    new_text = re.sub(r"\[(S\d+)\]", lambda m: f"[{mapping.get(m.group(1), m.group(1))}]", text)
+    by_ref = {c["ref"]: c for c in cites}
+    new_cites = [{**by_ref[old], "ref": mapping[old]} for old in order]
+    return new_text, new_cites, {mapping.get(r, r) for r in (used or ())}
+
+
+_STOP = frozenset("that this with from were have been which their there these those than they also into such "
+                  "about over under while when where what using used both each more most other only some".split())
+_SENT_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[\"“(\[]?[A-Z0-9])")
+
+
+def _words(t: str) -> set[str]:
+    return {w for w in re.findall(r"[a-z0-9]+(?:\.[0-9]+)?", t.lower()) if (len(w) >= 4 or any(c.isdigit() for c in w))
+            and w not in _STOP}
+
+
+def anchor_citations(answer: str, cites: list[dict]) -> list[dict]:
+    """For each cited source, pick the excerpt sentence that best matches the answer statements citing it and store it
+    as `anchor`, so the source link can deep-link (URL text fragment) to that exact passage, not just the page."""
+    claims: dict[str, set[str]] = {}
+    for stmt in re.split(r"\n+|(?<=[.!?])\s+(?=[^\[\s])", answer or ""):
+        refs = re.findall(r"\[(S\d+)\]", stmt)
+        if not refs:
+            continue
+        ws = _words(re.sub(r"\[S\d+\]", " ", stmt))
+        for r in refs:
+            claims.setdefault(r, set()).update(ws)
+    out = []
+    for c in cites:
+        want = claims.get(c["ref"])
+        excerpt = re.sub(r"\s+", " ", c.get("excerpt") or "").strip()
+        best, best_score = None, 0.0
+        if want and excerpt:
+            for sent in _SENT_SPLIT.split(excerpt):
+                sw = _words(sent)
+                if len(sent) < 25 or not sw:
+                    continue
+                hit = len(sw & want)
+                score = hit + hit / len(sw)  # overlap, tie-broken by density
+                if hit >= 2 and score > best_score:
+                    best, best_score = sent.strip(), score
+        out.append({**c, "anchor": best} if best else c)
+    return out
 
 
 def _norm_num(n: str) -> str:
@@ -474,7 +536,9 @@ def _llm_summary(llm: LLMProvider, q: str, direct: dict, cites: list[dict]) -> d
         return {"ai_summary": None, "llm_notice": friendly_notice(e, bool(getattr(llm, "byok", False)))}
     raw = strip_limitations(clean_model_text(raw))
     raw, _, _ = check_citations(raw, [{"ref": "S0"}, *cites])
+    raw, cites, _ = renumber_citations(raw, cites, fixed=("S0",))
+    cites = anchor_citations(raw, cites)
     nums_s0 = set(re.findall(r"\d+(?:\.\d+)?", direct["answer"]))
     extra = [n for n in re.findall(r"\d+(?:\.\d+)?", raw) if n not in nums_s0 and not re.fullmatch(r"S?\d", n)]
     warnings = ["The AI summary contains numbers not in the computed answer: " + ", ".join(sorted(set(extra))[:8])] if extra else []
-    return {"ai_summary": raw, "ai_label": label("ai"), "warnings": warnings, "llm_usage": getattr(llm, "last_usage", None)}
+    return {"ai_summary": raw, "citations": cites, "ai_label": label("ai"), "warnings": warnings, "llm_usage": getattr(llm, "last_usage", None)}

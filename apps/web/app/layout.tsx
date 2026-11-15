@@ -4,6 +4,7 @@ import Link from "next/link";
 import Mark from "@/components/Mark";
 import Nav from "@/components/Nav";
 import ChemText from "@/components/ChemText";
+import Chatbot from "@/components/Chatbot";
 import "./globals.css";
 
 // NASA Space Apps Brand Guidelines (June 25, 2026), p.11: Fira Sans (titles & headings), Overpass (body copy),
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </footer>
         <ChemText />
+        <Chatbot />
       </body>
     </html>
   );

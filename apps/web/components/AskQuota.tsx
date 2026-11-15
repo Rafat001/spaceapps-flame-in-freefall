@@ -8,17 +8,14 @@ export type Quota = {
 
 const PROVIDER_NAMES: Record<string, string> = { groq: "Groq", gemini: "Gemini", openai: "OpenAI", anthropic: "Anthropic" };
 const clock = (t: number) => new Date(t * 1000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-const frac = (w: Win) => `${w.remaining ?? w.limit}/${w.limit}`;
 
-/** Plain-text counter line. Every number comes from the API (no limits are hard-coded here). */
+/** Plain-text status line. Empty while answers are available; only speaks up for own key, AI off, or a hit limit. */
 export function quotaText(q: Quota | null, ownKey: boolean): string {
   if (ownKey || q?.own_key) return "Using your own key: no site limit applies.";
-  if (!q) return "Checking how many AI answers are left…";
+  if (!q) return "";
   if (!q.server_ai || !q.you || !q.site) return "AI summaries are off on this site right now. Computed answers and citations still work.";
-  let s = `AI answers left for you: ${frac(q.you.minute)} this minute · ${frac(q.you.day)} today · Site-wide today: ${frac(q.site.day)}`;
   const blocked = [q.you.minute, q.site.minute, q.you.day, q.site.day].find((w) => w.remaining === 0 && w.resets_at);
-  if (blocked?.resets_at) s += ` · next AI answer after ${clock(blocked.resets_at)}`;
-  return s;
+  return blocked?.resets_at ? `AI answer limit reached · next AI answer after ${clock(blocked.resets_at)}` : "";
 }
 
 export function AskQuota({ quota, ownKey }: { quota: Quota | null; ownKey: boolean }) {

@@ -3403,3 +3403,13 @@ a.cite-ref:hover { color: var(--accent); text-decoration: underline; }
   border: 1px solid rgba(234, 254, 7, 0.2);
 }
 
+
+/* ---------- Homepage feature tour video ---------- */
+.tour { margin: clamp(40px, 6vw, 88px) 0; }
+.tour-head { max-width: 860px; margin-bottom: 26px; }
+.tour-head h2 { margin: .3em 0 .35em; }
+.tour-frame { position: relative; border: 1px solid var(--rule-strong); background: var(--gradient); padding: 10px;
+  box-shadow: 0 40px 120px rgba(0,0,0,.45), 0 0 0 1px rgba(234,254,7,.08); transition: box-shadow .4s ease, transform .4s ease; }
+.tour-frame::before { content: ""; position: absolute; left: -1px; top: -1px; width: 120px; height: 4px; background: var(--accent); box-shadow: 0 0 18px var(--accent); }
+.tour-frame:hover { transform: translateY(-3px); box-shadow: 0 50px 140px rgba(0,0,0,.55), 0 0 0 1px rgba(234,254,7,.25); }
+.tour-frame video { display: block; width: 100%; aspect-ratio: 16 / 9; background: var(--deep-blue); }

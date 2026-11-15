@@ -286,14 +286,7 @@ export default function Nav() {
           footer={{ href: "/androflame", label: "Read full AndroFlame introduction & architecture →" }}
         />
 
-        {/* 3. Ask (Assistant) */}
-        <li>
-          <Link href="/assistant" aria-current={isAskActive ? "page" : undefined}>
-            <span className="nav-no" aria-hidden="true">01</span>Ask
-          </Link>
-        </li>
-
-        {/* 4. New in Space Fire? — beginner entry points */}
+        {/* 3. New in Space Fire? — beginner entry points */}
         <NavDropdown
           label="New in Space Fire?"
           ariaLabel="New in Space Fire? beginner tools"
@@ -304,6 +297,13 @@ export default function Nav() {
           active={isNewActive}
           popoverClassName="apps-popover--end"
         />
+
+        {/* 4. Ask (Assistant) */}
+        <li>
+          <Link href="/assistant" aria-current={isAskActive ? "page" : undefined}>
+            <span className="nav-no" aria-hidden="true">01</span>Ask
+          </Link>
+        </li>
       </ul>
     </nav>
   );

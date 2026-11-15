@@ -18,6 +18,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 from app.config import settings
+from app.ingest.analyzed import adjacent_records, analyzed_block
 from app.ingest.curation import (CHALLENGE_LOCAL, CHALLENGE_URL, CURATION, FUTURE_PARTIAL_GRAVITY, GROUND_ACCESSIONS,
                                  MATERIAL_ALIASES, ROW_FLAG_RULES, SEED_ACCESSIONS)
 from app.ingest.table_specs import SPECS
@@ -418,6 +419,7 @@ def build() -> dict:
                              "local_copy": CHALLENGE_LOCAL} for t in cur.get("brief_facts", [])],
             "relationships": rels,
             "files": _file_summary(acc, d), "images": _images(acc, d), "table_flags": table_flags,
+            "analyzed_data": analyzed_block(acc, src_dir),
             "data_availability": {
                 "experimental_tables": [x["file_name"] for x in d.get("experimentalTable") or []],
                 "total_file_size_bytes_reported_by_psi": d.get("totalFileSize"),
@@ -428,7 +430,8 @@ def build() -> dict:
         })
     seed = {
         "seed_version": SEED_VERSION, "psi_accessed_at": accessed,
-        "provenance": "Built by app.ingest.build_seed from raw PSI API JSON + PSI experimental table CSVs in data/sources/psi/.",
+        "provenance": ("Built by app.ingest.build_seed from raw PSI API JSON, PSI experimental table CSVs and PSI analyzed-data "
+                       "files (PSI-39, PSI-47) in data/sources/psi/."),
         "investigations": investigations,
         "catalog_stats": catalog_stats(src_dir, records, accessed),
         "partial_gravity_gap": {**FUTURE_PARTIAL_GRAVITY, "verification_status": "challenge_brief", "citation_url": CHALLENGE_URL},
@@ -454,6 +457,10 @@ def catalog_stats(src_dir: Path, records: dict[str, dict], accessed: str) -> dic
         "sources": {"listing": "data/sources/psi/search_research_area_combustion_science.json (hits.total, Project Type, Flight Platform)",
                     "volume": "sum of totalFileSize over data/sources/psi/PSI-*.json (24 records)",
                     "research_areas": "distinct 'Research Area' in data/sources/psi/search_q_combustion_all_areas.json"},
+        "adjacent_records": adjacent_records(src_dir),
+        "adjacent_records_note": ("The PSI web search behind the official link (q=combustion) lists these records besides the "
+                                  "Combustion Science investigations. They belong to other research areas and match only because "
+                                  "their text mentions combustion. Listed for completeness; never counted, ranked or indexed."),
         "provenance": PSI_PROV,
     }
 

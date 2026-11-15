@@ -11,5 +11,7 @@ faiss-cpu>=1.8
 # Paid providers (SDKs are small; only used when AI_*_PROVIDER=openai|anthropic and a key is set)
 openai>=1.40
 anthropic>=0.34
+# Seed build only (make seed): reads the PSI-47 DAFT .xls analyzed-data workbooks
+xlrd>=2.0
 # Tests
 pytest>=8

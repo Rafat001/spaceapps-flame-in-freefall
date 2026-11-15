@@ -3,6 +3,7 @@
 LABELS = {
     "psi_metadata": "Reported by authors (PSI record)",
     "psi_experimental_table": "Reported by authors (PSI experimental table)",
+    "psi_analyzed_data": "Reported by authors (PSI analyzed data file)",
     "measured_psi_table": "Measured (as listed in PSI experimental table)",
     "challenge_brief": "Official challenge brief",
     "rule_tag": "Curator classification (rule-based keyword match)",

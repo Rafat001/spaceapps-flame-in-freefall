@@ -8,6 +8,7 @@ import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice } from "@/components
 import { Flags } from "@/components/Citations";
 import NasaSummary from "@/components/NasaSummary";
 import InvestigationOverview from "@/components/InvestigationOverview";
+import AnalyzedData from "@/components/AnalyzedData";
 
 const fmtBytes = (b?: number) => (b ? (b >= 1e12 ? `${(b / 1e12).toFixed(2)} TB` : b >= 1e9 ? `${(b / 1e9).toFixed(2)} GB` : `${(b / 1e6).toFixed(1)} MB`) : "—");
 
@@ -108,6 +109,7 @@ function Detail() {
               <td className="num">row {r.source.row}</td></tr>))}</tbody>
         </table></div>
       )}
+      <AnalyzedData d={d.analyzed_data} />
       {d.files && (<><h2>Data files and documents <span className="muted small">({d.files.listed_files} files listed, {fmtBytes(d.files.total_file_size_bytes)})</span></h2>
         <p className="muted small">{d.files.listing_note}</p>
         <table className="facts"><tbody>{Object.entries(d.files.categories || {}).map(([k, v]: any) => <tr key={k}><th scope="row">{k}</th><td className="num">{v.files} files · {fmtBytes(v.bytes)}</td></tr>)}</tbody></table>

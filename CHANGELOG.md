@@ -4,6 +4,36 @@ All notable changes to the **Flame in Freefall** microgravity combustion evidenc
 
 ---
 
+## [Unreleased] - 2026-11-15 — Complete PSI resource set: analyzed data + adjacent records
+**Branch**: `claude/practical-maxwell-f1fog1`
+
+### Highlights & Summary
+The official PSI link (search "combustion") lists 26 records: our 24 Combustion Science investigations plus PSI-108
+(STDCE-1, Fluid Physics) and PSI-181 (solders, Materials Science). Both are now stored and shown as related records.
+PSI-39 (CFI) and PSI-47 (DAFT) Analyzed Data files are downloaded, parsed into the seed and indexed, kept separate
+from the experimental-table test runs.
+
+### Detailed Changes
+- **New module** `apps/api/app/ingest/analyzed.py`:
+  - CFI summary plots: values read from each plot's legend (P, YO2, YN2, YCO2, YHe, D0, Dext, kavg, kavg cool, Dext cool),
+    plus date, fuel and plot notes, from text committed in `data/sources/psi/analyzed_text/`. Summaries are matched to
+    CFI table rows by FLEX number; preliminary versions are marked. FLEX-1248's file in PSI is not a readable PDF, so it
+    is flagged, not guessed.
+  - DAFT workbooks: P-Trak / DustTrak logs, de-duplicated across the 8 overlapping workbooks (8 logs). Per-log stats,
+    the logged bag summary and analyst notes are kept verbatim.
+  - Adjacent records: the verbatim `researchImpacts` clause that mentions combustion.
+- **Seed**: `analyzed_data` on PSI-39 / PSI-47; `catalog_stats.adjacent_records`. Investigation and test-run counts
+  are unchanged (24 / 2,009). `xlrd` is added for the seed build only.
+- **Index**: 44 new chunks with source type `psi_analyzed_data` (label "Reported by authors (PSI analyzed data file)"),
+  each citing the PSI download URL. One Document per analyzed file.
+- **API**: `GET /api/investigations/{id}` returns `analyzed_data`; `GET /api/nasa/other-experiments` returns
+  `adjacent_psi_records`.
+- **Web**: "Analyzed data" section on the investigation page (`components/AnalyzedData.tsx`); "Other PSI records on
+  the official search link" section on Beyond PSI.
+- **Tests**: `apps/api/tests/test_analyzed.py`.
+
+---
+
 ## [Unreleased] - 2026-11-15 — Fire Dynamics Explorer
 **Branch**: `claude/dazzling-pasteur-xvy2cc`
 

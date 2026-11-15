@@ -74,7 +74,8 @@ LINK_ONLY = [
     {"title": "NASA ScienceCasts: The Power of Studying Combustion on the ISS", "url": "https://www.youtube.com/watch?v=W1oXykoz9zg",
      "note": "Video, 219 s, published 2018-03-13. Link only (not ingested)."},
     {"title": "PSI Data Repository: Combustion Science", "url": "https://psi.nasa.gov/physci/repo/search?q=combustion",
-     "note": "Dataset. Records + experimental tables ingested from data/sources/psi/; raw zip/video archives are linked, never copied."},
+     "note": "Dataset. Records, experimental tables and the small PSI-39 / PSI-47 analyzed-data files ingested from "
+             "data/sources/psi/; raw zip/video archives are linked, never copied."},
 ]
 
 VIDEO = {"title": "2026 Challenge | Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion",
@@ -124,6 +125,14 @@ def write_manifest() -> Path:
     for f in sorted((psi / "analyzed").iterdir()) + [psi / "experimental_tables" / "PSI-142_Experimental table_Data Summary Table.csv"]:
         acc = f.name.split("_")[0]
         lines.append(f"| ../psi/{f.parent.name}/{f.name} | https://psi.nasa.gov/geode-py/ws/studies/{acc}/download?file={f.name.replace(' ', '%20')} | `{_sha(f)}` |")
+    lines += ["", "## PSI files added on 2026-11-15", "",
+              "The PSI web search for \"combustion\" lists 26 investigations: the 24 Combustion Science records plus PSI-108 "
+              "(Fluid Physics) and PSI-181 (Materials Science), which only mention combustion in passing. Those two are "
+              "stored under `psi/adjacent/` and are not part of the 24-investigation seed. The 2026-11-15 additions to "
+              "`psi/analyzed/` (PSI-39, PSI-47) are listed in the table above.", "",
+              "| Local file | Source URL | SHA-256 |", "|---|---|---|"]
+    for f in sorted((psi / "adjacent").glob("PSI-*.json")):
+        lines.append(f"| ../psi/adjacent/{f.name} | https://psi.nasa.gov/geode-py/ws/repo/investigations/{f.stem} | `{_sha(f)}` |")
     lines += ["", "## Link only (not stored)", ""]
     for l in LINK_ONLY:
         lines.append(f"- [{l['title']}]({l['url']}): {l['note']}")

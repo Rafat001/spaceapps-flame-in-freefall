@@ -1,0 +1,111 @@
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+(
+D
+/
+D
+0
+)
+2
+3.0
+2.5
+2.0
+1.5
+1.0
+0.5
+0.0
+t / D0
+2
+( s / mm
+2
+)
+20
+15
+10
+5
+0
+D
+f
+(
+mm
+)
+,
+D
+f
+/
+D
+d
+4
+5
+6
+7
+1
+2
+3
+4
+5
+6
+7
+10
+2
+3
+Flame
+Radiance
+(
+W
+)
+14
+12
+10
+8
+6
+4
+2
+0
+D
+f,
+cool
+(
+mm
+)
+350
+300
+250
+200
+150
+100
+50
+Peak
+Cool
+Flame
+Grayscale
+Manual Cool Flame Extinction Measurement
+Mon, Aug 28, 2017
+FLEX-1393
+F240B02
+P = 769.710 mmHg
+YO2 = 0.210
+YN2 = 0.790
+YCO2 = 0.000
+YHe = 0.000
+Farnesane
+D0 = 4.613 mm
+Dext = 4.330 mm
+kavg = 0.328 mm
+2
+/sec
+kavg, cool = 0.339 mm
+2
+/sec
+Dext, cool = 1.265 mm
+Droplet History
+Hot-Flame Diameter
+Hot-Flame FSR
+Cool Flame Diameter (FWHM)
+Cool Flame Diameter (peak-peak)
+Cool Flame Grayscale
+

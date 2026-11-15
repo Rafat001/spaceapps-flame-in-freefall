@@ -56,6 +56,7 @@ class Investigation(Base):
     files: Mapped[dict] = mapped_column(JSON, default=dict)
     images: Mapped[list] = mapped_column(JSON, default=list)
     table_flags: Mapped[list] = mapped_column(JSON, default=list)
+    analyzed_data: Mapped[dict | None] = mapped_column(JSON)  # PSI "Analyzed Data" (kept apart from experimental tables)
     lenses: Mapped[dict] = mapped_column(JSON, default=dict)
     provenance: Mapped[dict] = mapped_column(JSON, default=dict)
 
@@ -89,7 +90,7 @@ class Chunk(Base):
     section: Mapped[str | None] = mapped_column(String)
     page: Mapped[str | None] = mapped_column(String)  # None = not applicable / not reported
     source_url: Mapped[str | None] = mapped_column(String)
-    verification_status: Mapped[str] = mapped_column(String)  # psi_metadata | psi_experimental_table | challenge_brief
+    verification_status: Mapped[str] = mapped_column(String)  # psi_metadata | psi_experimental_table | psi_analyzed_data | challenge_brief
     embedding_id: Mapped[int | None] = mapped_column(Integer)
     source_type: Mapped[str | None] = mapped_column(String, index=True)
     locator: Mapped[str | None] = mapped_column(String)  # "p. 26" | "CSV record 12" | "[05:54]" | "¶3"

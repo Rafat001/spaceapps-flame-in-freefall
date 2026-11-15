@@ -170,7 +170,8 @@ class Ctx:
     def _qc(c: Chunk, loc: str, url: str, quote: str) -> dict:
         labels = {"challenge_brief": "Official challenge brief", "guidance_video": "Challenge guidance video (auto-captions)",
                   "nasa_fact_sheet": "NASA fact sheet", "nasa_guide": "NASA Researcher's Guide",
-                  "nasa_history": "NASA history page", "nasa_spinoff": "NASA Spinoff", "nasa_program_page": "NASA program page"}
+                  "nasa_history": "NASA history page", "nasa_spinoff": "NASA Spinoff", "nasa_program_page": "NASA program page",
+                  "psi_analyzed_data": "PSI analyzed data file"}
         return {"source_type": c.source_type, "document_id": c.document_id, "section": c.section, "locator": loc,
                 "page": c.page, "url": url, "quote": quote, "label": labels.get(c.source_type, c.source_type),
                 "provenance": c.provenance, "chunk_id": c.id}

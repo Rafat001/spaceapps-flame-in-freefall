@@ -77,6 +77,22 @@ export default function BeyondPsi() {
           </ol>
         </section>
       ))}
+      {d?.adjacent_psi_records?.length > 0 && (
+        <section className="section" aria-labelledby="g-adjacent">
+          <div className="section-head"><h2 id="g-adjacent" className="display">Other PSI records on the official search link</h2></div>
+          <p className="muted">{d.adjacent_psi_note}</p>
+          <ol className="entries">{d.adjacent_psi_records.map((r: any) => (
+            <li key={r.accession}><article className="entry xp" id={r.accession.toLowerCase()}>
+              <h3 className="entry-acr">{r.acronym || r.accession}<span className="entry-acc">{r.accession}</span></h3>
+              <div>
+                <p className="entry-title">{r.title}</p>
+                <ul className="tags"><li className="tag-nopsi">Not Combustion Science</li><li>{r.research_area}</li><li>{r.project_type}</li></ul>
+                {r.why_listed && <p>Why it matches “combustion”: <q>{r.why_listed}</q> <span className="muted small">(PSI record, {r.why_field})</span></p>}
+                <p><a href={r.url} target="_blank" rel="noreferrer">Open on PSI ↗</a></p>
+              </div>
+            </article></li>))}</ol>
+        </section>
+      )}
     </>
   );
 }

@@ -1,0 +1,108 @@
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+(
+D
+/
+D
+0
+)
+2
+2.5
+2.0
+1.5
+1.0
+0.5
+0.0
+t / D0
+2
+( s / mm
+2
+)
+20
+18
+16
+14
+12
+10
+8
+6
+4
+D
+f
+(
+mm
+)
+,
+D
+f
+/
+D
+d
+2
+3
+4
+5
+6
+7
+8
+9
+10
+2
+3
+Flame
+Radiance
+(
+W
+)
+25
+20
+15
+10
+5
+0
+D
+f,
+cool
+(
+mm
+)
+8000
+6000
+4000
+2000
+0
+Peak
+Cool
+Flame
+Grayscale
+Heavy soot
+near droplet
+Wed, Apr 5, 2017
+FLEX-1227
+F095A01
+P = 1504.652 mmHg
+YO2 = 0.210
+YN2 = 0.790
+YCO2 = 0.000
+YHe = 0.000
+Dodecane
+D0 = 3.940 mm
+Dext = 3.473 mm
+kavg = 0.399 mm
+2
+/sec
+kavg, cool = 0.455 mm
+2
+/sec
+Dext, cool = 0.000 mm
+Droplet History
+Hot-Flame Diameter
+Hot-Flame FSR
+Cool Flame Diameter (FWHM)
+Cool Flame Diameter (peak-peak)
+Cool Flame Grayscale
+

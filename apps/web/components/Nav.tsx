@@ -252,9 +252,8 @@ export default function Nav() {
 
   const isToolActive =
     RESEARCH_APPS.some((app) => path?.startsWith(app.href)) || !!path?.startsWith("/investigations");
-  const isNewActive = path?.startsWith("/fire-dynamics") ?? false;
+  const isNewActive = NEW_IN_SPACE_FIRE_APPS.some((app) => path?.startsWith(app.href));
   const isIntroActive = path?.startsWith("/androflame") || path?.startsWith("/intro");
-  const isFirelabActive = path?.startsWith("/firelab");
   const isAskActive = path?.startsWith("/assistant");
 
   return (
@@ -264,13 +263,6 @@ export default function Nav() {
         <li>
           <Link href="/androflame" aria-current={isIntroActive ? "page" : undefined}>
             <span className="nav-no" aria-hidden="true">00</span>AndroFlame
-          </Link>
-        </li>
-
-        {/* Learning FireLab */}
-        <li>
-          <Link href="/firelab" aria-current={isFirelabActive ? "page" : undefined} style={{ color: isFirelabActive ? "var(--accent)" : undefined }}>
-            <span className="nav-no" aria-hidden="true" style={{ color: "var(--accent)" }}>🔥</span>FireLab
           </Link>
         </li>
 

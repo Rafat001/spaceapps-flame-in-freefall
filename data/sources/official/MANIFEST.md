@@ -108,7 +108,7 @@ The PSI web search for "combustion" lists 26 investigations: the 24 Combustion S
 ## Link only (not stored)
 
 - [NASA ScienceCasts: The Power of Studying Combustion on the ISS](https://www.youtube.com/watch?v=W1oXykoz9zg): Video, 219 s, published 2018-03-13. Link only (not ingested).
-- [PSI Data Repository: Combustion Science](https://psi.nasa.gov/physci/repo/search?q=combustion): Dataset. Records + experimental tables ingested from data/sources/psi/; raw zip/video archives are linked, never copied.
+- [PSI Data Repository: Combustion Science](https://psi.nasa.gov/physci/repo/search?q=combustion): Dataset. Records, experimental tables and the small PSI-39 / PSI-47 analyzed-data files ingested from data/sources/psi/; raw zip/video archives are linked, never copied.
 - Guidance video [2026 Challenge | Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion](https://www.youtube.com/watch?v=AVuEiKxOpc0), 8:39, uploaded 2026-11-10: metadata and transcript stored in `video/`; the video file itself is not stored.
 
 Raw PSI zip / ts / mp4 archives (about 13.5 TB) are never downloaded or ingested; the app links out to PSI.

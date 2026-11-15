@@ -14,7 +14,10 @@ On 2026-11-15 that web search listed **26** investigations ("1 – 26 of 26"):
 
 These two files are unchanged API responses from `https://psi.nasa.gov/geode-py/ws/repo/investigations/<ID>`, fetched 2026-11-15
 (CC0-1.0 per record). They are kept so every record on the official resource link is in the repo. They are **not** in the
-24-investigation seed: neither is a combustion or fire-safety investigation.
+24-investigation seed: neither is a combustion or fire-safety investigation. The seed lists them under
+`catalog_stats.adjacent_records` (accession, title, research area and the verbatim `researchImpacts` clause that
+mentions combustion), and the app shows them as link-out cards on the Beyond PSI page. They are never counted, ranked,
+filtered or added to the search index.
 
 The PSI JSON search API (`/geode-py/ws/repo/search?q=combustion`) uses broader free-text matching and returns 133 hits. The
 research-area filter (`ffield=Research Area&fvalue=combustion science`) still returns 24 as of 2026-11-15.

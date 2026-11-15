@@ -1,7 +1,7 @@
 {
  "seed_version": "v2",
  "psi_accessed_at": "2026-11-13T12:00:00-05:00",
- "provenance": "Built by app.ingest.build_seed from raw PSI API JSON + PSI experimental table CSVs in data/sources/psi/.",
+ "provenance": "Built by app.ingest.build_seed from raw PSI API JSON, PSI experimental table CSVs and PSI analyzed-data files (PSI-39, PSI-47) in data/sources/psi/.",
  "investigations": [
   {
    "id": "psi-26",
@@ -599,6 +599,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-26_Experimental table_BASS.csv"
@@ -4939,6 +4940,7 @@
     }
    ],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-25_Experimental table_BASS-II.csv"
@@ -12071,6 +12073,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-98_Experimental table_SAFFIRE-1.csv"
@@ -12518,6 +12521,7 @@
      "rule": "Automatic check"
     }
    ],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-99_Experimental table_SAFFIRE-2.csv"
@@ -13694,6 +13698,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-100_Experimental table_SAFFIRE-3.csv"
@@ -14900,6 +14905,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-102_Experimental table_SAME.csv"
@@ -17052,6 +17058,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-101_Experimental table_SAME-R.csv"
@@ -21836,6 +21843,389 @@
     }
    ],
    "table_flags": [],
+   "analyzed_data": {
+    "kind": "daft_logs",
+    "label": "DAFT instrument logs (PSI Analyzed Data)",
+    "note": "Analyzed / derived data files as stored in PSI, kept separate from the experimental-table test runs. Values are shown as printed in the file. DAFT tested particle counters (TSI P-Trak, DustTrak) aboard the ISS for the SAME smoke experiment. These are air-sampling readings, not fire tests. Logs repeated across workbooks are listed once.",
+    "instrument_logs": [
+     {
+      "instrument": "P-Trak",
+      "serial_number": "3031002",
+      "test_id": "1",
+      "gmt": "22Feb05 13:58:03",
+      "start_date": "02/22/05",
+      "start_time": "10:57:08",
+      "units": "particles/cc",
+      "points_listed": "724",
+      "n_values": 724,
+      "min": 0.0,
+      "median": 2.0,
+      "mean": 28.0442,
+      "max": 2050.0,
+      "sheet": "PTrk0001",
+      "files": [
+       "PSI-47_Analyzed Data_DAFT Flight Data GMT053.xls"
+      ]
+     },
+     {
+      "instrument": "DustTrak",
+      "serial_number": "23757",
+      "test_id": "1",
+      "gmt": "22Feb05 14:00:32",
+      "start_date": "02/22/05",
+      "start_time": "11:48:52",
+      "units": "mg/m3",
+      "points_listed": "771",
+      "n_values": 771,
+      "min": 0.0,
+      "median": 0.0,
+      "mean": 0.0104,
+      "max": 6.273,
+      "sheet": "PTrk0001",
+      "files": [
+       "PSI-47_Analyzed Data_DAFT Flight Data GMT053.xls"
+      ]
+     },
+     {
+      "instrument": "P-Trak",
+      "serial_number": "3031002",
+      "test_id": "2",
+      "gmt": "04Mar05 18:34:31",
+      "start_date": "03/04/05",
+      "start_time": "14:36:50",
+      "units": "particles/cc",
+      "points_listed": "724",
+      "n_values": 724,
+      "min": 0.0,
+      "median": 31.0,
+      "mean": 1615.6865,
+      "max": 45400.0,
+      "sheet": "PTrk0002",
+      "files": [
+       "PSI-47_Analyzed Data_flight data 063.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_TIMING.xls"
+      ]
+     },
+     {
+      "instrument": "P-Trak",
+      "serial_number": "3031002",
+      "test_id": "3",
+      "gmt": "04Mar05 18:34:52",
+      "start_date": "03/04/05",
+      "start_time": "14:52:56",
+      "units": "particles/cc",
+      "points_listed": "707",
+      "n_values": 707,
+      "min": 0.0,
+      "median": 1.0,
+      "mean": 1.1556,
+      "max": 10.0,
+      "sheet": "PTrk0003",
+      "files": [
+       "PSI-47_Analyzed Data_flight data 063.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_TIMING.xls"
+      ]
+     },
+     {
+      "instrument": "P-Trak",
+      "serial_number": "3031002",
+      "test_id": "4",
+      "gmt": "04Mar05 18:35:17",
+      "start_date": "03/04/05",
+      "start_time": "15:07:49",
+      "units": "particles/cc",
+      "points_listed": "455",
+      "n_values": 455,
+      "min": 0.0,
+      "median": 0.0,
+      "mean": 1.1648,
+      "max": 76.0,
+      "sheet": "PTrk0004",
+      "files": [
+       "PSI-47_Analyzed Data_flight data 063.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_TIMING.xls"
+      ]
+     },
+     {
+      "instrument": "DustTrak",
+      "serial_number": "23757",
+      "test_id": "2",
+      "gmt": "04Mar05 18:36:34",
+      "start_date": "03/04/05",
+      "start_time": "15:28:04",
+      "units": "mg/m3",
+      "points_listed": "778",
+      "n_values": 779,
+      "min": -0.006,
+      "median": 0.0,
+      "mean": 0.0081,
+      "max": 2.0,
+      "sheet": "DTrk0002",
+      "files": [
+       "PSI-47_Analyzed Data_flight data 063.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_TIMING.xls"
+      ]
+     },
+     {
+      "instrument": "DustTrak",
+      "serial_number": "23757",
+      "test_id": "3",
+      "gmt": "04Mar05 18:36:44",
+      "start_date": "03/04/05",
+      "start_time": "15:44:15",
+      "units": "mg/m3",
+      "points_listed": "754",
+      "n_values": 754,
+      "min": 0.0,
+      "median": 0.0,
+      "mean": 0.0016,
+      "max": 0.558,
+      "sheet": "DTrk0003",
+      "files": [
+       "PSI-47_Analyzed Data_flight data 063.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_TIMING.xls"
+      ]
+     },
+     {
+      "instrument": "DustTrak",
+      "serial_number": "23757",
+      "test_id": "4",
+      "gmt": "04Mar05 18:36:52",
+      "start_date": "03/04/05",
+      "start_time": "15:58:25",
+      "units": "mg/m3",
+      "points_listed": "545",
+      "n_values": 545,
+      "min": 0.0,
+      "median": 0.0,
+      "mean": 0.0053,
+      "max": 0.837,
+      "sheet": "DTrk0004",
+      "files": [
+       "PSI-47_Analyzed Data_flight data 063.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_DTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0002.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0003.xls",
+       "PSI-47_Analyzed Data_flight data 063_PTrk0004.xls",
+       "PSI-47_Analyzed Data_flight data 063_TIMING.xls"
+      ]
+     }
+    ],
+    "bag_summary": [
+     {
+      "bag": "Bag #1",
+      "ptrak_avg_n_cm3": 17236.3,
+      "dusttrak_avg_mg_m3": 45.63,
+      "derived_diameter_um": 1.716
+     },
+     {
+      "bag": "Bag#2",
+      "ptrak_avg_n_cm3": 16589.4,
+      "dusttrak_avg_mg_m3": 33.84,
+      "derived_diameter_um": 1.573
+     },
+     {
+      "bag": "Bag#3",
+      "ptrak_avg_n_cm3": 26578.0,
+      "dusttrak_avg_mg_m3": 62.65,
+      "derived_diameter_um": 1.651
+     }
+    ],
+    "bag_summary_derived": {
+     "average_diameter_um": 1.647,
+     "ratio_0g_to_1g_diameter": 1.51,
+     "source_file": "PSI-47_Analyzed Data_DAFT Retrieved Data Summary.xls",
+     "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_DAFT%20Retrieved%20Data%20Summary.xls",
+     "sheet": "Logged Data Summary"
+    },
+    "notes": [
+     {
+      "text": "On GMT053 Leroy set up the P-Trak and the DustTrak to take a sample of the air near express rack 4. Everything went smoothly during operations. We have looked at the data and video. The video was very helpful; we used it to sync up the times for each instrument with respect to the HEPA filter and sample hose. As seen in the results plotted in the attachment, the readings on both instruments were reading low. They, however, seem credible based on the information we have been told about filter changing on the ISS and the readings we have been getting in our lab where there is a humidifier running. In order to get some results that can be used to compare the P-Trak and DustTrak readings, it is necessary to have particle readings above what we have already sampled.",
+      "file": "PSI-47_Analyzed Data_DAFT Flight Data GMT053.xls",
+      "sheet": "text",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_DAFT%20Flight%20Data%20GMT053.xls"
+     },
+     {
+      "text": "notice the difference in length.",
+      "file": "PSI-47_Analyzed Data_DAFT Retrieved Data Summary.xls",
+      "sheet": "Headers",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_DAFT%20Retrieved%20Data%20Summary.xls"
+     },
+     {
+      "text": "DustTrak looks like it was turned on late.",
+      "file": "PSI-47_Analyzed Data_DAFT Retrieved Data Summary.xls",
+      "sheet": "Headers",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_DAFT%20Retrieved%20Data%20Summary.xls"
+     },
+     {
+      "text": "Bag1 DustTrak started after P-Trak. Zero-filled non-existent data.",
+      "file": "PSI-47_Analyzed Data_DAFT Retrieved Data Summary.xls",
+      "sheet": "P-Trak vs. DustTrak Data",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_DAFT%20Retrieved%20Data%20Summary.xls"
+     },
+     {
+      "text": "DAFTl ISS test result, August 21, 2006 The data were voice-downlinked and manually recorded by Bill Sheredy, David Urban and Amber Kauss in GRC TSC.",
+      "file": "PSI-47_Analyzed Data_ISS_Daft_Aug21_0611zgy time hist.xls",
+      "sheet": "Data",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_ISS_Daft_Aug21_0611zgy%20time%20hist.xls"
+     }
+    ],
+    "files": [
+     {
+      "file_name": "PSI-47_Analyzed Data_DAFT Flight Data GMT053.xls",
+      "short_name": "DAFT Flight Data GMT053.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_DAFT Flight Data GMT053.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_DAFT%20Flight%20Data%20GMT053.xls",
+      "sha256": "b23a421107e33dc8c7b62cba654aec0e855c369f84aab64165a167c76f1c22fc",
+      "size_bytes": 129024,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-47_Analyzed Data_DAFT Retrieved Data Summary.xls",
+      "short_name": "DAFT Retrieved Data Summary.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_DAFT Retrieved Data Summary.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_DAFT%20Retrieved%20Data%20Summary.xls",
+      "sha256": "a5c23d302f076de6e2c5477b9f0a06eb90698a3650a48ec34a3b8431abec3c02",
+      "size_bytes": 1004032,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-47_Analyzed Data_ISS_Daft_Aug21_06 urban.xls",
+      "short_name": "ISS_Daft_Aug21_06 urban.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_ISS_Daft_Aug21_06 urban.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_ISS_Daft_Aug21_06%20urban.xls",
+      "sha256": "91116542d271d66228c5fe802a9a160acc066a39069c7e2406fbc6524cad3c42",
+      "size_bytes": 29696,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-47_Analyzed Data_ISS_Daft_Aug21_0611zgy time hist.xls",
+      "short_name": "ISS_Daft_Aug21_0611zgy time hist.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_ISS_Daft_Aug21_0611zgy time hist.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_ISS_Daft_Aug21_0611zgy%20time%20hist.xls",
+      "sha256": "2d321c32d3cd008521a1f0f488659ed4a1cd7b0353ff0647a17671416b934b40",
+      "size_bytes": 38400,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-47_Analyzed Data_flight data 063.xls",
+      "short_name": "flight data 063.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_flight data 063.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_flight%20data%20063.xls",
+      "sha256": "bad018a09e95063e1e1770168b9397a93ac2f34089bb1da0f50ef046d25a326a",
+      "size_bytes": 268288,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-47_Analyzed Data_flight data 063_DTrk0002.xls",
+      "short_name": "flight data 063_DTrk0002.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_flight data 063_DTrk0002.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_flight%20data%20063_DTrk0002.xls",
+      "sha256": "a3bb7d6d33f733c0fd3f823067cb1f3fc9bf3d691c9b559d081b25470fbc7ece",
+      "size_bytes": 283648,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-47_Analyzed Data_flight data 063_DTrk0003.xls",
+      "short_name": "flight data 063_DTrk0003.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_flight data 063_DTrk0003.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_flight%20data%20063_DTrk0003.xls",
+      "sha256": "a3ee33e657640d3cd98eb6cd24dc9e84c651848e9c1f8ff50656156c555e149b",
+      "size_bytes": 283648,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-47_Analyzed Data_flight data 063_DTrk0004.xls",
+      "short_name": "flight data 063_DTrk0004.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_flight data 063_DTrk0004.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_flight%20data%20063_DTrk0004.xls",
+      "sha256": "777e384751f4af3a2de75912ca765e0633147240c0c3fb98eed1f644cbfd013f",
+      "size_bytes": 283648,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-47_Analyzed Data_flight data 063_PTrk0002.xls",
+      "short_name": "flight data 063_PTrk0002.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_flight data 063_PTrk0002.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_flight%20data%20063_PTrk0002.xls",
+      "sha256": "b622b43c51c1fa9de57b908aaddd5c1efb2d7c95d001572b1e384f1ca8aa60a8",
+      "size_bytes": 283648,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-47_Analyzed Data_flight data 063_PTrk0003.xls",
+      "short_name": "flight data 063_PTrk0003.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_flight data 063_PTrk0003.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_flight%20data%20063_PTrk0003.xls",
+      "sha256": "2ae19151a0da7f4ec4b9b7e3958863d269308a5cfe421ccc2f565857488fa371",
+      "size_bytes": 283648,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-47_Analyzed Data_flight data 063_PTrk0004.xls",
+      "short_name": "flight data 063_PTrk0004.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_flight data 063_PTrk0004.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_flight%20data%20063_PTrk0004.xls",
+      "sha256": "fe519ed4d5a8f9e3267e897761b6e05115bea1f8d2bbee17f256a120f0aba644",
+      "size_bytes": 283648,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-47_Analyzed Data_flight data 063_TIMING.xls",
+      "short_name": "flight data 063_TIMING.xls",
+      "local_path": "data/sources/psi/analyzed/PSI-47_Analyzed Data_flight data 063_TIMING.xls",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-47/download?file=PSI-47_Analyzed%20Data_flight%20data%20063_TIMING.xls",
+      "sha256": "6161d44284bc9fb8e2d7038caa6e7e239f264195d21ebe5c0d97dcb932d4ea30",
+      "size_bytes": 283648,
+      "status": "parsed",
+      "note": null
+     }
+    ],
+    "verification_status": "psi_analyzed_data"
+   },
    "data_availability": {
     "experimental_tables": [
      "PSI-47_Experimental table_DAFT.csv"
@@ -22066,6 +22456,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-69_Experimental table_FLEX.csv"
@@ -46584,6 +46975,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-68_Experimental table_Flex2.csv"
@@ -49238,6 +49630,1215 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": {
+    "kind": "cfi_run_summaries",
+    "label": "CFI run summary plots (PSI Analyzed Data)",
+    "note": "Analyzed / derived data files as stored in PSI, kept separate from the experimental-table test runs. Values are shown as printed in the file. Each file is a one-page plot for one FLEX test number; the numbers come from the plot's legend. kavg is the average burning-rate constant (mm²/s). Preliminary versions are kept and marked.",
+    "cfi_run_summaries": [
+     {
+      "flex_number": "1206",
+      "cir_point": "F068A03",
+      "test_date": "2017-03-09",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "771.201",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.039",
+       "dext_mm": "3.576",
+       "kavg_mm2_s": "0.380",
+       "kavg_cool_mm2_s": "0.382",
+       "dext_cool_mm": "0.468"
+      },
+      "pressure_kpa": 102.82,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1206_Summary-prelim",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1206_Summary-prelim.pdf",
+      "kind": "preliminary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1206_Summary-prelim.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1206_Summary-prelim.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 2,
+        "pressure": "1 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1206",
+      "cir_point": "F068A03",
+      "test_date": "2017-03-09",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "771.201",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "d0_mm": "4.039",
+       "dext_mm": "3.577",
+       "kavg_mm2_s": "0.379",
+       "kavg_cool_mm2_s": "0.385",
+       "dext_cool_mm": "0.497"
+      },
+      "pressure_kpa": 102.82,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1206_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1206_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1206_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1206_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 2,
+        "pressure": "1 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1207",
+      "cir_point": "F068A07",
+      "test_date": "2017-03-09",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "773.998",
+       "y_o2": "0.209",
+       "y_n2": "0.790",
+       "y_co2": "0.001",
+       "d0_mm": "4.350",
+       "dext_mm": "4.018",
+       "kavg_mm2_s": "0.338",
+       "kavg_cool_mm2_s": "0.378"
+      },
+      "pressure_kpa": 103.19,
+      "oxygen_pct": 20.9,
+      "observations": [],
+      "id": "FLEX-1207_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1207_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1207_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1207_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 3,
+        "pressure": "1 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1208",
+      "cir_point": "F068A08",
+      "test_date": "2017-03-09",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "774.508",
+       "y_o2": "0.208",
+       "y_n2": "0.789",
+       "y_co2": "0.001",
+       "d0_mm": "4.154",
+       "dext_mm": "3.759",
+       "kavg_mm2_s": "0.360",
+       "kavg_cool_mm2_s": "0.396"
+      },
+      "pressure_kpa": 103.26,
+      "oxygen_pct": 20.8,
+      "observations": [],
+      "id": "FLEX-1208_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1208_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1208_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1208_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 4,
+        "pressure": "1 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1209",
+      "cir_point": "F068A09",
+      "test_date": "2017-03-09",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "774.849",
+       "y_o2": "0.207",
+       "y_n2": "0.789",
+       "y_co2": "0.002",
+       "d0_mm": "4.190",
+       "dext_mm": "3.788",
+       "kavg_mm2_s": "0.359",
+       "kavg_cool_mm2_s": "0.391"
+      },
+      "pressure_kpa": 103.3,
+      "oxygen_pct": 20.7,
+      "observations": [],
+      "id": "FLEX-1209_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1209_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1209_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1209_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 5,
+        "pressure": "1 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1210",
+      "cir_point": "F068A11",
+      "test_date": "2017-03-09",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "775.346",
+       "y_o2": "0.207",
+       "y_n2": "0.789",
+       "y_co2": "0.002",
+       "d0_mm": "3.793",
+       "dext_mm": "3.280",
+       "kavg_mm2_s": "0.403",
+       "kavg_cool_mm2_s": "0.383"
+      },
+      "pressure_kpa": 103.37,
+      "oxygen_pct": 20.7,
+      "observations": [],
+      "id": "FLEX-1210_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1210_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1210_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1210_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 6,
+        "pressure": "1 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1211",
+      "cir_point": "F080A01",
+      "test_date": "2017-03-21",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "769.992",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.268",
+       "dext_mm": "3.934",
+       "kavg_mm2_s": "0.327"
+      },
+      "pressure_kpa": 102.66,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1211_PrelimSummary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1211_PrelimSummary.pdf",
+      "kind": "preliminary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1211_PrelimSummary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1211_PrelimSummary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 7,
+        "pressure": "1 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1211",
+      "cir_point": "F080A01",
+      "test_date": "2017-03-21",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "769.992",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "d0_mm": "4.268",
+       "dext_mm": "3.934",
+       "kavg_mm2_s": "0.339",
+       "kavg_cool_mm2_s": "0.398"
+      },
+      "pressure_kpa": 102.66,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1211_PrelimSummary_1",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1211_PrelimSummary_1.pdf",
+      "kind": "preliminary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1211_PrelimSummary_1.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1211_PrelimSummary_1.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 7,
+        "pressure": "1 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1211",
+      "cir_point": "F080A01",
+      "test_date": "2017-03-21",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "769.992",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.268",
+       "dext_mm": "3.934",
+       "kavg_mm2_s": "0.339",
+       "kavg_cool_mm2_s": "0.398",
+       "dext_cool_mm": "0.380"
+      },
+      "pressure_kpa": 102.66,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1211_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1211_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1211_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1211_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 7,
+        "pressure": "1 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1213",
+      "cir_point": "F086A04",
+      "test_date": "2017-03-27",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "772.131",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.189",
+       "dext_mm": "4.113",
+       "kavg_mm2_s": "0.189"
+      },
+      "pressure_kpa": 102.94,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1213_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1213_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1213_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1213_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 8,
+        "pressure": "1 atm",
+        "oxygen": "0.17",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1215",
+      "cir_point": "F086A06",
+      "test_date": "2017-03-27",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "773.386",
+       "y_o2": "0.169",
+       "y_n2": "0.830",
+       "y_co2": "0.001",
+       "y_he": "0.000",
+       "d0_mm": "4.289",
+       "dext_mm": "4.194",
+       "kavg_mm2_s": "0.163"
+      },
+      "pressure_kpa": 103.11,
+      "oxygen_pct": 16.9,
+      "observations": [],
+      "id": "FLEX-1215_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1215_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1215_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1215_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 9,
+        "pressure": "1 atm",
+        "oxygen": "0.17",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1218",
+      "cir_point": "F090A03",
+      "test_date": "2017-03-31",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "769.923",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.283",
+       "dext_mm": "3.866",
+       "kavg_mm2_s": "0.371"
+      },
+      "pressure_kpa": 102.65,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1218_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1218_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1218_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1218_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 12,
+        "pressure": "1 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1221",
+      "cir_point": "F090A06",
+      "test_date": "2017-03-31",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "771.672",
+       "y_o2": "0.208",
+       "y_n2": "0.789",
+       "y_co2": "0.001",
+       "y_he": "0.000",
+       "d0_mm": "4.346",
+       "dext_mm": "3.950",
+       "kavg_mm2_s": "0.341",
+       "kavg_cool_mm2_s": "0.381"
+      },
+      "pressure_kpa": 102.88,
+      "oxygen_pct": 20.8,
+      "observations": [],
+      "id": "FLEX-1221_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1221_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1221_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1221_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 15,
+        "pressure": "1 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1223",
+      "cir_point": "F090A08",
+      "test_date": "2017-03-31",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "946.618",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.040",
+       "dext_mm": "3.627",
+       "kavg_mm2_s": "0.388",
+       "kavg_cool_mm2_s": "0.401",
+       "dext_cool_mm": "0.392"
+      },
+      "pressure_kpa": 126.21,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1223_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1223_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1223_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1223_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 17,
+        "pressure": "1.25 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1226",
+      "cir_point": "F090A11",
+      "test_date": "2017-03-31",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "947.233",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.073",
+       "dext_mm": "3.765",
+       "kavg_mm2_s": "0.427"
+      },
+      "pressure_kpa": 126.29,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1226_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1226_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1226_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1226_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 20,
+        "pressure": "1.25 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1227",
+      "cir_point": "F095A01",
+      "test_date": "2017-04-05",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "1504.652",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "3.940",
+       "dext_mm": "3.473",
+       "kavg_mm2_s": "0.399",
+       "kavg_cool_mm2_s": "0.455",
+       "dext_cool_mm": "0.000"
+      },
+      "pressure_kpa": 200.6,
+      "oxygen_pct": 21.0,
+      "observations": [
+       "Heavy soot near droplet"
+      ],
+      "id": "FLEX-1227_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1227_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1227_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1227_Summary.txt",
+      "cfi_table_records": [
+       {
+        "csv_record": 21,
+        "pressure": "2 atm",
+        "oxygen": "0.21",
+        "fuel": "C12H26"
+       }
+      ]
+     },
+     {
+      "flex_number": "1231",
+      "cir_point": "F095A06",
+      "test_date": "2017-04-06",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "2256.819",
+       "y_o2": "0.170",
+       "y_n2": "0.830",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.141",
+       "dext_mm": "4.111",
+       "kavg_mm2_s": "0.490"
+      },
+      "pressure_kpa": 300.88,
+      "oxygen_pct": 17.0,
+      "observations": [],
+      "id": "FLEX-1231_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1231_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1231_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1231_Summary.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1231",
+      "cir_point": "F095A06",
+      "test_date": "2017-04-06",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "2256.819",
+       "y_o2": "0.170",
+       "y_n2": "0.830",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.141",
+       "dext_mm": "4.111",
+       "kavg_mm2_s": "0.490"
+      },
+      "pressure_kpa": 300.88,
+      "oxygen_pct": 17.0,
+      "observations": [],
+      "id": "FLEX-1231_Summary_1",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1231_Summary_1.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1231_Summary_1.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1231_Summary_1.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1232",
+      "cir_point": "F095A09",
+      "test_date": "2017-04-06",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "2257.447",
+       "y_o2": "0.170",
+       "y_n2": "0.830",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.337",
+       "dext_mm": "4.296",
+       "kavg_mm2_s": "0.324"
+      },
+      "pressure_kpa": 300.97,
+      "oxygen_pct": 17.0,
+      "observations": [],
+      "id": "FLEX-1232_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1232_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1232_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1232_Summary.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1238",
+      "cir_point": "F121A05",
+      "test_date": "2017-05-01",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "387.279",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.463",
+       "dext_mm": "4.015",
+       "kavg_mm2_s": "0.369",
+       "kavg_cool_mm2_s": "0.328"
+      },
+      "pressure_kpa": 51.63,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1238_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1238_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1238_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1238_Summary.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1239",
+      "cir_point": "F121A06",
+      "test_date": "2017-05-01",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "387.398",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.393",
+       "dext_mm": "3.923",
+       "kavg_mm2_s": "0.318",
+       "kavg_cool_mm2_s": "0.310",
+       "dext_cool_mm": "1.915"
+      },
+      "pressure_kpa": 51.65,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1239_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1239_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1239_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1239_Summary.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1239",
+      "cir_point": "F121A06",
+      "test_date": "2017-05-01",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "387.398",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.393",
+       "dext_mm": "3.923",
+       "kavg_mm2_s": "0.318",
+       "kavg_cool_mm2_s": "0.310",
+       "dext_cool_mm": "1.915"
+      },
+      "pressure_kpa": 51.65,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1239_Summary_v2",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1239_Summary_v2.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1239_Summary_v2.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1239_Summary_v2.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1240",
+      "cir_point": "F121A07",
+      "test_date": "2017-05-01",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "387.496",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.081",
+       "dext_mm": "3.485",
+       "kavg_mm2_s": "0.351",
+       "kavg_cool_mm2_s": "0.311",
+       "dext_cool_mm": "1.903"
+      },
+      "pressure_kpa": 51.66,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1240_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1240_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1240_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1240_Summary.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1249",
+      "cir_point": "F125A02",
+      "test_date": "2017-05-05",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "767.799",
+       "y_o2": "0.210",
+       "y_n2": "0.789",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.127",
+       "dext_mm": "3.636",
+       "kavg_mm2_s": "0.426"
+      },
+      "pressure_kpa": 102.36,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1249_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1249_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1249_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1249_Summary.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1250",
+      "cir_point": "F125A03",
+      "test_date": "2017-05-05",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "768.492",
+       "y_o2": "0.209",
+       "y_n2": "0.789",
+       "y_co2": "0.001",
+       "y_he": "0.000",
+       "d0_mm": "4.042",
+       "dext_mm": "3.554",
+       "kavg_mm2_s": "0.383",
+       "dext_cool_mm": "0.400"
+      },
+      "pressure_kpa": 102.46,
+      "oxygen_pct": 20.9,
+      "observations": [],
+      "id": "FLEX-1250_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1250_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1250_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1250_Summary.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1253",
+      "cir_point": "F125A07",
+      "test_date": "2017-05-05",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "770.261",
+       "y_o2": "0.208",
+       "y_n2": "0.792",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.282",
+       "dext_mm": "3.858",
+       "kavg_mm2_s": "0.470"
+      },
+      "pressure_kpa": 102.69,
+      "oxygen_pct": 20.8,
+      "observations": [],
+      "id": "FLEX-1253_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1253_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1253_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1253_Summary.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1261",
+      "cir_point": "F135A05",
+      "test_date": "2017-05-15",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "3777.606",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "5.646",
+       "kavg_mm2_s": "0.618",
+       "kavg_cool_mm2_s": "0.564"
+      },
+      "pressure_kpa": 503.64,
+      "oxygen_pct": 21.0,
+      "observations": [
+       "Visible hot-flame oscillations"
+      ],
+      "id": "FLEX-1261_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1261_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1261_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1261_Summary.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1261",
+      "cir_point": "F135A05",
+      "test_date": "2017-05-15",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "3777.606",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "5.646",
+       "kavg_mm2_s": "0.618"
+      },
+      "pressure_kpa": 503.64,
+      "oxygen_pct": 21.0,
+      "observations": [
+       "Visible hot-flame oscillations"
+      ],
+      "id": "FLEX-1261_Summary_prelim",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1261_Summary_prelim.pdf",
+      "kind": "preliminary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1261_Summary_prelim.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1261_Summary_prelim.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1264",
+      "cir_point": "F139A02",
+      "test_date": "2017-05-19",
+      "fuel": "Dodecane",
+      "values_as_printed": {
+       "pressure_mmhg": "763.248",
+       "y_o2": "0.210",
+       "y_n2": "0.500",
+       "y_co2": "0.000",
+       "y_he": "0.290",
+       "d0_mm": "4.217",
+       "dext_mm": "3.906",
+       "kavg_mm2_s": "0.426",
+       "kavg_cool_mm2_s": "0.464",
+       "dext_cool_mm": "0.974"
+      },
+      "pressure_kpa": 101.76,
+      "oxygen_pct": 21.0,
+      "observations": [],
+      "id": "FLEX-1264_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1264_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1264_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1264_Summary.txt",
+      "cfi_table_records": []
+     },
+     {
+      "flex_number": "1393",
+      "cir_point": null,
+      "test_date": "2017-08-28",
+      "fuel": "Farnesane",
+      "values_as_printed": {
+       "pressure_mmhg": "769.710",
+       "y_o2": "0.210",
+       "y_n2": "0.790",
+       "y_co2": "0.000",
+       "y_he": "0.000",
+       "d0_mm": "4.613",
+       "dext_mm": "4.330",
+       "kavg_mm2_s": "0.328",
+       "kavg_cool_mm2_s": "0.339",
+       "dext_cool_mm": "1.265"
+      },
+      "pressure_kpa": 102.62,
+      "oxygen_pct": 21.0,
+      "observations": [
+       "Manual Cool Flame Extinction Measurement"
+      ],
+      "id": "FLEX-1393_Summary",
+      "file_name": "PSI-39_Analyzed Data_FLEX-1393_Summary.pdf",
+      "kind": "summary",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1393_Summary.pdf",
+      "local_text_path": "data/sources/psi/analyzed_text/PSI-39_Analyzed Data_FLEX-1393_Summary.txt",
+      "cfi_table_records": []
+     }
+    ],
+    "files": [
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1206_Summary-prelim.pdf",
+      "short_name": "FLEX-1206_Summary-prelim.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1206_Summary-prelim.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1206_Summary-prelim.pdf",
+      "sha256": "6bcae09a64feb1b94974950eae1f5da50f921439d3d93b23387dc6cacc394fe1",
+      "size_bytes": 179513,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1206_Summary.pdf",
+      "short_name": "FLEX-1206_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1206_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1206_Summary.pdf",
+      "sha256": "b975c3ec71906a82ad128bf64f838ead7641c982cb31d6da5314af12431371f1",
+      "size_bytes": 233495,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1207_Summary.pdf",
+      "short_name": "FLEX-1207_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1207_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1207_Summary.pdf",
+      "sha256": "23b15435e275d7507e7ad27a0ab545ffc89fb984664fbfa88420f72f8793b88e",
+      "size_bytes": 232424,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1208_Summary.pdf",
+      "short_name": "FLEX-1208_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1208_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1208_Summary.pdf",
+      "sha256": "9fbddc893ce3d110ac32f9e28ccd6d9f0d767a08be9305436292e60ea4f499be",
+      "size_bytes": 228720,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1209_Summary.pdf",
+      "short_name": "FLEX-1209_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1209_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1209_Summary.pdf",
+      "sha256": "acec6862d0f07be5aba40043b9a32922ad898927b2fcf4523f2643d5f607eff4",
+      "size_bytes": 221992,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1210_Summary.pdf",
+      "short_name": "FLEX-1210_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1210_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1210_Summary.pdf",
+      "sha256": "f5c7879180e0898478c48c9986bc955b2e5dfd134ed830b538ed8c9a70f4b8aa",
+      "size_bytes": 198043,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1211_PrelimSummary.pdf",
+      "short_name": "FLEX-1211_PrelimSummary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1211_PrelimSummary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1211_PrelimSummary.pdf",
+      "sha256": "0224636d9543594f05534b3d7d014e780ee103aafb34b932a8629759257ed96b",
+      "size_bytes": 180190,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1211_PrelimSummary_1.pdf",
+      "short_name": "FLEX-1211_PrelimSummary_1.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1211_PrelimSummary_1.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1211_PrelimSummary_1.pdf",
+      "sha256": "70a4f3204e1c2183d1098c2f2629189c347bd9d35f94f78566b8ce739d35b8c2",
+      "size_bytes": 270329,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1211_Summary.pdf",
+      "short_name": "FLEX-1211_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1211_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1211_Summary.pdf",
+      "sha256": "37e63f116ed5dd77851185e517641111e3d4356fd4a6a55cb404aa4cc5463377",
+      "size_bytes": 238256,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1213_Summary.pdf",
+      "short_name": "FLEX-1213_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1213_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1213_Summary.pdf",
+      "sha256": "f719bf08c3d3f75ca5c97f43a73c4d91ab39e22a20bb2c752d94fafbc61d85eb",
+      "size_bytes": 361255,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1215_Summary.pdf",
+      "short_name": "FLEX-1215_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1215_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1215_Summary.pdf",
+      "sha256": "526f47a14de139a260c9ef65cc2019ff880c8f6396e0cb8a194fae42dc48e8c5",
+      "size_bytes": 358883,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1218_Summary.pdf",
+      "short_name": "FLEX-1218_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1218_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1218_Summary.pdf",
+      "sha256": "c643fafa50f134514aded7e1a50ccd2b03a0ce3b1bb1288660666311321cced5",
+      "size_bytes": 356995,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1221_Summary.pdf",
+      "short_name": "FLEX-1221_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1221_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1221_Summary.pdf",
+      "sha256": "6c7f742653a6701dcc42812ebe624fc29df2b9464192c7986c4664305b6922b3",
+      "size_bytes": 359580,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1223_Summary.pdf",
+      "short_name": "FLEX-1223_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1223_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1223_Summary.pdf",
+      "sha256": "c5cb49c9cc6664d33c5d49524f08754d30e71e7a9c0a8b7dc3626b0ef24f8864",
+      "size_bytes": 337511,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1226_Summary.pdf",
+      "short_name": "FLEX-1226_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1226_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1226_Summary.pdf",
+      "sha256": "4dbe57389d0cbda411afa787ab72cfd5621ffcd58530b942316f668e3d3085f9",
+      "size_bytes": 334975,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1227_Summary.pdf",
+      "short_name": "FLEX-1227_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1227_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1227_Summary.pdf",
+      "sha256": "36c6710a6c0bc9dd1957fd0fdc28f8a107f2543e4e881c2147d9efbe43b0ef36",
+      "size_bytes": 312954,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1231_Summary.pdf",
+      "short_name": "FLEX-1231_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1231_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1231_Summary.pdf",
+      "sha256": "d655a73b6a982db9b584561ec993814808fe5212314cd1f0473a3a3737de7104",
+      "size_bytes": 328679,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1231_Summary_1.pdf",
+      "short_name": "FLEX-1231_Summary_1.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1231_Summary_1.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1231_Summary_1.pdf",
+      "sha256": "e18ce2ea5e025a92b07d5bca71b23b76e46775753a03fd62218a376c9ae077a2",
+      "size_bytes": 4271880,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1232_Summary.pdf",
+      "short_name": "FLEX-1232_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1232_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1232_Summary.pdf",
+      "sha256": "f338e1c9048dae760cd12da5920e53b5cf1cc9390ae6a40d7fbef9c85f946cd3",
+      "size_bytes": 364832,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1238_Summary.pdf",
+      "short_name": "FLEX-1238_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1238_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1238_Summary.pdf",
+      "sha256": "ab9530d2da5b140a00da2aa7ec346455e13b1750a2595f8b6fd2cfb5fa2e4d20",
+      "size_bytes": 380605,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1239_Summary.pdf",
+      "short_name": "FLEX-1239_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1239_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1239_Summary.pdf",
+      "sha256": "136b975f99dae44ccd72aab2b4b51b9008f3a81ebb76bfe4be2bacc381cf3d1c",
+      "size_bytes": 270563,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1239_Summary_v2.pdf",
+      "short_name": "FLEX-1239_Summary_v2.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1239_Summary_v2.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1239_Summary_v2.pdf",
+      "sha256": "e25caeec8c4e143dbe46f1088862c2eaaab461a67b7f009fa29dd43d8f57ab60",
+      "size_bytes": 393558,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1240_Summary.pdf",
+      "short_name": "FLEX-1240_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1240_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1240_Summary.pdf",
+      "sha256": "91dc839541d4aa5edf03916b67ad53a438a08011296c219f49d7b192d875ca6d",
+      "size_bytes": 349778,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1248_Summary.pdf",
+      "short_name": "FLEX-1248_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1248_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1248_Summary.pdf",
+      "sha256": "532d5ad452ede1f2f7210470e289d8e804b0d7aa4f73c1a6ec2e45ccef54ff59",
+      "size_bytes": 382777,
+      "status": "unreadable",
+      "note": "The file stored in PSI is not a readable PDF (its size matches the PSI listing). Open it on PSI to check."
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1249_Summary.pdf",
+      "short_name": "FLEX-1249_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1249_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1249_Summary.pdf",
+      "sha256": "bc307b9531ade41515d8a43bc0b1ef495bd872f3f64777e6b3822afda89b6d11",
+      "size_bytes": 334334,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1250_Summary.pdf",
+      "short_name": "FLEX-1250_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1250_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1250_Summary.pdf",
+      "sha256": "6b3b066a070e57a471d29247410efaf74b8b8cdcb6ac3577ebe5ba9c78ec1943",
+      "size_bytes": 349831,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1253_Summary.pdf",
+      "short_name": "FLEX-1253_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1253_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1253_Summary.pdf",
+      "sha256": "93a041672e097ec159d200e6d5645ad866339d4baee909aa657aba2373fd86e6",
+      "size_bytes": 394976,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1261_Summary.pdf",
+      "short_name": "FLEX-1261_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1261_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1261_Summary.pdf",
+      "sha256": "818b3f250b2f4df8f769d2c014ca8ee582f82262669af95082da69d6d9c0e048",
+      "size_bytes": 243278,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1261_Summary_prelim.pdf",
+      "short_name": "FLEX-1261_Summary_prelim.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1261_Summary_prelim.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1261_Summary_prelim.pdf",
+      "sha256": "8a8649ce1f36b2f434c0a033b454407581ea510bc61753235dca9766589eae2b",
+      "size_bytes": 211160,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1264_Summary.pdf",
+      "short_name": "FLEX-1264_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1264_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1264_Summary.pdf",
+      "sha256": "f7a6f91f563eca56b17531ad8ba8ee30e8f50f128cd1a7c4a4293eb37730a754",
+      "size_bytes": 370986,
+      "status": "parsed",
+      "note": null
+     },
+     {
+      "file_name": "PSI-39_Analyzed Data_FLEX-1393_Summary.pdf",
+      "short_name": "FLEX-1393_Summary.pdf",
+      "local_path": "data/sources/psi/analyzed/PSI-39_Analyzed Data_FLEX-1393_Summary.pdf",
+      "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-39/download?file=PSI-39_Analyzed%20Data_FLEX-1393_Summary.pdf",
+      "sha256": "2620445e3885e766c211612638a80535767e644c28b83459979efdf9f3889154",
+      "size_bytes": 484921,
+      "status": "parsed",
+      "note": null
+     }
+    ],
+    "verification_status": "psi_analyzed_data"
+   },
    "data_availability": {
     "experimental_tables": [
      "PSI-39_Experimental table_CFI.csv"
@@ -56753,6 +58354,7 @@
     }
    ],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-159_Experimental table_CFI-G_Normal Flames.csv",
@@ -79517,6 +81119,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-20_Experimental table_ACME BRE.csv"
@@ -80601,6 +82204,7 @@
     }
    ],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-22_Experimental table_ACME E-FIELD Flames.csv"
@@ -82252,6 +83856,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-107_Experimental table_Spice.csv"
@@ -101143,6 +102748,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-106_Experimental table_Slice.csv"
@@ -103418,6 +105024,7 @@
     }
    ],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-10_Experimental table_Flame Design_Normal Flame.csv",
@@ -121875,6 +123482,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-21_Experimental table_CLD Flame.csv"
@@ -125779,6 +127387,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-23_Experimental table_ACME s-Flame.csv"
@@ -127348,6 +128957,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [],
     "total_file_size_bytes_reported_by_psi": 7743,
@@ -127481,6 +129091,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [],
     "total_file_size_bytes_reported_by_psi": 9694,
@@ -128002,6 +129613,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [],
     "total_file_size_bytes_reported_by_psi": 264404901.0,
@@ -128250,6 +129862,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [],
     "total_file_size_bytes_reported_by_psi": 70820870,
@@ -128512,6 +130125,7 @@
    },
    "images": [],
    "table_flags": [],
+   "analyzed_data": null,
    "data_availability": {
     "experimental_tables": [
      "PSI-142_Experimental table_Data Summary Table.csv"
@@ -128928,6 +130542,35 @@
    "volume": "sum of totalFileSize over data/sources/psi/PSI-*.json (24 records)",
    "research_areas": "distinct 'Research Area' in data/sources/psi/search_q_combustion_all_areas.json"
   },
+  "adjacent_records": [
+   {
+    "accession": "PSI-108",
+    "acronym": "STDCE-1",
+    "title": "Surface Tension Driven Convection Experiment-1",
+    "research_area": "Fluid Physics",
+    "project_type": "Microgravity Investigation",
+    "release_date": "18-Sep-2024",
+    "why_listed": "These techniques are now widely employed in research and industrial applications on Earth, including the study of combustion processes, crystal growth, and microfluidics.",
+    "why_field": "researchImpacts",
+    "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "raw_source_path": "data/sources/psi/adjacent/PSI-108.json",
+    "raw_source_sha256": "0ff23962e77b55cc2d8c93c25c63e03dd94bf9be16aa1d80ca9992b7dadaaa46"
+   },
+   {
+    "accession": "PSI-181",
+    "acronym": null,
+    "title": "Structure and Properties of Pb-Sn and Pb-free Sn-Ag-Cu Solders Produced in Terrestrial vs. Microgravity Environments under Extremes of Elevated and Cryo Temperatures",
+    "research_area": "Materials Science",
+    "project_type": "Ground Investigation",
+    "release_date": "20-Aug-2025",
+    "why_listed": "(iii) The insights gained into microgravity fluid behavior and surface tension variation can be extended to a broad range of spaceflight-enabling technologies, such as boiling, heat transfer, combustion, welding, brazing, and soldering.",
+    "why_field": "researchImpacts",
+    "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-181",
+    "raw_source_path": "data/sources/psi/adjacent/PSI-181.json",
+    "raw_source_sha256": "7db2c6f4a3046bc6d23320b25b65afc19f94736ff9134817a618afba7fd7ca04"
+   }
+  ],
+  "adjacent_records_note": "The PSI web search behind the official link (q=combustion) lists these records besides the Combustion Science investigations. They belong to other research areas and match only because their text mentions combustion. Listed for completeness; never counted, ranked or indexed.",
   "provenance": {
    "kind": "resource",
    "resource": "PSI Data Repository: Combustion Science",

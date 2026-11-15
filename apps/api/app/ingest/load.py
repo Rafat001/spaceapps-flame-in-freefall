@@ -88,6 +88,7 @@ def row_chunk_text(acr: str, acc: str, r: dict) -> str:
 
 
 def load(seed_path=None, brief_path=None, build_vectors: bool = True) -> dict:
+    from app.ingest.analyzed import chunk_specs
     from app.ingest.corpus import doc_provenance, doc_chunks, transcript_chunks
     from app.ingest.official_sources import OFFICIAL_DOCS, VIDEO
     from app.services.lenses import tag_lenses
@@ -118,7 +119,7 @@ def load(seed_path=None, brief_path=None, build_vectors: bool = True) -> dict:
             data_availability=inv["data_availability"], platform=inv.get("platform"), platform_note=inv.get("platform_note"),
             is_ground=inv.get("is_ground", False), version=inv.get("version") or {}, relationships=inv.get("relationships") or [],
             files=inv.get("files") or {}, images=inv.get("images") or [], table_flags=inv.get("table_flags") or [],
-            provenance=prov)
+            analyzed_data=inv.get("analyzed_data"), provenance=prov)
         row.lenses = tag_lenses(inv)
         s.add(row)
         meta_doc = Document(id=f"{inv['id']}-psi-metadata", investigation_id=inv["id"], title=f"PSI investigation record {inv['accession']}",
@@ -165,6 +166,18 @@ def load(seed_path=None, brief_path=None, build_vectors: bool = True) -> dict:
         if summ and doc_ids:
             add_chunk(next(iter(doc_ids.values())), summ, "Experimental table summary", "psi_experimental_table",
                       inv["source_url"], "experimental table (all rows)", prov)
+        # PSI analyzed-data files (kept apart from the experimental-table runs) ----------------------------
+        block = inv.get("analyzed_data")
+        if block:
+            an_ids = {}
+            for n, f in enumerate(block.get("files", [])):
+                did = f"{inv['id']}-analyzed{n:02d}"
+                an_ids[f["file_name"]] = did
+                s.add(Document(id=did, investigation_id=inv["id"], title=f["file_name"], url=f["url"], type="psi_analyzed_data",
+                               local_path=f["local_path"], checksum=f["sha256"], provenance=prov))
+            for c in chunk_specs(inv["acronym"], block):
+                add_chunk(an_ids.get(c["file_name"]) or meta_doc.id, c["text"], c["section"], "psi_analyzed_data", c["url"],
+                          c["locator"], prov, prefix="a")
         ri = 0
         for r in inv["test_runs"]:
             o, p, a = r.get("oxygen_pct") or {}, r.get("pressure_kpa") or {}, r.get("airflow_m_s") or {}

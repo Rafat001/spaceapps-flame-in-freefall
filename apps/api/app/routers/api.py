@@ -374,7 +374,9 @@ def nasa_other_experiments(s: Session = Depends(get_session)):
     Never counted, filtered or ranked."""
     from app.services.nasa_program import other_experiments
 
-    return other_experiments(s)
+    cat = _seed_stats()["catalog"] or {}
+    return {**other_experiments(s), "adjacent_psi_records": cat.get("adjacent_records") or [],
+            "adjacent_psi_note": cat.get("adjacent_records_note")}
 
 
 @router.get("/explainer")

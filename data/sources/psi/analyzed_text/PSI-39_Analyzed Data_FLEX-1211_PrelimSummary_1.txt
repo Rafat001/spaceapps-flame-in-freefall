@@ -1,0 +1,119 @@
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+(
+D
+/
+D
+0
+)
+2
+3.0
+2.5
+2.0
+1.5
+1.0
+0.5
+0.0
+t / D0
+2
+( s / mm
+2
+)
+30
+25
+20
+15
+10
+5
+0
+D
+f,
+hot
+(
+mm
+)
+,
+D
+f
+/
+D
+d
+2
+3
+4
+5
+6
+7
+8
+9
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+2
+3
+Flame
+Radiance
+(
+W
+)
+14
+12
+10
+8
+6
+4
+2
+D
+f,
+cool
+(
+mm
+)
+600
+550
+500
+450
+400
+350
+300
+250
+Cool
+Flame
+Peak
+Grayscale
+Tue, Mar 21, 2017
+FLEX-1211
+F080A01
+P = 769.992 mmHg
+YO2 = 0.210
+YN2 = 0.790
+Dodecane
+D0 = 4.268 mm
+Dext = 3.934 mm
+kavg = 0.339 mm
+2
+/sec
+kavg, cool = 0.398 mm
+2
+/sec
+Dext, cool ~ 0.380 mm
+Droplet History
+Hot Flame Diameter
+Hot Flame FSR
+Flame Radiance (wideband)
+Water Vapor Radiance (narrowband)
+Cool Flame Diameter (FWHM)
+Cool Flame Diameter (Peak-Peak)
+Peak Cool Flame Grayscale
+

@@ -122,6 +122,7 @@ def inv_detail(inv: Investigation, max_runs: int = 500) -> dict:
         "missing_fields": [k for k, v in conditions_summary(inv).items() if not v["known"]],
         "version": inv.version, "relationships": inv.relationships, "files": inv.files, "images": inv.images,
         "table_flags": inv.table_flags, "platform_note": inv.platform_note,
+        "analyzed_data": ({**inv.analyzed_data, "evidence_label": label("psi_analyzed_data")} if inv.analyzed_data else None),
         "lenses_evidence": inv.lenses or {},
         "flags": [{"row": r.source_row, "run_label": r.run_label, "file": r.source_file, **f} for r in inv.test_runs for f in (r.flags or [])],
         "variables": summarize(inv.test_runs),

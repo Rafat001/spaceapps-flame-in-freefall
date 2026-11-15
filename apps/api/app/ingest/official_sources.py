@@ -74,7 +74,8 @@ LINK_ONLY = [
     {"title": "NASA ScienceCasts: The Power of Studying Combustion on the ISS", "url": "https://www.youtube.com/watch?v=W1oXykoz9zg",
      "note": "Video, 219 s, published 2018-03-13. Link only (not ingested)."},
     {"title": "PSI Data Repository: Combustion Science", "url": "https://psi.nasa.gov/physci/repo/search?q=combustion",
-     "note": "Dataset. Records + experimental tables ingested from data/sources/psi/; raw zip/video archives are linked, never copied."},
+     "note": "Dataset. Records, experimental tables and the small PSI-39 / PSI-47 analyzed-data files ingested from "
+             "data/sources/psi/; raw zip/video archives are linked, never copied."},
 ]
 
 VIDEO = {"title": "2026 Challenge | Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion",

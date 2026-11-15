@@ -529,18 +529,24 @@ export const FLEX_APPARATUS_HOTSPOTS: FlexHotspot[] = [
   },
 ];
 
-export function calculateFlexK(fuel: "n-Heptane" | "Methanol", oxygenPct: number): number {
+export function calculateFlexK(
+  fuel: "n-Heptane" | "Methanol",
+  oxygenPct: number,
+  pressureAtm: number = 1.0
+): number {
   const baseK = fuel === "Methanol" ? 0.15 : 0.22;
-  return Number((baseK * (oxygenPct / 21)).toFixed(4));
+  const pressFactor = Math.pow(Math.max(0.2, pressureAtm), 0.15);
+  return Number((baseK * (oxygenPct / 21) * pressFactor).toFixed(4));
 }
 
 export function calculateDropletDiameter(
   time: number,
   initialDiam: number,
   oxygenPct: number,
-  fuel: "n-Heptane" | "Methanol" = "n-Heptane"
+  fuel: "n-Heptane" | "Methanol" = "n-Heptane",
+  pressureAtm: number = 1.0
 ): number {
-  const k = calculateFlexK(fuel, oxygenPct);
+  const k = calculateFlexK(fuel, oxygenPct, pressureAtm);
   const d2 = Math.max(0.16, initialDiam * initialDiam - k * time);
   return Number(Math.sqrt(d2).toFixed(3));
 }

@@ -14,6 +14,18 @@ interface AppItem {
 
 const RESEARCH_APPS: AppItem[] = [
   {
+    href: "/firelab",
+    title: "Learning FireLab",
+    desc: "Hands-on BASS-II ISS experiment & flame-front extraction",
+    category: "Interactive Lab",
+    color: "#EAFE07",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0" /><path d="M5.52 16h12.96" />
+      </svg>
+    ),
+  },
+  {
     href: "/fire-dynamics",
     title: "Fire Dynamics Explorer",
     desc: "Fire Tetrahedron → NASA experiment evidence",
@@ -128,6 +140,7 @@ export default function Nav() {
   // Check if current route is one of the grouped research tools
   const isToolActive = RESEARCH_APPS.some((app) => path?.startsWith(app.href)) || path?.startsWith("/investigations");
   const isIntroActive = path?.startsWith("/androflame") || path?.startsWith("/intro");
+  const isFirelabActive = path?.startsWith("/firelab");
   const isAskActive = path?.startsWith("/assistant");
   const isConfigActive = path?.startsWith("/settings");
 
@@ -140,6 +153,13 @@ export default function Nav() {
         <li>
           <Link href="/androflame" aria-current={isIntroActive ? "page" : undefined}>
             <span className="nav-no" aria-hidden="true">00</span>AndroFlame
+          </Link>
+        </li>
+
+        {/* Learning FireLab */}
+        <li>
+          <Link href="/firelab" aria-current={isFirelabActive ? "page" : undefined} style={{ color: isFirelabActive ? "var(--accent)" : undefined }}>
+            <span className="nav-no" aria-hidden="true" style={{ color: "var(--accent)" }}>🔥</span>FireLab
           </Link>
         </li>
 

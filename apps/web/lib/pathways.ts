@@ -78,6 +78,15 @@ export function detectPathways(opts: DetectPathwayOptions): Pathway[] {
   }
 
   // 2. Feature & Exploration pathways
+  if (/\b(firelab|fire lab|learning firelab|interactive lab|conduct|hands[- ]on|how data is extracted|spread rate|flame front|video|how experiment is conducted)\b/i.test(q)) {
+    add({
+      label: "Learning FireLab",
+      href: "/firelab",
+      badge: "INTERACTIVE LAB",
+      description: "Hands-on BASS-II ISS experiment & flame-front data extraction",
+    });
+  }
+
   if (/\b(tetra|tetrahedron|triangle|fire dynamic|suppress|extinct|oxidizer|reaction|3d|model)\b/i.test(q)) {
     add({
       label: "3D Fire Dynamics Explorer",

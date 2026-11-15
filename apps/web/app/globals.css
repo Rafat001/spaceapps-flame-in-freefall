@@ -633,8 +633,6 @@ h2 .label, h3 .label { margin-left: 8px; }
 /* ---------- ask: AI quota counter ---------- */
 .quota { margin: 10px 0 4px; padding: 10px 14px; border-left: 2px solid var(--rule-strong); max-width: 980px; }
 .quota-count { margin: 0 0 4px; font-family: var(--f-mono); font-size: .8rem; color: var(--white); }
-.quota-note { margin: 0; font-size: .82rem; color: var(--ash); line-height: 1.5; }
-.quota-note a { color: var(--blue-yonder); }
 
 /* ---------- investigation: NASA program summary ---------- */
 .nasa { margin-top: 48px; padding-top: 22px; border-top: 2px solid var(--rule-strong); max-width: 980px; }

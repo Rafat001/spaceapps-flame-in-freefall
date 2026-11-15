@@ -56,6 +56,20 @@ export default function Home() {
         </aside>
       </section>
 
+      <section className="tour" aria-labelledby="tour-title">
+        <div className="tour-head">
+          <p className="kicker"><span className="kicker-no">02:00</span> Feature tour</p>
+          <h2 id="tour-title" className="display">See the whole platform in two minutes</h2>
+          <p className="muted">Search, FireLab experiments, coverage, comparison, scenario ranking and cited answers — recorded live from this site.</p>
+        </div>
+        <div className="tour-frame">
+          <video id="tour-video" controls playsInline preload="metadata" poster="/tour/flame-in-freefall-tour.jpg">
+            <source src="/tour/flame-in-freefall-tour.mp4" type="video/mp4" />
+            Your browser does not support HTML5 video.
+          </video>
+        </div>
+      </section>
+
       <SpaceFireTeaser />
 
       <Disclaimer />

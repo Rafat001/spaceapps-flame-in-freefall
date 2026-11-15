@@ -4,6 +4,33 @@ All notable changes to the **Flame in Freefall** microgravity combustion evidenc
 
 ---
 
+## [Unreleased] - 2026-11-15 — Fire Dynamics Explorer
+**Branch**: `claude/dazzling-pasteur-xvy2cc`
+
+### Highlights & Summary
+New science-led entry point at `/fire-dynamics` (Apps menu → Fire Dynamics Explorer): an interactive Fire Tetrahedron
+leads users from combustion concepts to NASA test records. Front-end only; reuses `GET /api/investigations/{id}`.
+
+### Detailed Changes
+- **Fire Tetrahedron** (`components/FireTetrahedron.tsx`): 3D tetrahedron projected to SVG (no WebGL dependency) — idles in
+  a slow spin, drag to rotate, click a face to select; selected faces turn toward the viewer. Four faces (Fuel, Heat,
+  Oxidizer, Chain reaction as the base); four `aria-pressed` toggle buttons are the accessible controls; respects
+  reduced motion. Selection mirrored to `?faces=`.
+- **Element panel**: plain-language explanation, microgravity note, variables and Explorer deep links per face.
+- **Guided pathways** (from the developer guide): Fuel + Oxidizer → BASS-II (PSI-25), Fuel + Heat → SoFIE-GEL,
+  Heat + Oxidizer → SoFIE-MIST, all four → Saffire I–III (PSI-98/99/100).
+- **Environment controls**: gravity regime, material, O₂ and airflow ranges filter the example's PSI test rows client-side
+  (Not reported never passes a numeric bound) and link to the full Explorer search.
+- **Evidence**: verbatim "what NASA says it studied" quotes, team-framed face mapping, per-test tables with source rows,
+  compare links, and a BASS-II vs Saffire scale-up table.
+- **SoFIE-GEL / SoFIE-MIST** have no PSI record: shown with verbatim quotes from the in-corpus NASA Glenn SoFIE page and an
+  explicit "Not in PSI" notice — scope rule unchanged.
+- **Why microgravity changes fire**: buoyancy explainer with diagrams and a verbatim NASA Combustion Science quote.
+- Explorer now preserves `gravity_regime` in its URL filters.
+- Tests: `tests/fireDynamics.test.tsx` checks every quote word for word against `data/sources/`, pathways and filters.
+
+---
+
 ## [PR #1] - 2026-11-14 — Investigation AI Overview, Evidence Citations & Explorer Fixes
 **Branch**: `feat/investigation-ai-overview`  
 **PR**: [#1](https://github.com/Rafat001/spaceapps-flame-in-freefall/pull/1)  

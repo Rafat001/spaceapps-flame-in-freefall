@@ -12,8 +12,10 @@ New science-led entry point at `/fire-dynamics` (Apps menu → Fire Dynamics Exp
 leads users from combustion concepts to NASA test records. Front-end only; reuses `GET /api/investigations/{id}`.
 
 ### Detailed Changes
-- **Fire Tetrahedron** (`components/FireTetrahedron.tsx`): unfolded-net SVG with four selectable faces (Fuel, Heat,
-  Oxidizer, Chain reaction); keyboard accessible (`role="checkbox"`, Space/Enter). Selection mirrored to `?faces=`.
+- **Fire Tetrahedron** (`components/FireTetrahedron.tsx`): 3D tetrahedron projected to SVG (no WebGL dependency) — idles in
+  a slow spin, drag to rotate, click a face to select; selected faces turn toward the viewer. Four faces (Fuel, Heat,
+  Oxidizer, Chain reaction as the base); four `aria-pressed` toggle buttons are the accessible controls; respects
+  reduced motion. Selection mirrored to `?faces=`.
 - **Element panel**: plain-language explanation, microgravity note, variables and Explorer deep links per face.
 - **Guided pathways** (from the developer guide): Fuel + Oxidizer → BASS-II (PSI-25), Fuel + Heat → SoFIE-GEL,
   Heat + Oxidizer → SoFIE-MIST, all four → Saffire I–III (PSI-98/99/100).

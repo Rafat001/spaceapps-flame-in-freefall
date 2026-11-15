@@ -1017,18 +1017,28 @@ a.cite-ref:hover { color: var(--accent); text-decoration: underline; }
 .fd-stage { display: grid; grid-template-columns: minmax(280px, 420px) minmax(0, 1fr); gap: 40px; align-items: start; margin: 8px 0 32px; }
 @media (max-width: 860px) { .fd-stage { grid-template-columns: 1fr; gap: 24px; } }
 .fd-tetra { margin: 0; }
-.fd-tetra svg { width: 100%; height: auto; display: block; overflow: visible; }
-.fd-face { cursor: pointer; outline: none; }
-.fd-face polygon { opacity: .38; stroke: var(--deep-blue); stroke-width: 3; stroke-linejoin: round; transition: opacity .15s ease; }
-.fd-face:hover polygon { opacity: .7; }
-.fd-face.on polygon { opacity: 1; stroke: var(--accent); stroke-width: 4; }
-.fd-face:focus-visible polygon { stroke: var(--focus); stroke-width: 4; stroke-dasharray: 8 5; opacity: .85; }
-.fd-face.on:focus-visible polygon { stroke-dasharray: none; }
-.fd-face.on { filter: drop-shadow(0 0 10px rgba(234, 254, 7, .25)); }
-.fd-face-name { font-family: var(--f-display); font-weight: 900; font-size: 21px; fill: var(--white); pointer-events: none; letter-spacing: .01em; }
-.fd-face-tick { font-family: var(--f-mono); font-size: 11px; fill: var(--accent); pointer-events: none; letter-spacing: .06em; text-transform: uppercase; }
-.fd-fold { fill: none; stroke: var(--deep-blue); stroke-width: 1.5; stroke-dasharray: 5 5; pointer-events: none; opacity: .9; }
-@media (prefers-reduced-motion: reduce) { .fd-face polygon { transition: none; } }
+.fd-tetra-3d { width: 100%; height: auto; display: block; overflow: visible; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
+.fd-tetra-3d:active { cursor: grabbing; }
+.fd3-face polygon:first-child { fill-opacity: 1; }
+.fd3-face.back polygon:first-child { fill-opacity: .9; }
+.fd3-shade { pointer-events: none; }
+.fd3-edge { fill: none; stroke: rgba(255, 255, 255, .28); stroke-width: 1.5; stroke-linejoin: round; pointer-events: none; }
+.fd3-face.on .fd3-edge { stroke: var(--accent); stroke-width: 3.5; }
+.fd3-face.on.back .fd3-edge { stroke-width: 2; stroke-dasharray: 6 5; }
+.fd3-face { cursor: pointer; }
+.fd3-face:hover polygon:first-child { fill-opacity: 1; }
+.fd3-label { pointer-events: none; }
+.fd3-label text { font-family: var(--f-display); font-weight: 900; fill: var(--white); paint-order: stroke; stroke: rgba(7, 23, 63, .45); stroke-width: 3px; }
+.fd3-label text.fd3-tick { font-family: var(--f-mono); font-weight: 500; font-size: 14px; fill: var(--accent); letter-spacing: .06em; text-transform: uppercase; stroke: none; }
+.fd-face-buttons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 4px 0 8px; }
+.fd-face-btn { min-height: 38px; padding: 6px 8px; font-size: .85rem; background: transparent; color: var(--ink); border-color: var(--rule-strong); font-weight: 600; border-top-width: 3px; }
+.fd-face-btn-fuel { border-top-color: var(--martian-red); }
+.fd-face-btn-heat { border-top-color: var(--rocket-red); }
+.fd-face-btn-oxidizer { border-top-color: var(--blue-yonder); }
+.fd-face-btn-reaction { border-top-color: var(--neon-blue); }
+.fd-face-btn:hover { background: transparent; color: var(--accent); border-color: var(--accent); }
+.fd-face-btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+@media (max-width: 420px) { .fd-face-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 .fd-paths { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
 .fd-paths > p { flex-basis: 100%; margin: 0; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .08em; font-size: .7rem; }

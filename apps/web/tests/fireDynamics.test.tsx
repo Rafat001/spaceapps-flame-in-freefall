@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import FireTetrahedron from "../components/FireTetrahedron";
+import FireTetrahedron, { faceNormal, orientationFacing } from "../components/FireTetrahedron";
 import {
   BUOYANCY_QUOTE, EMPTY_ENV, EXAMPLES, FACES, envToParams, filterRuns, journeyFor, pathways, toggleFace, type SourceQuote,
 } from "../lib/fireDynamics";
@@ -85,11 +85,22 @@ describe("environment filters", () => {
 });
 
 describe("FireTetrahedron", () => {
-  it("renders four keyboard-focusable checkbox faces reflecting the selection", () => {
+  it("renders a decorative 3D solid plus four accessible toggle buttons reflecting the selection", () => {
     const html = renderToStaticMarkup(<FireTetrahedron selected={["fuel", "oxidizer"]} onToggle={() => {}} />);
-    expect((html.match(/role="checkbox"/g) || []).length).toBe(4);
-    expect((html.match(/tabindex="0"/g) || []).length).toBe(4);
-    expect((html.match(/aria-checked="true"/g) || []).length).toBe(2);
-    expect(html).toContain('aria-label="Fuel: Material that can burn."');
+    expect(html).toContain('aria-hidden="true" class="fd-tetra-3d"');
+    expect((html.match(/data-face="/g) || []).length).toBe(4);
+    expect((html.match(/aria-pressed="/g) || []).length).toBe(4);
+    expect((html.match(/aria-pressed="true"/g) || []).length).toBe(2);
+    expect(html).toContain('title="Material that can burn."');
+  });
+
+  it("can turn every face to point at the viewer", () => {
+    for (const f of FACES) {
+      const n = faceNormal(f);
+      const { yaw, pitch } = orientationFacing(n);
+      const x1 = n[0] * Math.cos(yaw) + n[2] * Math.sin(yaw), z1 = -n[0] * Math.sin(yaw) + n[2] * Math.cos(yaw);
+      const y2 = n[1] * Math.cos(pitch) - z1 * Math.sin(pitch), z2 = n[1] * Math.sin(pitch) + z1 * Math.cos(pitch);
+      expect(Math.abs(x1)).toBeLessThan(1e-9); expect(Math.abs(y2)).toBeLessThan(1e-9); expect(z2).toBeCloseTo(1, 9);
+    }
   });
 });

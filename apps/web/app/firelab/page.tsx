@@ -84,8 +84,25 @@ export default function FireLabPage() {
     setFlexFrameB(null);
   }, [flexFuel, flexOxygen, flexDiameter, flexPressure, selectedFlexRun]);
 
+  // View mode in Stage 2 (Simulation vs Authentic NASA Video) and Stage 4 (Illustrative vs Live Captures)
+  const [flexViewMode, setFlexViewMode] = useState<"sim" | "video">("sim");
+  const [flexVideoSrc, setFlexVideoSrc] = useState<string>("/firelab/flex_flight_video.mp4");
+  const [flexMeasureView, setFlexMeasureView] = useState<"illustrative" | "custom">("illustrative");
+
   // Plot view mode in Step 4: D² vs Time OR D vs Time
   const [flexPlotMode, setFlexPlotMode] = useState<"d2" | "d">("d2");
+
+  // Detect matching documented run for dropdown sync (or "custom" if sliders tuned)
+  const activeFlexRunId = useMemo(() => {
+    const matched = DOCUMENTED_FLEX_RUNS.find(
+      (r) =>
+        r.fuel === flexFuel &&
+        Math.abs(r.oxygenPct - flexOxygen) < 0.1 &&
+        Math.abs(r.initialDiameterMm - flexDiameter) < 0.1 &&
+        Math.abs(r.pressureAtm - flexPressure) < 0.05
+    );
+    return matched ? matched.runId : "custom";
+  }, [flexFuel, flexOxygen, flexDiameter, flexPressure]);
 
   // Learning Challenges State (All 5 Activities from Prompt)
   const [quizPredictAnswer, setQuizPredictAnswer] = useState<number | null>(null);
@@ -130,8 +147,8 @@ export default function FireLabPage() {
   };
 
   const autoCaptureFlexDefaults = () => {
-    const d10 = calculateDropletDiameter(10, flexDiameter, flexOxygen, flexFuel);
-    const d60 = calculateDropletDiameter(60, flexDiameter, flexOxygen, flexFuel);
+    const d10 = calculateDropletDiameter(10, flexDiameter, flexOxygen, flexFuel, flexPressure);
+    const d60 = calculateDropletDiameter(60, flexDiameter, flexOxygen, flexFuel, flexPressure);
     const ptA: CapturedDropletPoint = {
       id: 1,
       t: 10,
@@ -161,16 +178,32 @@ export default function FireLabPage() {
   };
 
   // Droplet physical properties
-  const flexK = calculateFlexK(flexFuel, flexOxygen);
-  const currentFlexD = calculateDropletDiameter(flexTime, flexDiameter, flexOxygen, flexFuel);
+  const flexK = calculateFlexK(flexFuel, flexOxygen, flexPressure);
+  const currentFlexD = calculateDropletDiameter(flexTime, flexDiameter, flexOxygen, flexFuel, flexPressure);
   const flexRadiusRatio = Math.max(0, Math.min(1, currentFlexD / flexDiameter));
   const flexHasFlame =
     flexOxygen >= 17 &&
     flexTime < Math.min(90, (flexDiameter * flexDiameter - 0.16) / Math.max(0.001, flexK));
 
+  // WhatsApp Video Illustrative Model (Teaching benchmark: K = 0.110 at 21% O2 / 1 atm)
+  const illustrativeFlexK = Number(
+    (
+      0.110 *
+      (flexOxygen / 21) *
+      Math.pow(Math.max(0.2, flexPressure), 0.15) *
+      (flexFuel === "Methanol" ? 0.68 : 1.0)
+    ).toFixed(3)
+  );
+  const d10Illustrative = Number(
+    Math.sqrt(Math.max(0.16, flexDiameter * flexDiameter - illustrativeFlexK * 10)).toFixed(2)
+  );
+  const d60Illustrative = Number(
+    Math.sqrt(Math.max(0.16, flexDiameter * flexDiameter - illustrativeFlexK * 60)).toFixed(2)
+  );
+
   // Dynamic frame capture implementation (Honors User Captures!)
   const captureCurrentFlexPoint = (slot?: "A" | "B") => {
-    const dVal = calculateDropletDiameter(flexTime, flexDiameter, flexOxygen, flexFuel);
+    const dVal = calculateDropletDiameter(flexTime, flexDiameter, flexOxygen, flexFuel, flexPressure);
     const newPt: CapturedDropletPoint = {
       id: Date.now(),
       t: flexTime,
@@ -228,6 +261,17 @@ export default function FireLabPage() {
   const [selectedOxygen, setSelectedOxygen] = useState<number>(22.2);
   const [selectedAirflow, setSelectedAirflow] = useState<number>(5.0);
   const [selectedRun, setSelectedRun] = useState<BassRun>(DOCUMENTED_BASS_RUNS[0]);
+
+  // Detect matching documented run for BASS dropdown sync (or "custom")
+  const activeBassRunId = useMemo(() => {
+    const matched = DOCUMENTED_BASS_RUNS.find(
+      (r) =>
+        r.thicknessMicrons === selectedThickness &&
+        Math.abs(r.oxygenPct - selectedOxygen) < 0.1 &&
+        Math.abs(r.airflowCmS - selectedAirflow) < 0.05
+    );
+    return matched ? matched.runId : "custom";
+  }, [selectedThickness, selectedOxygen, selectedAirflow]);
 
   // Mode toggle: Interactive Simulation vs NASA Flight Video
   const [bassViewMode, setBassViewMode] = useState<"sim" | "video">("sim");
@@ -456,11 +500,11 @@ export default function FireLabPage() {
   const comparisonRun = DOCUMENTED_BASS_RUNS.find((r) => r.runId === comparisonRunId) || DOCUMENTED_BASS_RUNS[1];
 
   const flexStepLabels = [
-    "1 · Understand Apparatus",
-    "2 · Watch Droplet Burn",
-    "3 · Change Conditions",
-    "4 · Measure & Process Data",
-    "5 · Compare & Interpret",
+    "1 · Why it matters",
+    "2 · Watch the flame",
+    "3 · Change a condition",
+    "4 · Measure the droplet",
+    "5 · Understand the result",
   ];
 
   return (
@@ -884,9 +928,37 @@ export default function FireLabPage() {
                   </a>.
                 </p>
 
-                <div className="flex-uploader-area">
-                  <span style={{ fontSize: "13px", color: "var(--ink-2)", display: "block" }}>
-                    Load verified NASA MP4 flight footage:
+                <div style={{ borderRadius: "10px", overflow: "hidden", border: "1px solid #1e3a5f", background: "#000", marginBottom: "12px" }}>
+                  <video
+                    id="flex-flight-video"
+                    controls
+                    src={flexUploadedUrl || "/firelab/flex_flight_video.mp4"}
+                    style={{ width: "100%", maxHeight: "280px", display: "block" }}
+                  />
+                </div>
+
+                <div className="milestone-chips" style={{ marginBottom: "16px", display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                  <button type="button" className="chip-btn" onClick={() => {
+                    const vid = document.getElementById("flex-flight-video") as HTMLVideoElement;
+                    if (vid) vid.currentTime = 2.0;
+                  }}>t = 2s (Dispenser Retracts)</button>
+                  <button type="button" className="chip-btn" onClick={() => {
+                    const vid = document.getElementById("flex-flight-video") as HTMLVideoElement;
+                    if (vid) vid.currentTime = 9.0;
+                  }}>t = 9s (Spark Ignition)</button>
+                  <button type="button" className="chip-btn" onClick={() => {
+                    const vid = document.getElementById("flex-flight-video") as HTMLVideoElement;
+                    if (vid) vid.currentTime = 12.0;
+                  }}>t = 12s (Spherical Flame)</button>
+                  <button type="button" className="chip-btn" onClick={() => {
+                    const vid = document.getElementById("flex-flight-video") as HTMLVideoElement;
+                    if (vid) vid.currentTime = 22.0;
+                  }}>t = 22s (Extinction)</button>
+                </div>
+
+                <div className="flex-uploader-area" style={{ marginBottom: "14px" }}>
+                  <span style={{ fontSize: "12px", color: "var(--ink-2)", display: "block", marginBottom: "4px" }}>
+                    Or test with a custom PSI-69 flight video:
                   </span>
                   <input
                     type="file"
@@ -895,16 +967,6 @@ export default function FireLabPage() {
                     className="flex-file-input"
                   />
                 </div>
-
-                {flexUploadedUrl ? (
-                  <div style={{ borderRadius: "10px", overflow: "hidden", border: "1px solid #1e3a5f", background: "#000" }}>
-                    <video controls src={flexUploadedUrl} style={{ width: "100%", maxHeight: "280px", display: "block" }} />
-                  </div>
-                ) : (
-                  <div className="flex-warning-box">
-                    <strong>Notice:</strong> No external NASA video uploaded yet. The animation on the left illustrates verified analytical droplet gasification. You can also view the authentic BASS-II flight video in the Solid Spread tab!
-                  </div>
-                )}
 
                 {/* Milestone observations */}
                 <div style={{ borderTop: "1px solid #1e3a5f", paddingTop: "16px", marginTop: "20px" }}>
@@ -941,8 +1003,9 @@ export default function FireLabPage() {
                     id="flex-run-preset"
                     className="firelab-select"
                     style={{ width: "100%" }}
-                    value={selectedFlexRun.runId}
+                    value={activeFlexRunId}
                     onChange={(e) => {
+                      if (e.target.value === "custom") return;
                       const run = DOCUMENTED_FLEX_RUNS.find((r) => r.runId === e.target.value);
                       if (run) {
                         setSelectedFlexRun(run);
@@ -950,10 +1013,11 @@ export default function FireLabPage() {
                         setFlexOxygen(run.oxygenPct);
                         setFlexDiameter(run.initialDiameterMm);
                         setFlexPressure(run.pressureAtm);
-                        resetFlexSimulation();
+                        resetFlexSimulation(true);
                       }
                     }}
                   >
+                    <option value="custom">⚡ Custom Parameters (User Configured)</option>
                     {DOCUMENTED_FLEX_RUNS.map((r) => (
                       <option key={r.runId} value={r.runId}>
                         {r.runId}: {r.fuel}, {r.oxygenPct}% O₂, {r.initialDiameterMm} mm D₀, {r.pressureAtm} atm ({r.extinctionType})
@@ -974,10 +1038,7 @@ export default function FireLabPage() {
                       className="firelab-select"
                       style={{ width: "100%" }}
                       value={flexFuel}
-                      onChange={(e) => {
-                        setFlexFuel(e.target.value as "n-Heptane" | "Methanol");
-                        resetFlexSimulation();
-                      }}
+                      onChange={(e) => setFlexFuel(e.target.value as "n-Heptane" | "Methanol")}
                     >
                       <option value="n-Heptane">n-Heptane (Standard Alkane / Sooting)</option>
                       <option value="Methanol">Methanol (Oxygenated Alcohol / Clean)</option>
@@ -987,81 +1048,115 @@ export default function FireLabPage() {
                     </small>
                   </div>
 
-                  {/* 2. Oxygen Slider */}
+                  {/* 2. Oxygen Slider & Direct Number Input */}
                   <div className="control-item">
                     <div className="control-label-row">
-                      <label htmlFor="flex-oxy-slider">Oxygen (O₂)</label>
+                      <label htmlFor="flex-oxy-slider">Oxygen Concentration (O₂)</label>
                       <span className="control-val">{flexOxygen.toFixed(1)}%</span>
                     </div>
-                    <input
-                      id="flex-oxy-slider"
-                      type="range"
-                      min="15"
-                      max="35"
-                      step="1"
-                      value={flexOxygen}
-                      onChange={(e) => {
-                        setFlexOxygen(Number(e.target.value));
-                        resetFlexSimulation();
-                      }}
-                      className="firelab-range"
-                    />
-                    <div className="range-ticks">
-                      <span>15% (Limit)</span>
-                      <span>21% (Air)</span>
-                      <span>30% (Spacecraft)</span>
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                      <input
+                        id="flex-oxy-slider"
+                        type="range"
+                        min="15"
+                        max="35"
+                        step="0.5"
+                        value={flexOxygen}
+                        onChange={(e) => setFlexOxygen(Number(e.target.value))}
+                        className="firelab-range"
+                        style={{ flex: 1 }}
+                      />
+                      <input
+                        id="flex-oxy-num"
+                        aria-label="Oxygen percentage input"
+                        type="number"
+                        min="15"
+                        max="35"
+                        step="0.1"
+                        value={flexOxygen}
+                        onChange={(e) => setFlexOxygen(Math.max(15, Math.min(35, Number(e.target.value))))}
+                        style={{ width: "75px", background: "#060e1c", border: "1px solid #1e3a5f", color: "var(--accent)", padding: "4px 8px", borderRadius: "6px", fontFamily: "var(--f-mono)", fontSize: "13px" }}
+                      />
+                    </div>
+                    <div style={{ display: "flex", gap: "6px", marginTop: "6px", flexWrap: "wrap" }}>
+                      <button type="button" className="firelab-btn ghost-btn small" onClick={() => setFlexOxygen(15.0)}>15% (Limit)</button>
+                      <button type="button" className="firelab-btn ghost-btn small" onClick={() => setFlexOxygen(21.0)}>21% (Air)</button>
+                      <button type="button" className="firelab-btn ghost-btn small" onClick={() => setFlexOxygen(30.0)}>30% (Spacecraft)</button>
                     </div>
                   </div>
 
-                  {/* 3. Initial Diameter Slider */}
+                  {/* 3. Initial Diameter Slider & Direct Number Input */}
                   <div className="control-item">
                     <div className="control-label-row">
                       <label htmlFor="flex-init-d-slider">Initial Diameter (D₀)</label>
                       <span className="control-val">{flexDiameter.toFixed(1)} mm</span>
                     </div>
-                    <input
-                      id="flex-init-d-slider"
-                      type="range"
-                      min="2.0"
-                      max="5.0"
-                      step="0.5"
-                      value={flexDiameter}
-                      onChange={(e) => {
-                        setFlexDiameter(Number(e.target.value));
-                        resetFlexSimulation();
-                      }}
-                      className="firelab-range"
-                    />
-                    <div className="range-ticks">
-                      <span>2.0 mm</span>
-                      <span>3.5 mm</span>
-                      <span>5.0 mm</span>
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                      <input
+                        id="flex-init-d-slider"
+                        type="range"
+                        min="2.0"
+                        max="5.0"
+                        step="0.1"
+                        value={flexDiameter}
+                        onChange={(e) => setFlexDiameter(Number(e.target.value))}
+                        className="firelab-range"
+                        style={{ flex: 1 }}
+                      />
+                      <input
+                        id="flex-init-d-num"
+                        aria-label="Initial diameter input in mm"
+                        type="number"
+                        min="2.0"
+                        max="5.0"
+                        step="0.1"
+                        value={flexDiameter}
+                        onChange={(e) => setFlexDiameter(Math.max(2.0, Math.min(5.0, Number(e.target.value))))}
+                        style={{ width: "75px", background: "#060e1c", border: "1px solid #1e3a5f", color: "var(--accent)", padding: "4px 8px", borderRadius: "6px", fontFamily: "var(--f-mono)", fontSize: "13px" }}
+                      />
+                    </div>
+                    <div style={{ display: "flex", gap: "6px", marginTop: "6px", flexWrap: "wrap" }}>
+                      <button type="button" className="firelab-btn ghost-btn small" onClick={() => setFlexDiameter(2.5)}>2.5 mm</button>
+                      <button type="button" className="firelab-btn ghost-btn small" onClick={() => setFlexDiameter(3.0)}>3.0 mm</button>
+                      <button type="button" className="firelab-btn ghost-btn small" onClick={() => setFlexDiameter(3.5)}>3.5 mm</button>
+                      <button type="button" className="firelab-btn ghost-btn small" onClick={() => setFlexDiameter(4.0)}>4.0 mm</button>
                     </div>
                   </div>
 
-                  {/* 4. Ambient Pressure Slider */}
+                  {/* 4. Ambient Pressure Slider & Direct Number Input */}
                   <div className="control-item">
                     <div className="control-label-row">
                       <label htmlFor="flex-press-slider">Ambient Pressure</label>
                       <span className="control-val">{flexPressure.toFixed(2)} atm</span>
                     </div>
-                    <input
-                      id="flex-press-slider"
-                      type="range"
-                      min="0.5"
-                      max="1.5"
-                      step="0.05"
-                      value={flexPressure}
-                      onChange={(e) => {
-                        setFlexPressure(Number(e.target.value));
-                        resetFlexSimulation();
-                      }}
-                      className="firelab-range"
-                    />
-                    <div className="range-ticks">
-                      <span>0.5 atm (Lunar)</span>
-                      <span>1.0 atm (Std)</span>
-                      <span>1.5 atm</span>
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                      <input
+                        id="flex-press-slider"
+                        type="range"
+                        min="0.5"
+                        max="1.5"
+                        step="0.05"
+                        value={flexPressure}
+                        onChange={(e) => setFlexPressure(Number(e.target.value))}
+                        className="firelab-range"
+                        style={{ flex: 1 }}
+                      />
+                      <input
+                        id="flex-press-num"
+                        aria-label="Ambient pressure input in atm"
+                        type="number"
+                        min="0.5"
+                        max="1.5"
+                        step="0.01"
+                        value={flexPressure}
+                        onChange={(e) => setFlexPressure(Math.max(0.5, Math.min(1.5, Number(e.target.value))))}
+                        style={{ width: "75px", background: "#060e1c", border: "1px solid #1e3a5f", color: "var(--accent)", padding: "4px 8px", borderRadius: "6px", fontFamily: "var(--f-mono)", fontSize: "13px" }}
+                      />
+                    </div>
+                    <div style={{ display: "flex", gap: "6px", marginTop: "6px", flexWrap: "wrap" }}>
+                      <button type="button" className="firelab-btn ghost-btn small" onClick={() => setFlexPressure(0.5)}>0.5 atm (Lunar)</button>
+                      <button type="button" className="firelab-btn ghost-btn small" onClick={() => setFlexPressure(1.0)}>1.0 atm (Std)</button>
+                      <button type="button" className="firelab-btn ghost-btn small" onClick={() => setFlexPressure(1.5)}>1.5 atm</button>
                     </div>
                   </div>
                 </div>
@@ -1070,11 +1165,11 @@ export default function FireLabPage() {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", background: "#060e1c", padding: "16px", borderRadius: "12px", border: "1px solid #1e3a5f" }}>
                   <div>
                     <div style={{ fontSize: "12px", color: "var(--ash)", marginBottom: "8px", fontFamily: "var(--f-mono)" }}>
-                      Reference Baseline: 21% O₂ at t = 40 s
+                      Reference Baseline: 21% O₂, 1.0 atm at t = 40 s
                     </div>
                     <div className="flex-stage" style={{ aspectRatio: "1", margin: 0 }}>
                       {(() => {
-                        const dRef = calculateDropletDiameter(40, flexDiameter, 21, flexFuel);
+                        const dRef = calculateDropletDiameter(40, flexDiameter, 21, flexFuel, 1.0);
                         const rRef = Math.max(0, Math.min(1, dRef / flexDiameter));
                         return (
                           <svg viewBox="0 0 300 300">
@@ -1092,11 +1187,11 @@ export default function FireLabPage() {
 
                   <div>
                     <div style={{ fontSize: "12px", color: "var(--accent)", marginBottom: "8px", fontFamily: "var(--f-mono)" }}>
-                      Selected: {flexOxygen}% O₂, {flexPressure} atm at t = 40 s
+                      Selected: {flexOxygen}% O₂, {flexPressure.toFixed(2)} atm at t = 40 s
                     </div>
                     <div className="flex-stage" style={{ aspectRatio: "1", margin: 0 }}>
                       {(() => {
-                        const dSel = calculateDropletDiameter(40, flexDiameter, flexOxygen, flexFuel);
+                        const dSel = calculateDropletDiameter(40, flexDiameter, flexOxygen, flexFuel, flexPressure);
                         const rSel = Math.max(0, Math.min(1, dSel / flexDiameter));
                         const hasF = flexOxygen >= 17;
                         return (
@@ -1175,397 +1270,398 @@ export default function FireLabPage() {
             </div>
           )}
 
-          {/* ================= STAGE 4: MEASURE AND PROCESS DATA (HONORS USER CAPTURES) ================= */}
+          {/* ================= STAGE 4: MEASURE THE DROPLET (MATCHING WHATSAPP VIDEO DEMO) ================= */}
           {flexStep === 3 && (
-            <div className="comparison-columns" style={{ display: "grid", gridTemplateColumns: "1.25fr 1fr", gap: "24px" }}>
-              <div className="firelab-card">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
-                  <h3 style={{ fontSize: "20px", color: "#ffffff", margin: 0 }}>
-                    Measure and Process Droplet Data
+            <div>
+              {/* Stage View Toggle Bar */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+                <div>
+                  <h3 style={{ fontSize: "22px", color: "#ffffff", margin: "0 0 4px 0" }}>
+                    Stage 4 · Measure the Droplet
                   </h3>
-                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      className={`firelab-btn ghost-btn small ${flexPlotMode === "d2" ? "active" : ""}`}
-                      onClick={() => setFlexPlotMode("d2")}
-                    >
-                      Plot D² vs Time
-                    </button>
-                    <button
-                      type="button"
-                      className={`firelab-btn ghost-btn small ${flexPlotMode === "d" ? "active" : ""}`}
-                      onClick={() => setFlexPlotMode("d")}
-                    >
-                      Plot D vs Time
-                    </button>
-                    {(flexFrameA || flexFrameB || flexCapturedPoints.length > 0) && (
-                      <button
-                        type="button"
-                        className="firelab-btn ghost-btn small"
-                        onClick={() => resetFlexSimulation(true)}
-                        style={{ color: "var(--ash)" }}
-                      >
-                        ↺ Start New Run (Clear)
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                <p style={{ color: "var(--ash)", fontSize: "14px", lineHeight: 1.5, margin: "0 0 16px 0" }}>
-                  This workbench <strong>honors your live captures</strong>. Capture observation points directly or scrub the slider below to calculate the apparent burning rate constant <strong>K</strong>.
-                </p>
-
-                {flexCapturedPoints.length === 0 && (
-                  <div className="flex-help-box" style={{ background: "rgba(56, 189, 248, 0.12)", borderColor: "#38bdf8", color: "#bae6fd", marginBottom: "16px" }}>
-                    ✨ <strong>New Experiment Started ({flexFuel}, {flexOxygen}% O₂, D₀ = {flexDiameter}mm):</strong> Previous captures were cleared for this fresh test. Scrub the timeline below to capture Frames A &amp; B, or click Auto-Sample!
-                    <div style={{ marginTop: "10px" }}>
-                      <button type="button" className="firelab-btn primary-btn small" onClick={autoCaptureFlexDefaults}>
-                        ⚡ Auto-Sample Benchmark Frames (10s &amp; 60s)
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Quick Frame Capture in Stage 4 */}
-                <div style={{ background: "#060e1c", padding: "14px 18px", borderRadius: "10px", border: "1px solid #1e3a5f", marginBottom: "18px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                    <span style={{ fontSize: "13px", color: "#ffffff", fontWeight: 600 }}>Scrub &amp; Capture Observation Points:</span>
-                    <span style={{ fontSize: "13px", color: "var(--accent)", fontFamily: "var(--f-mono)" }}>
-                      t = {flexTime}s (D = {currentFlexD.toFixed(2)} mm)
-                    </span>
-                  </div>
-                  <input
-                    aria-label="Timeline scrubber for capture"
-                    type="range"
-                    min="0"
-                    max="90"
-                    step="1"
-                    value={flexTime}
-                    onChange={(e) => setFlexTime(Number(e.target.value))}
-                    className="firelab-range"
-                    style={{ marginBottom: "10px" }}
-                  />
-                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      className="firelab-btn secondary-btn"
-                      onClick={() => captureCurrentFlexPoint("A")}
-                      style={{ flex: 1, borderColor: "#ffbd70", color: "#ffbd70" }}
-                    >
-                      Set Frame A ({flexTime}s)
-                    </button>
-                    <button
-                      type="button"
-                      className="firelab-btn secondary-btn"
-                      onClick={() => captureCurrentFlexPoint("B")}
-                      style={{ flex: 1, borderColor: "#f97c9c", color: "#f97c9c" }}
-                    >
-                      Set Frame B ({flexTime}s)
-                    </button>
-                    <button
-                      type="button"
-                      className="firelab-btn secondary-btn"
-                      onClick={() => captureCurrentFlexPoint()}
-                      style={{ borderColor: "#38bdf8", color: "#38bdf8" }}
-                    >
-                      + Add to Table
-                    </button>
-                    <button
-                      type="button"
-                      className="firelab-btn secondary-btn"
-                      onClick={autoCaptureFlexDefaults}
-                      style={{ borderColor: "#a78bfa", color: "#a78bfa" }}
-                    >
-                      ⚡ Auto-Sample
-                    </button>
-                  </div>
-                </div>
-
-                {/* Frame Selection Dropdowns from Captured Points */}
-                {flexCapturedPoints.length >= 2 && (
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "14px" }}>
-                    <div className="point-select-group">
-                      <label htmlFor="flex-fa-select">Frame A Point (t₁):</label>
-                      <select
-                        id="flex-fa-select"
-                        value={flexFrameA?.t ?? flexCapturedPoints[0]?.t}
-                        onChange={(e) => {
-                          const val = Number(e.target.value);
-                          const pt = flexCapturedPoints.find((p) => Math.abs(p.t - val) < 0.1);
-                          if (pt) setFlexFrameA({ t: pt.t, d: pt.d, d2: pt.d2 });
-                        }}
-                        className="firelab-select"
-                      >
-                        {flexCapturedPoints.map((p) => (
-                          <option key={p.id} value={p.t}>
-                            t = {p.t}s (D = {p.d.toFixed(2)}mm, D² = {p.d2.toFixed(2)}mm²) [{p.source}]
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="point-select-group">
-                      <label htmlFor="flex-fb-select">Frame B Point (t₂):</label>
-                      <select
-                        id="flex-fb-select"
-                        value={flexFrameB?.t ?? flexCapturedPoints[flexCapturedPoints.length - 1]?.t}
-                        onChange={(e) => {
-                          const val = Number(e.target.value);
-                          const pt = flexCapturedPoints.find((p) => Math.abs(p.t - val) < 0.1);
-                          if (pt) setFlexFrameB({ t: pt.t, d: pt.d, d2: pt.d2 });
-                        }}
-                        className="firelab-select"
-                      >
-                        {flexCapturedPoints.map((p) => (
-                          <option key={p.id} value={p.t}>
-                            t = {p.t}s (D = {p.d.toFixed(2)}mm, D² = {p.d2.toFixed(2)}mm²) [{p.source}]
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                )}
-
-                {/* Metric Summary Cards Honoring User's Captured Frames */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "18px" }}>
-                  <div className="rate-stat-card">
-                    <span className="rate-stat-label">Frame A (t₁ = {flexFrameA?.t ?? 10} s)</span>
-                    <span className="rate-stat-val neon">{flexFrameA?.d.toFixed(2) ?? "—"} mm</span>
-                    <span className="rate-stat-sub">D₁² = {flexFrameA?.d2.toFixed(2) ?? "—"} mm²</span>
-                  </div>
-                  <div className="rate-stat-card">
-                    <span className="rate-stat-label">Frame B (t₂ = {flexFrameB?.t ?? 60} s)</span>
-                    <span className="rate-stat-val neon">{flexFrameB?.d.toFixed(2) ?? "—"} mm</span>
-                    <span className="rate-stat-sub">D₂² = {flexFrameB?.d2.toFixed(2) ?? "—"} mm²</span>
-                  </div>
-                </div>
-
-                {/* SVG Graph Showing Analytical Curve + User's Captured Nodes */}
-                <div className="flex-plot-box">
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", color: "var(--ash)", fontFamily: "var(--f-mono)", marginBottom: "8px" }}>
-                    <span>{flexPlotMode === "d2" ? "D² (mm²) vs. Time (s)" : "D (mm) vs. Time (s)"}</span>
-                    <span style={{ color: "var(--accent)" }}>
-                      User K = {userMeasuredFlexK ? `${userMeasuredFlexK.toFixed(3)} mm²/s` : "—"}
-                    </span>
-                  </div>
-
-                  <svg viewBox="0 0 620 250" style={{ width: "100%", height: "220px" }}>
-                    {/* Axes */}
-                    <line x1="55" y1="20" x2="55" y2="210" stroke="#334155" strokeWidth="1.5" />
-                    <line x1="55" y1="210" x2="590" y2="210" stroke="#334155" strokeWidth="1.5" />
-
-                    {/* Y-axis Ticks */}
-                    <text x="48" y="25" fill="#94a3b8" fontSize="11" textAnchor="end" fontFamily="var(--f-mono)">
-                      {flexPlotMode === "d2" ? (flexDiameter * flexDiameter).toFixed(0) : flexDiameter.toFixed(1)}
-                    </text>
-                    <text x="48" y="115" fill="#94a3b8" fontSize="11" textAnchor="end" fontFamily="var(--f-mono)">
-                      {flexPlotMode === "d2" ? ((flexDiameter * flexDiameter) / 2).toFixed(1) : (flexDiameter / 2).toFixed(1)}
-                    </text>
-                    <text x="48" y="210" fill="#94a3b8" fontSize="11" textAnchor="end" fontFamily="var(--f-mono)">0</text>
-
-                    {/* X-axis Ticks */}
-                    <text x="55" y="230" fill="#94a3b8" fontSize="11" textAnchor="middle" fontFamily="var(--f-mono)">0s</text>
-                    <text x="320" y="230" fill="#94a3b8" fontSize="11" textAnchor="middle" fontFamily="var(--f-mono)">45s</text>
-                    <text x="590" y="230" fill="#94a3b8" fontSize="11" textAnchor="middle" fontFamily="var(--f-mono)">90s</text>
-
-                    {/* Analytical Curve */}
-                    {(() => {
-                      const maxVal = flexPlotMode === "d2" ? flexDiameter * flexDiameter : flexDiameter;
-                      const pathCoords: string[] = [];
-                      for (let s = 0; s <= 90; s += 2) {
-                        const dVal = calculateDropletDiameter(s, flexDiameter, flexOxygen, flexFuel);
-                        const val = flexPlotMode === "d2" ? dVal * dVal : dVal;
-                        const px = 55 + (s / 90) * 535;
-                        const py = 210 - (val / maxVal) * 185;
-                        pathCoords.push(`${s === 0 ? "M" : "L"} ${px} ${py}`);
-                      }
-                      return (
-                        <path
-                          d={pathCoords.join(" ")}
-                          fill="none"
-                          stroke="rgba(56, 189, 248, 0.45)"
-                          strokeWidth="2.5"
-                          strokeDasharray="4 2"
-                        />
-                      );
-                    })()}
-
-                    {/* User Secant Line between Frame A and Frame B */}
-                    {flexFrameA && flexFrameB && (() => {
-                      const maxVal = flexPlotMode === "d2" ? flexDiameter * flexDiameter : flexDiameter;
-                      const valA = flexPlotMode === "d2" ? flexFrameA.d2 : flexFrameA.d;
-                      const valB = flexPlotMode === "d2" ? flexFrameB.d2 : flexFrameB.d;
-                      const pxA = 55 + (flexFrameA.t / 90) * 535;
-                      const pyA = 210 - (valA / maxVal) * 185;
-                      const pxB = 55 + (flexFrameB.t / 90) * 535;
-                      const pyB = 210 - (valB / maxVal) * 185;
-                      return (
-                        <line
-                          x1={pxA}
-                          y1={pyA}
-                          x2={pxB}
-                          y2={pyB}
-                          stroke="#eafe07"
-                          strokeWidth="3"
-                        />
-                      );
-                    })()}
-
-                    {/* User's Captured Data Nodes */}
-                    {flexCapturedPoints.map((pt) => {
-                      const maxVal = flexPlotMode === "d2" ? flexDiameter * flexDiameter : flexDiameter;
-                      const val = flexPlotMode === "d2" ? pt.d2 : pt.d;
-                      const px = 55 + (pt.t / 90) * 535;
-                      const py = 210 - (val / maxVal) * 185;
-                      const isA = flexFrameA && Math.abs(flexFrameA.t - pt.t) < 0.1;
-                      const isB = flexFrameB && Math.abs(flexFrameB.t - pt.t) < 0.1;
-
-                      return (
-                        <g key={pt.id}>
-                          <circle
-                            cx={px}
-                            cy={py}
-                            r={isA || isB ? 7 : 4.5}
-                            fill={isA ? "#ffbd70" : isB ? "#f97c9c" : "#38bdf8"}
-                            stroke="#ffffff"
-                            strokeWidth="2"
-                          />
-                          {(isA || isB) && (
-                            <text
-                              x={px}
-                              y={py - 12}
-                              fill={isA ? "#ffbd70" : "#f97c9c"}
-                              fontSize="11"
-                              fontWeight="700"
-                              textAnchor="middle"
-                              fontFamily="var(--f-mono)"
-                            >
-                              {isA ? "Frame A" : "Frame B"} ({pt.t}s)
-                            </text>
-                          )}
-                        </g>
-                      );
-                    })}
-                  </svg>
-                </div>
-
-                {/* Calculation & Export Bar */}
-                <div className="graph-footer">
-                  <span className="formula-display">
-                    Your Secant Fit:{" "}
-                    <code>
-                      {(() => {
-                        if (!flexFrameA || !flexFrameB || Math.abs(flexFrameB.t - flexFrameA.t) < 0.05) {
-                          return "Requires selecting two distinct frames (Frame A & B)";
-                        }
-                        const p1 = flexFrameA.t < flexFrameB.t ? flexFrameA : flexFrameB;
-                        const p2 = flexFrameA.t < flexFrameB.t ? flexFrameB : flexFrameA;
-                        const kVal = Math.abs(p1.d2 - p2.d2) / (p2.t - p1.t);
-                        return `K = (${p1.d2.toFixed(2)} − ${p2.d2.toFixed(2)}) / (${p2.t} − ${p1.t}) = ${kVal.toFixed(3)} mm²/s`;
-                      })()}
-                    </code>
+                  <span style={{ fontSize: "13px", color: "var(--ash)" }}>
+                    Inspect the classical d²-law regression model or switch to live custom video captures.
                   </span>
-                  <div style={{ display: "flex", gap: "10px" }}>
-                    <button
-                      type="button"
-                      className="firelab-btn ghost-btn small"
-                      onClick={() => setShowRawTable(!showRawTable)}
-                    >
-                      {showRawTable ? "Hide Data Table" : "View Captured Data Table"}
-                    </button>
-                    <button
-                      type="button"
-                      className="firelab-btn primary-btn small"
-                      onClick={handleExportFlexCsv}
-                    >
-                      📥 Export CSV
-                    </button>
-                  </div>
                 </div>
-
-                {/* Raw Captured Data Table */}
-                {showRawTable && (
-                  <div className="raw-data-table-wrap" style={{ marginTop: "16px" }}>
-                    <table className="raw-data-table">
-                      <thead>
-                        <tr>
-                          <th>Timestamp (s)</th>
-                          <th>Diameter D (mm)</th>
-                          <th>D² (mm²)</th>
-                          <th>Data Provenance</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {flexCapturedPoints.map((p) => (
-                          <tr key={p.id} className={flexFrameA?.t === p.t || flexFrameB?.t === p.t ? "highlight-row" : ""}>
-                            <td>{p.t.toFixed(1)}</td>
-                            <td>{p.d.toFixed(3)}</td>
-                            <td>{p.d2.toFixed(3)}</td>
-                            <td>
-                              <span className="sim-hud-pill highlight">{p.source}</span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    className={`firelab-btn small ${flexMeasureView === "illustrative" ? "primary-btn" : "ghost-btn"}`}
+                    onClick={() => setFlexMeasureView("illustrative")}
+                  >
+                    📐 Illustrative Model (Video Benchmark)
+                  </button>
+                  <button
+                    type="button"
+                    className={`firelab-btn small ${flexMeasureView === "custom" ? "primary-btn" : "ghost-btn"}`}
+                    onClick={() => setFlexMeasureView("custom")}
+                  >
+                    📸 Live Frame Captures &amp; CSV Workbench
+                  </button>
+                </div>
               </div>
 
-              {/* Physical Context, Equations, & Comparison with NASA Published Data */}
-              <div className="firelab-card">
-                <h3 style={{ fontSize: "20px", color: "#ffffff", margin: "0 0 8px 0" }}>
-                  What Does D² Tell Us?
-                </h3>
-                <p style={{ color: "var(--ash)", fontSize: "14px", lineHeight: 1.5, margin: "0 0 16px 0" }}>
-                  For spherical microgravity droplet gasification, the square of the diameter decreases approximately linearly with time:
-                </p>
-
-                <div className="flex-help-box" style={{ fontSize: "20px", textAlign: "center", fontFamily: "var(--f-mono)" }}>
-                  <strong>D²(t) ≈ D₀² − K · t</strong>
-                </div>
-
-                {/* User vs NASA Published Comparison */}
-                <div style={{ background: "#060e1c", padding: "16px", borderRadius: "12px", border: "1px solid #1e3a5f", margin: "16px 0" }}>
-                  <h4 style={{ margin: "0 0 10px 0", fontSize: "14px", color: "#ffffff" }}>
-                    Measurement Comparison with NASA Published Benchmark:
-                  </h4>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", fontSize: "13px" }}>
-                    <div>
-                      <span style={{ color: "var(--ash)" }}>Your Extracted K:</span>
-                      <strong style={{ display: "block", color: "var(--accent)", fontSize: "16px" }}>
-                        {userMeasuredFlexK ? `${userMeasuredFlexK.toFixed(3)} mm²/s` : "—"}
-                      </strong>
-                    </div>
-                    <div>
-                      <span style={{ color: "var(--ash)" }}>NASA PSI-69 Value:</span>
-                      <strong style={{ display: "block", color: "#38bdf8", fontSize: "16px" }}>
-                        {nasaReferenceK.toFixed(3)} mm²/s
-                      </strong>
-                    </div>
-                  </div>
-                  {kDeviationPct !== null && (
-                    <div style={{ marginTop: "10px", fontSize: "12px", color: kDeviationPct < 5 ? "#a7f3d0" : "#fde047" }}>
-                      Deviation: {kDeviationPct.toFixed(1)}% ({kDeviationPct < 5 ? "Excellent agreement with published literature" : "Acceptable manual extraction variance"}).
-                    </div>
-                  )}
-                </div>
-
-                {explanationMode === "advanced" ? (
-                  <div style={{ fontSize: "13px", color: "var(--ash)", lineHeight: 1.6 }}>
-                    <strong style={{ color: "#ffffff" }}>Governing Transport Theory:</strong>
-                    <p style={{ margin: "4px 0" }}>
-                      From Spalding &amp; Godsave quasi-steady theory:
-                      <code style={{ display: "block", background: "rgba(0,0,0,0.4)", padding: "6px 8px", borderRadius: "4px", margin: "6px 0", color: "#38bdf8" }}>
-                        K = (8 · k_g / (ρ_l · C_p,g)) · ln(1 + B)
-                      </code>
-                      where B is the Spalding mass transfer number: <code>B = (Y_O2,∞ · ΔH_c / s + C_p,g · (T_∞ − T_s)) / L_v</code>.
+              {flexMeasureView === "illustrative" ? (
+                /* ILLUSTRATIVE MODEL: EXACT MATCH FOR WHATSAPP VIDEO 3.43.49 PM */
+                <div className="comparison-columns" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "24px" }}>
+                  {/* Left Column: Measurements & Graph */}
+                  <div className="firelab-card">
+                    <h3 style={{ fontSize: "20px", color: "#ffffff", margin: "0 0 8px 0" }}>
+                      Measure how fast the droplet shrinks
+                    </h3>
+                    <p style={{ color: "var(--ash)", fontSize: "14px", lineHeight: 1.5, margin: "0 0 20px 0" }}>
+                      We record the droplet diameter at two times. A common first analysis is to examine diameter squared, D², versus time.
                     </p>
+
+                    {/* Initial droplet diameter slider & number input */}
+                    <div style={{ background: "#060e1c", padding: "16px 18px", borderRadius: "10px", border: "1px solid #1e3a5f", marginBottom: "20px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                        <label htmlFor="stage4-init-d" style={{ fontSize: "14px", color: "#ffffff", fontWeight: 600 }}>
+                          Initial droplet diameter (illustrative):
+                        </label>
+                        <span style={{ fontSize: "16px", fontWeight: 700, color: "var(--accent)", fontFamily: "var(--f-mono)" }}>
+                          {flexDiameter.toFixed(1)} mm
+                        </span>
+                      </div>
+                      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                        <input
+                          id="stage4-init-d"
+                          type="range"
+                          min="2.0"
+                          max="5.0"
+                          step="0.5"
+                          value={flexDiameter}
+                          onChange={(e) => setFlexDiameter(Number(e.target.value))}
+                          className="firelab-range"
+                          style={{ flex: 1 }}
+                        />
+                        <input
+                          aria-label="Direct droplet diameter input"
+                          type="number"
+                          min="2.0"
+                          max="5.0"
+                          step="0.1"
+                          value={flexDiameter}
+                          onChange={(e) => setFlexDiameter(Math.max(2.0, Math.min(5.0, Number(e.target.value))))}
+                          style={{ width: "75px", background: "#0b172a", border: "1px solid #1e3a5f", color: "var(--accent)", padding: "4px 8px", borderRadius: "6px", fontFamily: "var(--f-mono)", fontSize: "13px" }}
+                        />
+                      </div>
+                      <div className="range-ticks">
+                        <span>2.0 mm</span>
+                        <span>2.5 mm</span>
+                        <span>3.0 mm</span>
+                        <span>3.5 mm</span>
+                        <span>4.0 mm</span>
+                        <span>4.5 mm</span>
+                        <span>5.0 mm</span>
+                      </div>
+                    </div>
+
+                    {/* Two Metric Cards Side-by-Side: At 10s and At 60s */}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "20px" }}>
+                      <div style={{ background: "#060e1c", padding: "18px", borderRadius: "10px", border: "1px solid #1e3a5f" }}>
+                        <div style={{ fontSize: "12px", color: "var(--ash)", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                          At 10 seconds
+                        </div>
+                        <div style={{ fontSize: "32px", fontWeight: 800, color: "#ffffff", fontFamily: "var(--f-mono)" }}>
+                          {d10Illustrative.toFixed(2)} mm
+                        </div>
+                      </div>
+                      <div style={{ background: "#060e1c", padding: "18px", borderRadius: "10px", border: "1px solid #1e3a5f" }}>
+                        <div style={{ fontSize: "12px", color: "var(--ash)", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                          At 60 seconds
+                        </div>
+                        <div style={{ fontSize: "32px", fontWeight: 800, color: "#ffffff", fontFamily: "var(--f-mono)" }}>
+                          {d60Illustrative.toFixed(2)} mm
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SVG Cartesian Graph: D² vs Time */}
+                    <div style={{ background: "#060e1c", padding: "16px 18px", borderRadius: "10px", border: "1px solid #1e3a5f" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", color: "var(--ash)", fontFamily: "var(--f-mono)", marginBottom: "8px" }}>
+                        <span>D² (mm²)</span>
+                        <span>Time (s)</span>
+                      </div>
+                      <svg viewBox="0 0 540 200" style={{ width: "100%", height: "180px", display: "block" }}>
+                        {/* Axes */}
+                        <line x1="45" y1="20" x2="45" y2="165" stroke="#334155" strokeWidth="1.5" />
+                        <line x1="45" y1="165" x2="510" y2="165" stroke="#334155" strokeWidth="1.5" />
+
+                        {/* Y-axis Ticks */}
+                        <text x="38" y="25" fill="#94a3b8" fontSize="11" textAnchor="end" fontFamily="var(--f-mono)">
+                          {(flexDiameter * flexDiameter).toFixed(1)}
+                        </text>
+                        <text x="38" y="165" fill="#94a3b8" fontSize="11" textAnchor="end" fontFamily="var(--f-mono)">0</text>
+
+                        {/* X-axis Ticks */}
+                        <text x="45" y="185" fill="#94a3b8" fontSize="11" textAnchor="middle" fontFamily="var(--f-mono)">0s</text>
+                        <text x="111" y="185" fill="#eafe07" fontSize="11" textAnchor="middle" fontFamily="var(--f-mono)">10s</text>
+                        <text x="442" y="185" fill="#eafe07" fontSize="11" textAnchor="middle" fontFamily="var(--f-mono)">60s</text>
+                        <text x="510" y="185" fill="#94a3b8" fontSize="11" textAnchor="middle" fontFamily="var(--f-mono)">70s</text>
+
+                        {/* Decreasing D² line */}
+                        {(() => {
+                          const maxD2 = Math.max(16, flexDiameter * flexDiameter);
+                          const y0 = 165 - ((flexDiameter * flexDiameter) / maxD2) * 140;
+                          const y10 = 165 - ((d10Illustrative * d10Illustrative) / maxD2) * 140;
+                          const y60 = 165 - ((d60Illustrative * d60Illustrative) / maxD2) * 140;
+                          const x10 = 45 + (10 / 70) * 465;
+                          const x60 = 45 + (60 / 70) * 465;
+                          return (
+                            <>
+                              <line x1="45" y1={y0} x2="510" y2={y60} stroke="#38bdf8" strokeWidth="3" />
+                              {/* 10s node */}
+                              <circle cx={x10} cy={y10} r="6" fill="#eafe07" stroke="#ffffff" strokeWidth="2" />
+                              <text x={x10} y={y10 - 10} fill="#eafe07" fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="var(--f-mono)">
+                                D² = {(d10Illustrative * d10Illustrative).toFixed(2)}
+                              </text>
+                              {/* 60s node */}
+                              <circle cx={x60} cy={y60} r="6" fill="#eafe07" stroke="#ffffff" strokeWidth="2" />
+                              <text x={x60} y={y60 - 10} fill="#eafe07" fontSize="11" fontWeight="700" textAnchor="middle" fontFamily="var(--f-mono)">
+                                D² = {(d60Illustrative * d60Illustrative).toFixed(2)}
+                              </text>
+                            </>
+                          );
+                        })()}
+                      </svg>
+                    </div>
+
+                    {/* Subtitle Card: Estimated K */}
+                    <div style={{ marginTop: "14px", padding: "12px 16px", background: "rgba(56, 189, 248, 0.08)", borderRadius: "8px", border: "1px solid rgba(56, 189, 248, 0.25)", fontSize: "14px", color: "#bae6fd" }}>
+                      Estimated K = <strong>{illustrativeFlexK.toFixed(3)} mm²/s</strong> in this illustrative example. It is the decrease in D² divided by elapsed time.
+                    </div>
                   </div>
-                ) : (
-                  <p style={{ fontSize: "13px", color: "var(--ink-2)", lineHeight: 1.5, margin: 0 }}>
-                    <strong>Why it deviates in real tests:</strong> Fuel droplets experience transient liquid heating at ignition, radiative heat loss from soot particles, and cool flame secondary combustion regimes discovered in PSI-69!
-                  </p>
-                )}
+
+                  {/* Right Column: Physical Meaning of D² */}
+                  <div className="firelab-card">
+                    <h3 style={{ fontSize: "20px", color: "#ffffff", margin: "0 0 8px 0" }}>
+                      What does D² tell us?
+                    </h3>
+                    <p style={{ color: "var(--ash)", fontSize: "14px", lineHeight: 1.5, margin: "0 0 16px 0" }}>
+                      For some droplet-burning regimes, diameter squared decreases approximately linearly with time:
+                    </p>
+
+                    {/* Highlighted Equation Card */}
+                    <div style={{ background: "#060e1c", padding: "20px", borderRadius: "10px", border: "1px solid #1e3a5f", textAlign: "center", marginBottom: "20px", fontFamily: "var(--f-mono)", fontSize: "24px", color: "#ffffff", letterSpacing: "1px" }}>
+                      <strong>D²(t) = D₀² − Kt</strong>
+                    </div>
+
+                    <div style={{ color: "var(--ash)", fontSize: "14px", lineHeight: 1.7 }}>
+                      <p style={{ margin: "0 0 14px 0" }}>
+                        <strong>K</strong> is the apparent burning-rate constant over the fitted interval. The real experiment may depart from a straight line because of ignition transients, extinction, soot, fuel composition or other effects.
+                      </p>
+                      <p style={{ margin: 0 }}>
+                        For real videos, first calibrate pixels to millimetres and record timestamps. The current demo does not perform automatic video measurements.
+                      </p>
+                    </div>
+
+                    <div style={{ marginTop: "24px", padding: "14px", background: "rgba(234, 254, 7, 0.05)", borderRadius: "8px", border: "1px dashed rgba(234, 254, 7, 0.3)" }}>
+                      <span style={{ fontSize: "12px", color: "var(--ash)", display: "block", marginBottom: "4px" }}>Active Boundary Conditions:</span>
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", fontSize: "12px", fontFamily: "var(--f-mono)", color: "var(--accent)" }}>
+                        <span>Fuel: {flexFuel}</span>
+                        <span>•</span>
+                        <span>O₂: {flexOxygen}%</span>
+                        <span>•</span>
+                        <span>P: {flexPressure.toFixed(2)} atm</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* LIVE FRAME CAPTURES & CUSTOM WORKBENCH */
+                <div className="comparison-columns" style={{ display: "grid", gridTemplateColumns: "1.25fr 1fr", gap: "24px" }}>
+                  <div className="firelab-card">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
+                      <h4 style={{ fontSize: "18px", color: "#ffffff", margin: 0 }}>
+                        Live Captures &amp; Secant Regression
+                      </h4>
+                      <div style={{ display: "flex", gap: "6px" }}>
+                        <button
+                          type="button"
+                          className={`firelab-btn ghost-btn small ${flexPlotMode === "d2" ? "active" : ""}`}
+                          onClick={() => setFlexPlotMode("d2")}
+                        >
+                          Plot D² vs Time
+                        </button>
+                        <button
+                          type="button"
+                          className={`firelab-btn ghost-btn small ${flexPlotMode === "d" ? "active" : ""}`}
+                          onClick={() => setFlexPlotMode("d")}
+                        >
+                          Plot D vs Time
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Quick Frame Capture in Stage 4 */}
+                    <div style={{ background: "#060e1c", padding: "14px 18px", borderRadius: "10px", border: "1px solid #1e3a5f", marginBottom: "18px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                        <span style={{ fontSize: "13px", color: "#ffffff", fontWeight: 600 }}>Scrub &amp; Capture Observation Points:</span>
+                        <span style={{ fontSize: "13px", color: "var(--accent)", fontFamily: "var(--f-mono)" }}>
+                          t = {flexTime}s (D = {currentFlexD.toFixed(2)} mm)
+                        </span>
+                      </div>
+                      <input
+                        aria-label="Timeline scrubber for capture"
+                        type="range"
+                        min="0"
+                        max="90"
+                        step="1"
+                        value={flexTime}
+                        onChange={(e) => setFlexTime(Number(e.target.value))}
+                        className="firelab-range"
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                        <button
+                          type="button"
+                          className="firelab-btn secondary-btn"
+                          onClick={() => captureCurrentFlexPoint("A")}
+                          style={{ flex: 1, borderColor: "#ffbd70", color: "#ffbd70" }}
+                        >
+                          Set Frame A ({flexTime}s)
+                        </button>
+                        <button
+                          type="button"
+                          className="firelab-btn secondary-btn"
+                          onClick={() => captureCurrentFlexPoint("B")}
+                          style={{ flex: 1, borderColor: "#f97c9c", color: "#f97c9c" }}
+                        >
+                          Set Frame B ({flexTime}s)
+                        </button>
+                        <button
+                          type="button"
+                          className="firelab-btn secondary-btn"
+                          onClick={() => captureCurrentFlexPoint()}
+                          style={{ borderColor: "#38bdf8", color: "#38bdf8" }}
+                        >
+                          + Add to Table
+                        </button>
+                        <button
+                          type="button"
+                          className="firelab-btn secondary-btn"
+                          onClick={autoCaptureFlexDefaults}
+                          style={{ borderColor: "#a78bfa", color: "#a78bfa" }}
+                        >
+                          ⚡ Auto-Sample (10s &amp; 60s)
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Metric Summary Cards */}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "18px" }}>
+                      <div className="rate-stat-card">
+                        <span className="rate-stat-label">Frame A (t₁ = {flexFrameA?.t ?? 10} s)</span>
+                        <span className="rate-stat-val neon">{flexFrameA?.d.toFixed(2) ?? "—"} mm</span>
+                        <span className="rate-stat-sub">D₁² = {flexFrameA?.d2.toFixed(2) ?? "—"} mm²</span>
+                      </div>
+                      <div className="rate-stat-card">
+                        <span className="rate-stat-label">Frame B (t₂ = {flexFrameB?.t ?? 60} s)</span>
+                        <span className="rate-stat-val neon">{flexFrameB?.d.toFixed(2) ?? "—"} mm</span>
+                        <span className="rate-stat-sub">D₂² = {flexFrameB?.d2.toFixed(2) ?? "—"} mm²</span>
+                      </div>
+                    </div>
+
+                    {/* Secant Fit Bar & Actions */}
+                    <div className="graph-footer" style={{ marginTop: "14px" }}>
+                      <span className="formula-display">
+                        Your Secant Fit:{" "}
+                        <code>
+                          {(() => {
+                            if (!flexFrameA || !flexFrameB || Math.abs(flexFrameB.t - flexFrameA.t) < 0.05) {
+                              return "Requires selecting two distinct frames (Frame A & B)";
+                            }
+                            const p1 = flexFrameA.t < flexFrameB.t ? flexFrameA : flexFrameB;
+                            const p2 = flexFrameA.t < flexFrameB.t ? flexFrameB : flexFrameA;
+                            const kVal = Math.abs(p1.d2 - p2.d2) / (p2.t - p1.t);
+                            return `K = (${p1.d2.toFixed(2)} − ${p2.d2.toFixed(2)}) / (${p2.t} − ${p1.t}) = ${kVal.toFixed(3)} mm²/s`;
+                          })()}
+                        </code>
+                      </span>
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        <button
+                          type="button"
+                          className="firelab-btn ghost-btn small"
+                          onClick={() => setShowRawTable(!showRawTable)}
+                        >
+                          {showRawTable ? "Hide Data Table" : "View Captured Data Table"}
+                        </button>
+                        <button
+                          type="button"
+                          className="firelab-btn primary-btn small"
+                          onClick={handleExportFlexCsv}
+                        >
+                          📥 Export CSV
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Raw Captured Data Table */}
+                    {showRawTable && (
+                      <div className="raw-data-table-wrap" style={{ marginTop: "16px" }}>
+                        <table className="raw-data-table">
+                          <thead>
+                            <tr>
+                              <th>Timestamp (s)</th>
+                              <th>Diameter D (mm)</th>
+                              <th>D² (mm²)</th>
+                              <th>Data Provenance</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {flexCapturedPoints.map((p) => (
+                              <tr key={p.id} className={flexFrameA?.t === p.t || flexFrameB?.t === p.t ? "highlight-row" : ""}>
+                                <td>{p.t.toFixed(1)}</td>
+                                <td>{p.d.toFixed(3)}</td>
+                                <td>{p.d2.toFixed(3)}</td>
+                                <td>
+                                  <span className="sim-hud-pill highlight">{p.source}</span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right Column: Physical Interpretation */}
+                  <div className="firelab-card">
+                    <h4 style={{ fontSize: "18px", color: "#ffffff", margin: "0 0 10px 0" }}>
+                      Measurement Comparison with NASA Published Benchmark:
+                    </h4>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", fontSize: "13px", background: "#060e1c", padding: "16px", borderRadius: "10px", border: "1px solid #1e3a5f" }}>
+                      <div>
+                        <span style={{ color: "var(--ash)" }}>Your Live K:</span>
+                        <strong style={{ display: "block", color: "var(--accent)", fontSize: "16px" }}>
+                          {userMeasuredFlexK ? `${userMeasuredFlexK.toFixed(3)} mm²/s` : "—"}
+                        </strong>
+                      </div>
+                      <div>
+                        <span style={{ color: "var(--ash)" }}>NASA PSI-69 Benchmark:</span>
+                        <strong style={{ display: "block", color: "#38bdf8", fontSize: "16px" }}>
+                          {nasaReferenceK.toFixed(3)} mm²/s
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Bottom Step Navigation Bar */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #1e3a5f", flexWrap: "wrap", gap: "10px" }}>
+                <button type="button" className="firelab-btn secondary-btn" onClick={() => setFlexStep(2)}>
+                  ← Previous (Change a condition)
+                </button>
+                <button type="button" className="firelab-btn primary-btn" onClick={() => setFlexStep(4)}>
+                  Next step → (Understand the result)
+                </button>
+              </div>
+
+              {/* Scientific Integrity Disclaimer Banner */}
+              <div style={{ background: "rgba(15, 23, 42, 0.6)", padding: "12px 18px", borderRadius: "8px", border: "1px solid #1e293b", fontSize: "12px", color: "var(--ash)", lineHeight: 1.5, marginTop: "16px" }}>
+                Scientific integrity: All built-in animation, numerical values, and comparison cases are illustrative teaching examples, not measured PSI-69 results. An uploaded NASA video is authentic only if verified and reported separately. This tool does not infer measurements from uploaded footage automatically.
               </div>
             </div>
           )}
@@ -1884,9 +1980,13 @@ export default function FireLabPage() {
                       <select
                         id="documented-run-select"
                         className="firelab-select"
-                        value={selectedRun.runId}
-                        onChange={(e) => handleSelectPredefinedRun(e.target.value)}
+                        value={activeBassRunId}
+                        onChange={(e) => {
+                          if (e.target.value === "custom") return;
+                          handleSelectPredefinedRun(e.target.value);
+                        }}
                       >
+                        <option value="custom">⚡ Custom Parameters (User Configured)</option>
                         {DOCUMENTED_BASS_RUNS.map((r) => (
                           <option key={r.runId} value={r.runId}>
                             Test {r.testNumber}: {r.thicknessMicrons} µm PMMA, {r.airflowCmS} cm/s, {r.oxygenPct}% O₂
@@ -1897,82 +1997,124 @@ export default function FireLabPage() {
                   </div>
 
                   <div className="controls-grid">
+                    {/* Fuel Thickness */}
                     <div className="control-item">
                       <div className="control-label-row">
                         <label htmlFor="fuel-thickness-slider">Fuel Thickness (PMMA)</label>
                         <span className="control-val">{selectedThickness} µm ({selectedThickness <= 100 ? "Thin Film" : selectedThickness <= 200 ? "Medium Film" : "Thick Slab"})</span>
                       </div>
-                      <input
-                        id="fuel-thickness-slider"
-                        type="range"
-                        min="100"
-                        max="400"
-                        step="100"
-                        value={selectedThickness}
-                        onChange={(e) => {
-                          setSelectedThickness(Number(e.target.value));
-                          resetSim();
-                        }}
-                        className="firelab-range"
-                      />
-                      <div className="range-ticks">
-                        <span>100 µm</span>
-                        <span>200 µm</span>
-                        <span>300 µm</span>
-                        <span>400 µm</span>
+                      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                        <input
+                          id="fuel-thickness-slider"
+                          type="range"
+                          min="100"
+                          max="400"
+                          step="10"
+                          value={selectedThickness}
+                          onChange={(e) => setSelectedThickness(Number(e.target.value))}
+                          className="firelab-range"
+                          style={{ flex: 1 }}
+                        />
+                        <input
+                          id="fuel-thickness-num"
+                          aria-label="Fuel thickness in microns"
+                          type="number"
+                          min="100"
+                          max="400"
+                          step="10"
+                          value={selectedThickness}
+                          onChange={(e) => setSelectedThickness(Math.max(100, Math.min(400, Number(e.target.value))))}
+                          style={{ width: "75px", background: "#060e1c", border: "1px solid #1e3a5f", color: "var(--accent)", padding: "4px 8px", borderRadius: "6px", fontFamily: "var(--f-mono)", fontSize: "13px" }}
+                        />
+                      </div>
+                      <div style={{ display: "flex", gap: "6px", marginTop: "6px", flexWrap: "wrap" }}>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedThickness(100)}>100 µm (Thin)</button>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedThickness(200)}>200 µm</button>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedThickness(300)}>300 µm</button>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedThickness(400)}>400 µm (Thick)</button>
                       </div>
                       <small className="control-hint">
                         Thicker fuel acts as a conductive heat sink, increasing thermal inertia and reducing spread rate.
                       </small>
                     </div>
 
+                    {/* Oxygen Concentration */}
                     <div className="control-item">
                       <div className="control-label-row">
                         <label htmlFor="oxygen-slider">Oxygen Concentration (O₂)</label>
                         <span className="control-val">{selectedOxygen.toFixed(1)}%</span>
                       </div>
-                      <input
-                        id="oxygen-slider"
-                        type="range"
-                        min="15.0"
-                        max="22.2"
-                        step="0.1"
-                        value={selectedOxygen}
-                        onChange={(e) => {
-                          setSelectedOxygen(Number(e.target.value));
-                          resetSim();
-                        }}
-                        className="firelab-range"
-                      />
-                      <div className="range-ticks">
-                        <span>15% (Hypoxic)</span>
-                        <span>17.3% (Limit)</span>
-                        <span>21% (Earth Air)</span>
-                        <span>22.2% (ISS Max)</span>
+                      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                        <input
+                          id="oxygen-slider"
+                          type="range"
+                          min="15.0"
+                          max="25.0"
+                          step="0.1"
+                          value={selectedOxygen}
+                          onChange={(e) => setSelectedOxygen(Number(e.target.value))}
+                          className="firelab-range"
+                          style={{ flex: 1 }}
+                        />
+                        <input
+                          id="oxygen-num"
+                          aria-label="Oxygen percentage in BASS"
+                          type="number"
+                          min="15.0"
+                          max="25.0"
+                          step="0.1"
+                          value={selectedOxygen}
+                          onChange={(e) => setSelectedOxygen(Math.max(15.0, Math.min(25.0, Number(e.target.value))))}
+                          style={{ width: "75px", background: "#060e1c", border: "1px solid #1e3a5f", color: "var(--accent)", padding: "4px 8px", borderRadius: "6px", fontFamily: "var(--f-mono)", fontSize: "13px" }}
+                        />
+                      </div>
+                      <div style={{ display: "flex", gap: "6px", marginTop: "6px", flexWrap: "wrap" }}>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedOxygen(15.0)}>15.0% (Limit)</button>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedOxygen(17.3)}>17.3% (NASA B16)</button>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedOxygen(21.0)}>21.0% (Earth Air)</button>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedOxygen(22.2)}>22.2% (ISS Max)</button>
                       </div>
                       <small className="control-hint">
                         Higher oxygen increases flame temperature and accelerates chemical reaction kinetics.
                       </small>
                     </div>
 
+                    {/* Duct Airflow */}
                     <div className="control-item">
                       <div className="control-label-row">
                         <label htmlFor="airflow-slider">Duct Airflow Velocity</label>
                         <span className="control-val">{selectedAirflow.toFixed(1)} cm/s</span>
                       </div>
-                      <input
-                        id="airflow-slider"
-                        type="range"
-                        min="0.35"
-                        max="10.0"
-                        step="0.05"
-                        value={selectedAirflow}
-                        onChange={(e) => {
-                          setSelectedAirflow(Number(e.target.value));
-                          resetSim();
-                        }}
-                        className="firelab-range"
-                      />
+                      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                        <input
+                          id="airflow-slider"
+                          type="range"
+                          min="0.35"
+                          max="10.0"
+                          step="0.05"
+                          value={selectedAirflow}
+                          onChange={(e) => setSelectedAirflow(Number(e.target.value))}
+                          className="firelab-range"
+                          style={{ flex: 1 }}
+                        />
+                        <input
+                          id="airflow-num"
+                          aria-label="Airflow velocity in cm/s"
+                          type="number"
+                          min="0.35"
+                          max="10.0"
+                          step="0.05"
+                          value={selectedAirflow}
+                          onChange={(e) => setSelectedAirflow(Math.max(0.35, Math.min(10.0, Number(e.target.value))))}
+                          style={{ width: "75px", background: "#060e1c", border: "1px solid #1e3a5f", color: "var(--accent)", padding: "4px 8px", borderRadius: "6px", fontFamily: "var(--f-mono)", fontSize: "13px" }}
+                        />
+                      </div>
+                      <div style={{ display: "flex", gap: "6px", marginTop: "6px", flexWrap: "wrap" }}>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedAirflow(0.5)}>0.5 cm/s (Quench)</button>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedAirflow(1.3)}>1.3 cm/s (B6)</button>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedAirflow(2.0)}>2.0 cm/s (B3)</button>
+                        <button type="button" className="firelab-btn ghost-btn small" onClick={() => setSelectedAirflow(5.0)}>5.0 cm/s (B1)</button>
+                      </div>
                       <div className="range-ticks">
                         <span>0.35 cm/s (Quench)</span>
                         <span>2.0 cm/s</span>

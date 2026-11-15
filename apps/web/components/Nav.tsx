@@ -137,14 +137,13 @@ export default function Nav() {
     };
   }, [open]);
 
-  // Check if current route is one of the grouped research tools
-  const isToolActive = RESEARCH_APPS.some((app) => path?.startsWith(app.href)) || path?.startsWith("/investigations");
+  // Check if current route is one of the grouped research tools (excluding FireLab which has its own top-level link)
+  const isToolActive =
+    RESEARCH_APPS.filter((app) => app.href !== "/firelab").some((app) => path?.startsWith(app.href)) ||
+    path?.startsWith("/investigations");
   const isIntroActive = path?.startsWith("/androflame") || path?.startsWith("/intro");
   const isFirelabActive = path?.startsWith("/firelab");
   const isAskActive = path?.startsWith("/assistant");
-  const isConfigActive = path?.startsWith("/settings");
-
-  const [btnHover, setBtnHover] = useState(false);
 
   return (
     <nav aria-label="Main" className="nav">
@@ -245,13 +244,6 @@ export default function Nav() {
         <li>
           <Link href="/assistant" aria-current={isAskActive ? "page" : undefined}>
             <span className="nav-no" aria-hidden="true">01</span>Ask
-          </Link>
-        </li>
-
-        {/* 4. AI Config (Settings) */}
-        <li>
-          <Link href="/settings" aria-current={isConfigActive ? "page" : undefined}>
-            <span className="nav-no" aria-hidden="true">02</span>AI Config
           </Link>
         </li>
       </ul>

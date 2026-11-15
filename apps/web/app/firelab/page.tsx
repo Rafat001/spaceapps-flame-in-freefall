@@ -26,7 +26,7 @@ export interface CapturedDropletPoint {
   t: number;
   d: number;
   d2: number;
-  source: "user_derived" | "verified_nasa";
+  source: "user_derived" | "verified_nasa" | "model_benchmark";
 }
 
 export default function FireLabPage() {
@@ -70,21 +70,19 @@ export default function FireLabPage() {
   const [activeFlexHotspotId, setActiveFlexHotspotId] = useState<string>("droplet_dispenser");
   const [flexUploadedUrl, setFlexUploadedUrl] = useState<string | null>(null);
 
-  // Dynamic User-Captured Frames (HONORS USER CAPTURES)
-  const [flexCapturedPoints, setFlexCapturedPoints] = useState<CapturedDropletPoint[]>([
-    { id: 1, t: 10, d: calculateDropletDiameter(10, 4.0, 21, "n-Heptane"), d2: Math.pow(calculateDropletDiameter(10, 4.0, 21, "n-Heptane"), 2), source: "verified_nasa" },
-    { id: 2, t: 60, d: calculateDropletDiameter(60, 4.0, 21, "n-Heptane"), d2: Math.pow(calculateDropletDiameter(60, 4.0, 21, "n-Heptane"), 2), source: "verified_nasa" },
-  ]);
-  const [flexFrameA, setFlexFrameA] = useState<{ t: number; d: number; d2: number } | null>({
-    t: 10,
-    d: calculateDropletDiameter(10, 4.0, 21, "n-Heptane"),
-    d2: Math.pow(calculateDropletDiameter(10, 4.0, 21, "n-Heptane"), 2),
-  });
-  const [flexFrameB, setFlexFrameB] = useState<{ t: number; d: number; d2: number } | null>({
-    t: 60,
-    d: calculateDropletDiameter(60, 4.0, 21, "n-Heptane"),
-    d2: Math.pow(calculateDropletDiameter(60, 4.0, 21, "n-Heptane"), 2),
-  });
+  // Dynamic User-Captured Frames (Starts fresh for each experiment run)
+  const [flexCapturedPoints, setFlexCapturedPoints] = useState<CapturedDropletPoint[]>([]);
+  const [flexFrameA, setFlexFrameA] = useState<{ t: number; d: number; d2: number } | null>(null);
+  const [flexFrameB, setFlexFrameB] = useState<{ t: number; d: number; d2: number } | null>(null);
+
+  // When experimental conditions change to start a new experiment, clear old captures
+  useEffect(() => {
+    setFlexPlaying(false);
+    setFlexTime(0);
+    setFlexCapturedPoints([]);
+    setFlexFrameA(null);
+    setFlexFrameB(null);
+  }, [flexFuel, flexOxygen, flexDiameter, flexPressure, selectedFlexRun]);
 
   // Plot view mode in Step 4: D² vs Time OR D vs Time
   const [flexPlotMode, setFlexPlotMode] = useState<"d2" | "d">("d2");
@@ -121,9 +119,36 @@ export default function FireLabPage() {
 
   const toggleFlexPlay = () => setFlexPlaying((prev) => !prev);
 
-  const resetFlexSimulation = () => {
+  const resetFlexSimulation = (clearCaptures: boolean = true) => {
     setFlexPlaying(false);
     setFlexTime(0);
+    if (clearCaptures) {
+      setFlexCapturedPoints([]);
+      setFlexFrameA(null);
+      setFlexFrameB(null);
+    }
+  };
+
+  const autoCaptureFlexDefaults = () => {
+    const d10 = calculateDropletDiameter(10, flexDiameter, flexOxygen, flexFuel);
+    const d60 = calculateDropletDiameter(60, flexDiameter, flexOxygen, flexFuel);
+    const ptA: CapturedDropletPoint = {
+      id: 1,
+      t: 10,
+      d: d10,
+      d2: Number((d10 * d10).toFixed(3)),
+      source: "model_benchmark",
+    };
+    const ptB: CapturedDropletPoint = {
+      id: 2,
+      t: 60,
+      d: d60,
+      d2: Number((d60 * d60).toFixed(3)),
+      source: "model_benchmark",
+    };
+    setFlexCapturedPoints([ptA, ptB]);
+    setFlexFrameA({ t: 10, d: d10, d2: d10 * d10 });
+    setFlexFrameB({ t: 60, d: d60, d2: d60 * d60 });
   };
 
   const handleFlexVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -277,12 +302,26 @@ export default function FireLabPage() {
   }, [simPlaying, simSpeed]);
 
   const toggleSimPlay = () => setSimPlaying((prev) => !prev);
-  const resetSim = () => {
+  const resetSim = (clearCaptures: boolean = true) => {
     setSimPlaying(false);
     setSimTime(0);
-    setCaliperA(null);
-    setCaliperB(null);
-    setBassCapturedPoints([]);
+    if (clearCaptures) {
+      setCaliperA(null);
+      setCaliperB(null);
+      setBassCapturedPoints([]);
+      setT1(2);
+      setT2(8);
+    }
+  };
+
+  // When changing parameters to start a new experiment run, reset playback and clear previous calipers/captures
+  useEffect(() => {
+    resetSim(true);
+  }, [selectedThickness, selectedOxygen, selectedAirflow, selectedRun]);
+
+  const autoMarkBassCaliperDefaults = () => {
+    markCaliper("A", 4);
+    markCaliper("B", 12);
   };
 
   const markCaliper = (slot: "A" | "B", customTime?: number) => {
@@ -728,7 +767,7 @@ export default function FireLabPage() {
                   <button type="button" className="firelab-btn primary-btn" onClick={toggleFlexPlay}>
                     {flexPlaying ? "⏸ Pause" : "▶ Play Animation"}
                   </button>
-                  <button type="button" className="firelab-btn secondary-btn" onClick={resetFlexSimulation}>
+                  <button type="button" className="firelab-btn secondary-btn" onClick={() => resetFlexSimulation(true)}>
                     ↺ Restart
                   </button>
 
@@ -791,11 +830,30 @@ export default function FireLabPage() {
                     >
                       + Add Frame Point
                     </button>
+                    <button
+                      type="button"
+                      className="firelab-btn secondary-btn"
+                      onClick={autoCaptureFlexDefaults}
+                      style={{ borderColor: "#a78bfa", color: "#a78bfa" }}
+                    >
+                      ⚡ Auto-Sample (10s &amp; 60s)
+                    </button>
+                    {(flexFrameA || flexFrameB || flexCapturedPoints.length > 0) && (
+                      <button
+                        type="button"
+                        className="firelab-btn ghost-btn small"
+                        onClick={() => resetFlexSimulation(true)}
+                        style={{ color: "var(--ash)" }}
+                      >
+                        ↺ Clear Captures
+                      </button>
+                    )}
                   </div>
 
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", color: "var(--ash)", fontFamily: "var(--f-mono)", marginTop: "12px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", color: "var(--ash)", fontFamily: "var(--f-mono)", marginTop: "12px", flexWrap: "wrap", gap: "8px" }}>
                     <span>Frame A: {flexFrameA ? `${flexFrameA.t}s (D² = ${flexFrameA.d2.toFixed(2)} mm²)` : "Not captured"}</span>
                     <span>Frame B: {flexFrameB ? `${flexFrameB.t}s (D² = ${flexFrameB.d2.toFixed(2)} mm²)` : "Not captured"}</span>
+                    <span>Recorded Points: {flexCapturedPoints.length}</span>
                   </div>
 
                   {userMeasuredFlexK !== null && (
@@ -1125,7 +1183,7 @@ export default function FireLabPage() {
                   <h3 style={{ fontSize: "20px", color: "#ffffff", margin: 0 }}>
                     Measure and Process Droplet Data
                   </h3>
-                  <div style={{ display: "flex", gap: "6px" }}>
+                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
                     <button
                       type="button"
                       className={`firelab-btn ghost-btn small ${flexPlotMode === "d2" ? "active" : ""}`}
@@ -1140,12 +1198,33 @@ export default function FireLabPage() {
                     >
                       Plot D vs Time
                     </button>
+                    {(flexFrameA || flexFrameB || flexCapturedPoints.length > 0) && (
+                      <button
+                        type="button"
+                        className="firelab-btn ghost-btn small"
+                        onClick={() => resetFlexSimulation(true)}
+                        style={{ color: "var(--ash)" }}
+                      >
+                        ↺ Start New Run (Clear)
+                      </button>
+                    )}
                   </div>
                 </div>
 
                 <p style={{ color: "var(--ash)", fontSize: "14px", lineHeight: 1.5, margin: "0 0 16px 0" }}>
                   This workbench <strong>honors your live captures</strong>. Capture observation points directly or scrub the slider below to calculate the apparent burning rate constant <strong>K</strong>.
                 </p>
+
+                {flexCapturedPoints.length === 0 && (
+                  <div className="flex-help-box" style={{ background: "rgba(56, 189, 248, 0.12)", borderColor: "#38bdf8", color: "#bae6fd", marginBottom: "16px" }}>
+                    ✨ <strong>New Experiment Started ({flexFuel}, {flexOxygen}% O₂, D₀ = {flexDiameter}mm):</strong> Previous captures were cleared for this fresh test. Scrub the timeline below to capture Frames A &amp; B, or click Auto-Sample!
+                    <div style={{ marginTop: "10px" }}>
+                      <button type="button" className="firelab-btn primary-btn small" onClick={autoCaptureFlexDefaults}>
+                        ⚡ Auto-Sample Benchmark Frames (10s &amp; 60s)
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Quick Frame Capture in Stage 4 */}
                 <div style={{ background: "#060e1c", padding: "14px 18px", borderRadius: "10px", border: "1px solid #1e3a5f", marginBottom: "18px" }}>
@@ -1166,7 +1245,7 @@ export default function FireLabPage() {
                     className="firelab-range"
                     style={{ marginBottom: "10px" }}
                   />
-                  <div style={{ display: "flex", gap: "10px" }}>
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                     <button
                       type="button"
                       className="firelab-btn secondary-btn"
@@ -1190,6 +1269,14 @@ export default function FireLabPage() {
                       style={{ borderColor: "#38bdf8", color: "#38bdf8" }}
                     >
                       + Add to Table
+                    </button>
+                    <button
+                      type="button"
+                      className="firelab-btn secondary-btn"
+                      onClick={autoCaptureFlexDefaults}
+                      style={{ borderColor: "#a78bfa", color: "#a78bfa" }}
+                    >
+                      ⚡ Auto-Sample
                     </button>
                   </div>
                 </div>
@@ -2092,7 +2179,7 @@ export default function FireLabPage() {
                         <button type="button" className="firelab-btn primary-btn" onClick={toggleSimPlay} id="sim-play-toggle">
                           {simPlaying ? "⏸ Pause" : "▶ Ignite & Spread"}
                         </button>
-                        <button type="button" className="firelab-btn secondary-btn" onClick={resetSim}>
+                        <button type="button" className="firelab-btn secondary-btn" onClick={() => resetSim(true)}>
                           ↺ Reset Sample
                         </button>
                         <input

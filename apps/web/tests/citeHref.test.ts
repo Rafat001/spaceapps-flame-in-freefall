@@ -95,3 +95,16 @@ describe("withTextFragment / citeHref", () => {
     expect(citeHref(undefined)).toBeNull();
   });
 });
+
+describe("citeHref anchor", () => {
+  const html = "https://www.nasa.gov/glenn/combustion-science/";
+  it("deep-links to the passage the answer relied on (anchor) over the chunk's first sentence", () => {
+    const href = citeHref({
+      ref: "S1",
+      source_url: html,
+      anchor: "Flames spread slower at reduced oxygen.",
+      excerpt: "Overview of the program. Flames spread slower at reduced oxygen.",
+    });
+    expect(href).toBe(html + "#:~:text=" + encodeTextDirectiveValue("Flames spread slower at reduced oxygen."));
+  });
+});

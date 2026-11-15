@@ -3,14 +3,15 @@ import ReactMarkdown from "react-markdown";
 import { withTextFragment } from "@/lib/textFragment";
 
 export type CiteSource = { ref?: string; source_url?: string | null; url?: string | null; investigation_id?: string | null; acronym?: string | null;
-  section?: string | null; label?: string | null; excerpt?: string | null; quote?: string | null; locator?: string | null };
+  section?: string | null; label?: string | null; excerpt?: string | null; quote?: string | null; anchor?: string | null; locator?: string | null };
 
-/** Where a citation marker should take the reader: the source itself (with a text fragment when possible), else the investigation page. */
+/** Where a citation marker should take the reader: the source itself, deep-linked with a text fragment that highlights the
+ *  passage (the verbatim quote, else the excerpt sentence the answer relied on, else the excerpt), else the investigation page. */
 export function citeHref(c: CiteSource | undefined): string | null {
   if (!c) return null;
   const raw = c.source_url || c.url || null;
   if (raw) {
-    if (/^https?:\/\//i.test(raw)) return withTextFragment(raw, c.quote || c.excerpt);
+    if (/^https?:\/\//i.test(raw)) return withTextFragment(raw, c.quote || c.anchor || c.excerpt);
     return raw;
   }
   if (c.investigation_id) return `/investigations/${encodeURIComponent(c.investigation_id)}`;

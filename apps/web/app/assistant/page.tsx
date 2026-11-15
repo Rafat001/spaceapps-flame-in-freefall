@@ -47,13 +47,13 @@ export default function Assistant() {
         the brief, incident and spinoff pages, and the guidance video. Exact answers are computed from the data with row, page or
         timestamp citations; no key is needed. When AI is available (this site&apos;s shared quota, or your own Groq key), a short summary is added and labeled <EvidenceLabel text="AI interpretation" />.
       </PageHead>
+      <div className="ask-layout">
+      <div className="ask-main">
       <form onSubmit={(e) => { e.preventDefault(); ask(q); }} className="ask">
         <label htmlFor="question">Question</label>
         <textarea id="question" rows={3} maxLength={1000} value={q} onChange={(e) => setQ(e.target.value)} placeholder="What has been measured about…" />
         <div className="actions"><button type="submit" disabled={busy}>{busy ? "Retrieving…" : "Ask"}</button></div>
         <AskQuota quota={quota} ownKey={ownKey} />
-        <p className="prompts-title">Try:</p>
-        <ol className="prompts">{EXAMPLES.map((x) => <li key={x}><button type="button" onClick={() => ask(x)}>{x}</button></li>)}</ol>
       </form>
       <ErrorBox error={err} />
       {busy && <Loading what="Searching sources" />}
@@ -105,6 +105,12 @@ export default function Assistant() {
           )}
         </section>
       ))}
+      </div>
+      <aside className="ask-try" aria-label="Example questions">
+        <p className="prompts-title">Try:</p>
+        <ol className="prompts">{EXAMPLES.map((x) => <li key={x}><button type="button" onClick={() => ask(x)} disabled={busy}>{x}</button></li>)}</ol>
+      </aside>
+      </div>
     </>
   );
 }

@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { api, API_BASE } from "@/lib/api";
 import { assistantHeaders } from "@/lib/byok";
 import { detectPathways, Pathway } from "@/lib/pathways";
-import { getGeneralConcept, getConversationalReply, getSimplifiedConcept } from "@/lib/copilotKnowledge";
-import { classifyQuestion, QuestionCategory } from "@/lib/queryClassifier";
+import { getGeneralConcept, getConversationalReply, getProjectAnswer, getSimplifiedConcept } from "@/lib/copilotKnowledge";
+import { classifyQuestion } from "@/lib/queryClassifier";
+import { checkGuardrails } from "@/lib/sparkGuardrails";
 import { resolveConversationContext, ConversationTurn } from "@/lib/contextResolver";
 import { Markdown, CiteSource } from "@/components/Markdown";
 
@@ -23,16 +24,37 @@ interface ChatMessage {
   directLabel?: string;
   flags?: string[];
   isError?: boolean;
+  /** True when Dr. Spark declined the question (off-topic, secrets, injection, harmful). */
+  refused?: boolean;
+}
+
+/** Keep stored history bounded so localStorage never grows without limit. */
+const MAX_STORED_MESSAGES = 60;
+
+/**
+ * The curated answers use "•" bullets on single newlines, which Markdown would collapse into one paragraph.
+ * Turn them into real list items (and make sure a list starts after a blank line).
+ */
+export function toChatMarkdown(text: string): string {
+  const lines = String(text ?? "").replace(/^(\s*)• /gm, "$1- ").split("\n");
+  const out: string[] = [];
+  const isItem = (l: string) => /^\s*(- |\d+\. )/.test(l);
+  for (const line of lines) {
+    const prev = out[out.length - 1];
+    if (isItem(line) && !/^\s/.test(line) && prev !== undefined && prev.trim() !== "" && !isItem(prev)) out.push("");
+    out.push(line);
+  }
+  return out.join("\n");
 }
 
 const STORAGE_KEY = "freefall_dr_spark_chat_v1";
 const LEGACY_STORAGE_KEY = "freefall_copilot_chat_v1";
 
 const STARTER_PROMPTS = [
-  "Where are PMMA tests located?",
+  "What is combustion science?",
   "How does zero gravity affect flame spread?",
-  "Explore 3D Fire Tetrahedron",
-  "Compare BASS and Saffire experiments",
+  "How are the rankings made?",
+  "Where are PMMA tests located?",
 ];
 
 export default function Chatbot() {
@@ -53,7 +75,8 @@ export default function Chatbot() {
         (typeof window !== "undefined" && window.sessionStorage?.getItem(STORAGE_KEY)) ||
         (typeof window !== "undefined" && window.sessionStorage?.getItem(LEGACY_STORAGE_KEY));
       if (saved) {
-        setMessages(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) setMessages(parsed.slice(-MAX_STORED_MESSAGES));
       }
     } catch {}
   }, []);
@@ -62,7 +85,7 @@ export default function Chatbot() {
   useEffect(() => {
     try {
       if (messages.length > 0) {
-        const serialized = JSON.stringify(messages);
+        const serialized = JSON.stringify(messages.slice(-MAX_STORED_MESSAGES));
         if (typeof window !== "undefined" && window.localStorage) {
           localStorage.setItem(STORAGE_KEY, serialized);
         }
@@ -111,88 +134,97 @@ export default function Chatbot() {
     setInput("");
     setLoading(true);
 
-    // Step 0: Resolve conversation context from history (pronoun resolution, follow-ups, entities)
-    const contextHistory: ConversationTurn[] = messages.slice(-6).map((m) => ({
-      role: m.role,
-      text: m.text,
-      citations: m.citations?.map((c) => ({
-        investigation_id: c.investigation_id,
-        acronym: c.acronym,
-      })),
-    }));
+    const reply = (msg: Omit<ChatMessage, "id" | "role" | "timestamp">, delay = 160) => {
+      setTimeout(() => {
+        setMessages((prev) => [...prev, { id: `a-${Date.now()}`, role: "assistant", timestamp: Date.now(), ...msg }]);
+        setLoading(false);
+      }, delay);
+    };
+
+    // Step 0: Guardrails. Dr. Spark only answers questions about this project (combustion science, the NASA PSI
+    // evidence, and how the app works). Secrets, prompt-injection, harmful and off-topic requests are declined here,
+    // before any local lookup or API call.
+    const guard = checkGuardrails(
+      q,
+      messages.map((m) => ({ role: m.role, text: m.text, refused: m.refused })),
+    );
+    if (!guard.allowed) {
+      reply({
+        text: guard.text,
+        category: "Out of scope",
+        categoryBadge: guard.reason === "off_topic" ? "OFF-TOPIC" : "NOT ALLOWED",
+        pathways: guard.pathways,
+        refused: true,
+      });
+      return;
+    }
+
+    // Step 1: Resolve conversation context from history (pronoun resolution, follow-ups, entities)
+    const contextHistory: ConversationTurn[] = messages
+      .filter((m) => !m.refused)
+      .slice(-6)
+      .map((m) => ({
+        role: m.role,
+        text: m.text,
+        citations: m.citations?.map((c) => ({
+          investigation_id: c.investigation_id,
+          acronym: c.acronym,
+        })),
+      }));
     const resolvedContext = resolveConversationContext(q, contextHistory);
     const enrichedQuery = resolvedContext.enrichedQuery;
 
-    // Step 0.5: If user expressed confusion or asked for clarification ("dont clear on it yet", "not clear what CFD actually is")
+    // Step 1.5: If user expressed confusion or asked for clarification ("dont clear on it yet", "not clear what CFD actually is")
     if (resolvedContext.isClarification && resolvedContext.activeTopic) {
       const simplified = getSimplifiedConcept(resolvedContext.activeTopic);
       if (simplified) {
-        setTimeout(() => {
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: `a-${Date.now()}`,
-              role: "assistant",
-              text: simplified.text,
-              timestamp: Date.now(),
-              category: "Clarification",
-              categoryBadge: "SIMPLIFIED",
-              pathways: simplified.pathways,
-            },
-          ]);
-          setLoading(false);
-        }, 180);
+        reply({ text: simplified.text, category: "Clarification", categoryBadge: "SIMPLIFIED", pathways: simplified.pathways }, 180);
         return;
       }
     }
 
-    // Step 1: Categorize the question first itself
+    // Step 2: Categorize the question
     const classified = classifyQuestion(enrichedQuery);
 
     // Category 1: Pure conversation / pleasantry (thanks, greetings, identity, acknowledgments, help)
     if (classified.category === "CONVERSATION") {
       const conv = getConversationalReply(q) || getConversationalReply(enrichedQuery) || {
-        text: "I'm Dr. Spark! Ask me anything about NASA combustion science, or ask where to find tools inside this app.",
+        text: "I'm **Dr. Spark**! Ask me about NASA microgravity combustion science, the experiment evidence in this app, or how the app works (rankings, data sources, coverage).",
         pathways: [
           { label: "Evidence Explorer", href: "/explorer", badge: "EXPLORE" },
           { label: "3D Fire Dynamics Explorer", href: "/fire-dynamics", badge: "3D TOOL" },
         ],
       };
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `a-${Date.now()}`,
-            role: "assistant",
-            text: conv.text,
-            timestamp: Date.now(),
-            category: classified.categoryLabel,
-            categoryBadge: classified.badge,
-            pathways: conv.pathways,
-          },
-        ]);
-        setLoading(false);
-      }, 150);
+      reply({ text: conv.text, category: classified.categoryLabel, categoryBadge: classified.badge, pathways: conv.pathways }, 150);
       return;
     }
 
-    // Category 2: In-App Navigation request
+    // Category 2: Questions about the project itself or core combustion-science basics -> curated, instant answer.
+    // Use the user's own words first so a follow-up's added context can't hijack the match.
+    const projectAnswer = getProjectAnswer(q) || (enrichedQuery !== q ? getProjectAnswer(enrichedQuery) : null);
+    if (projectAnswer) {
+      reply({ text: projectAnswer.summary, category: "About this project", categoryBadge: "PROJECT", pathways: projectAnswer.pathways.slice(0, 3) }, 180);
+      return;
+    }
+
+    // Category 3: In-App Navigation request
     if (classified.category === "APP_NAVIGATION") {
       const navPathways = detectPathways({ query: enrichedQuery });
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `a-${Date.now()}`,
-            role: "assistant",
-            text: `Here are the direct pathways inside the application to explore **${q}**:`,
-            timestamp: Date.now(),
-            category: classified.categoryLabel,
-            categoryBadge: classified.badge,
-            pathways: navPathways,
-          },
-        ]);
-        setLoading(false);
+      const concept = getGeneralConcept(q);
+      const text = navPathways.length
+        ? "Here's where to go in the app for that:" + (concept ? `\n\n${concept.summary}` : "")
+        : "I couldn't match that to a specific page. These are the best starting points:";
+      reply({
+        text,
+        category: classified.categoryLabel,
+        categoryBadge: classified.badge,
+        pathways: navPathways.length
+          ? navPathways
+          : [
+              { label: "Catalog Explorer", href: "/explorer", badge: "EXPLORE" },
+              { label: "Scenario Ranking", href: "/insights", badge: "RANKING" },
+              { label: "3D Fire Dynamics Explorer", href: "/fire-dynamics", badge: "3D TOOL" },
+            ],
       }, 180);
       return;
     }
@@ -222,10 +254,13 @@ export default function Chatbot() {
         answerText = res.answer;
       } else if (concept) {
         answerText = concept.summary;
-      } else if (isPlainTextRequest) {
-        answerText = `In NASA spacecraft fire safety research, **${q}** relates to how combustion and material flammability behave without buoyancy. While the structured database doesn't have a direct measurement row for this specific phrase, related test records and interactive tools are linked below:`;
+      } else if (res.template_summary && !isAbstained) {
+        answerText = res.template_summary;
       } else {
-        answerText = "The structured database doesn't have a direct measurement for this exact query, but related test points and literature are available in the records linked below.";
+        answerText =
+          "I couldn't find a sourced answer to that in the NASA records this app indexes, and I'd rather not guess.\n\n" +
+          "Try naming a specific experiment (e.g. **BASS**, **Saffire-II**, **FLEX**), a material (**PMMA**, **Nomex**) or a " +
+          "condition (oxygen %, pressure, airflow) — or open one of the pathways below.";
       }
 
       // Anti-repetition guard: if the answer is identical to what assistant just said
@@ -283,11 +318,28 @@ export default function Chatbot() {
       };
 
       setMessages((prev) => [...prev, botMsg]);
-    } catch (err: any) {
+    } catch {
+      // API unreachable: fall back to curated knowledge when we have it rather than showing an error.
+      const concept = getGeneralConcept(enrichedQuery) || getGeneralConcept(q);
+      if (concept) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: `a-${Date.now()}`,
+            role: "assistant",
+            text: concept.summary + "\n\n_(Live evidence search is unavailable right now, so this is my built-in overview.)_",
+            timestamp: Date.now(),
+            category: classified.categoryLabel,
+            categoryBadge: classified.badge,
+            pathways: concept.pathways.slice(0, 3),
+          },
+        ]);
+        return;
+      }
       const errorMsg: ChatMessage = {
         id: `e-${Date.now()}`,
         role: "assistant",
-        text: "Could not retrieve an answer right now. Please check that the local API is running, or ask again in a moment.",
+        text: "I couldn't reach the evidence service right now. Please try again in a moment.",
         timestamp: Date.now(),
         isError: true,
         category: classified.categoryLabel,
@@ -392,7 +444,8 @@ export default function Chatbot() {
                 </div>
                 <h4 className="chatbot-welcome-heading">Welcome to Dr. Spark</h4>
                 <p className="chatbot-welcome-desc">
-                  Ask questions about NASA microgravity combustion data, or ask for pathways to explore inside the application.
+                  Ask me about microgravity combustion science, NASA&apos;s experiment evidence, or how this app works — rankings,
+                  data sources and tools. I only answer questions related to this project.
                 </p>
                 <div className="chatbot-starters">
                   <p className="chatbot-starters-label">Try asking:</p>
@@ -424,7 +477,7 @@ export default function Chatbot() {
                     )}
 
                     <div className="chatbot-bubble-text">
-                      <Markdown text={m.text} citations={m.citations} />
+                      <Markdown text={m.role === "assistant" ? toChatMarkdown(m.text) : m.text} citations={m.citations} />
                     </div>
 
                     {/* Pathways inside the application */}
@@ -477,7 +530,7 @@ export default function Chatbot() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask Dr. Spark evidence or where to find info…"
+              placeholder="Ask about fire in space, the data, or this app…"
               className="chatbot-input"
               maxLength={400}
               disabled={loading}

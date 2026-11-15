@@ -237,6 +237,209 @@ In NASA microgravity combustion research, PMMA serves as the **primary benchmark
   },
 ];
 
+/**
+ * Project FAQ: answers about combustion science basics and about how THIS app works (rankings, data sources,
+ * coverage, the assistant itself). Checked before the general concepts and before any API call, so these questions
+ * get an immediate, accurate answer even when the API or LLM is unavailable.
+ * Facts here mirror apps/api (ranking.py WEIGHTS, scenarios.py, README scope rule); keep them in sync.
+ */
+export const PROJECT_FAQ: GeneralConcept[] = [
+  {
+    // Rankings / scenario fit
+    match: /\b(rank\w*|scenario fit|fit score|scor(e|es|ing|ed)|weight(s|ing)|criteria)\b/i,
+    summary: `**How the rankings are made** — each NASA investigation gets one **scenario-fit score out of 100** for the scenario you pick (Lunar habitat, Pressurized lunar rover, Spacecraft / ISS cabin, or Mars habitat). The list always runs highest to lowest.
+
+The score is the sum of six criteria, **the same six for every scenario**:
+
+• **Tests at target atmosphere — up to 30 pts**: PSI test rows that hit the scenario's oxygen **and** pressure target on the same row.
+• **Oxygen match — up to 15 pts**: rows whose O₂ matches the target (any pressure).
+• **Pressure match — up to 10 pts**: rows whose pressure matches the target (any O₂).
+• **Tested materials — up to 25 pts**: full points for spacecraft materials NASA names (cotton-fiberglass, Nomex, PMMA, Teflon, Kapton, silicone rubber); fewer for other solids; fewer still for liquid or gas fuels.
+• **Flame behaviour evidence — up to 10 pts**: flame spread, flammability, ignition or extinction in the PSI record.
+• **Detection / suppression — up to 10 pts**: suppression or smoke-detection evidence in the PSI record.
+
+How the details work:
+• **Diminishing returns**: the three atmosphere criteria are log-scaled by row count — 1 matching row ≈ 18 % of the points, 8 rows ≈ 56 %, 50+ rows = 100 %. The first rows count most, but more rows always earn more.
+• **Where targets come from**: only official sources — e.g. the challenge brief's Moon Base expectation of **≥ 30 % O₂ at ≤ 10.2 psi**, and ISS cabin air of nominally 21 % O₂ at one atmosphere.
+• **Ties** are broken by more rows at the target, then a more complete PSI record, then name.
+• **Unknown values never match**, and every non-zero criterion carries a citation you can click.
+
+⚠️ This is **research fit, not a hazard or safety rating** — a high score means "lots of relevant test evidence exists", not "this material is dangerous/safe". The weights are product hypotheses pending domain-expert review.`,
+    pathways: [
+      { label: "Scenario Ranking", href: "/insights", badge: "RANKING", description: "Ranked investigations with per-criterion points" },
+      { label: "Ranking on the home page", href: "/", badge: "HOME", description: "Best scenario fit with the explainer" },
+      { label: "Explorer: sort by scenario fit", href: "/explorer", badge: "EXPLORE", description: "Every result shows its scenario rank" },
+    ],
+  },
+  {
+    // Scenarios & target atmospheres
+    match: /\b(scenarios?|target atmospheres?|which atmosphere|atmosphere targets?)\b/i,
+    summary: `The app ranks evidence against four **application scenarios**, each with a target atmosphere taken only from official sources:
+
+• **Lunar habitat (Moon Base)** — O₂ **≥ 30 %**, pressure **≤ 10.2 psi** (official challenge brief).
+• **Pressurized lunar rover** — same expectation as the Moon Base (the brief groups them).
+• **Spacecraft / space station cabin** — ISS "air": nominally **21 % O₂ at one atmosphere** (NASA ISS combustion guide); the app counts 20–22 % O₂ and 14.2–15.2 psi as a match (a stated team tolerance, not a NASA value).
+• **Mars surface habitat** — the resources name Martian bases as a target environment but give no numeric atmosphere, so no numeric target is claimed.
+
+Remember: PSI has **no partial-gravity combustion data yet**, so microgravity results don't directly establish Moon or Mars behaviour.`,
+    pathways: [
+      { label: "Scenario Ranking", href: "/insights", badge: "RANKING" },
+      { label: "Lunar & Martian Partial Gravity", href: "/lunar", badge: "LUNAR" },
+      { label: "Coverage Matrix", href: "/coverage", badge: "COVERAGE" },
+    ],
+  },
+  {
+    // What is combustion science
+    match: /\bcombustion science\b|\bwhat (is|are) combustion\b|\bdefin\w* (of )?combustion\b|\bcombustion\b.{0,20}\b(mean|meaning|definition)\b|\bexplain combustion\b/i,
+    summary: `**Combustion science** is the study of how things burn — the chemistry and physics of fuel reacting with an oxidizer (usually oxygen) to release heat and light.
+
+It looks at questions like:
+• **Ignition** — what it takes for a material to catch fire (temperature, oxygen level, heat source).
+• **Flame spread** — how fast and in which direction a flame moves over a surface.
+• **Extinction** — when and why flames go out (too little oxygen, too much heat loss, airflow too weak or too strong).
+• **Products** — soot, smoke and toxic gases a fire produces.
+
+**Why NASA studies it in microgravity**: on Earth, hot gases rise (buoyancy), which feeds flames fresh oxygen and gives them their teardrop shape. In space there's no "up", so flames become round, slower and dominated by diffusion and ventilation airflow. Removing gravity lets scientists see the underlying physics clearly — and it's essential for **fire safety on spacecraft, the ISS, and future Moon and Mars habitats**.
+
+NASA's Physical Sciences Informatics (PSI) system archives these experiments (e.g. **BASS**, **Saffire**, **FLEX**, **ACME**), and this app lets you explore that evidence.`,
+    pathways: [
+      { label: "3D Fire Dynamics Explorer", href: "/fire-dynamics", badge: "3D TOOL", description: "Fire Tetrahedron in 0g vs 1g" },
+      { label: "Learning FireLab", href: "/firelab", badge: "LEARN", description: "Hands-on BASS-II experiment" },
+      { label: "Evidence Explorer", href: "/explorer", badge: "EXPLORE", description: "24 NASA combustion investigations" },
+    ],
+  },
+  {
+    // Why study fire in space
+    match: /\bwhy (does|do|did|would) nasa (study|research|test|burn|care)\b|\bwhy (study|research|test) (fire|flames?|combustion) in (space|microgravity|orbit)\b|\bwhy (is|are) (fire|spacecraft fire) (so )?dangerous\b/i,
+    summary: `NASA studies fire in microgravity for two reasons:
+
+• **Crew safety**: a fire on a spacecraft is one of the most dangerous emergencies — there's nowhere to evacuate, the air supply is limited, and smoke doesn't rise to a ceiling. Apollo 1 (1967) and the Mir fire (1997) showed how serious it can be.
+• **Better science**: removing buoyancy reveals combustion physics that gravity normally hides, like spherical flames and "cool flames" discovered in the FLEX droplet experiments.
+
+The results shape material selection, ventilation design, smoke detection and suppression for the ISS, Artemis and future lunar and Martian habitats.`,
+    pathways: [
+      { label: "SpaceFire Evolution", href: "/spacefire", badge: "HISTORY", description: "50 years of spacecraft fire safety" },
+      { label: "Fire Safety Insights", href: "/insights", badge: "INSIGHTS" },
+    ],
+  },
+  {
+    // Data sources / PSI
+    match: /\bwhat is (the )?psi\b|\bphysical sciences informatics\b|\b(data ?sources?|sources? of (the )?data|corpus)\b|\bwhere (does|do|did) (the|this|your|all the) (data|information|evidence|answers?) come from\b|\bwhat (data|sources?) (do|does) (you|dr\.? spark|the app|this app) use\b/i,
+    summary: `All data comes from **official NASA Space Apps challenge resources** — nothing from the open web:
+
+• **NASA PSI (Physical Sciences Informatics)** — NASA's public archive of space-station physical-science experiments. The app indexes **24 PSI Combustion Science records** (19 microgravity + 5 ground/modeling studies) and all of their experimental test tables.
+• **NASA fact sheets** (8) and the **Researcher's Guide** to combustion in reduced gravity on the ISS.
+• **The challenge brief** (scenario targets such as the Moon Base atmosphere).
+• **Historical incident pages** (Apollo 1, Apollo 13, Mir), NASA spinoff pages, the NASA Combustion Science page and the challenge guidance video transcript.
+
+Every answer cites the exact record, field, table row or page it came from, and if the sources can't answer a question, I say so instead of guessing.`,
+    pathways: [
+      { label: "Evidence Explorer", href: "/explorer", badge: "EXPLORE", description: "Browse all indexed investigations" },
+      { label: "Beyond PSI", href: "/beyond-psi", badge: "PROGRAMS", description: "Programs named by NASA but not in PSI" },
+    ],
+  },
+  {
+    // How Dr. Spark / the assistant works, reliability
+    match: /\bhow do (you|dr\.? spark) (work|answer|know|find)\b|\bwhere do you get\b|\b(are you|is dr\.? spark|is (this|the) (ai|assistant)) (accurate|reliable|correct|trustworthy)\b|\bcan i trust\b|\bhallucinat\w*\b|\bhow (are|is) (the )?(answers?|citations?) (made|generated|produced)\b|\bwhat (are|is) (the )?(\[?s\d\]?|citations?)\b/i,
+    summary: `Here's how I answer:
+
+1. **Scope check** — I only handle questions about microgravity combustion, NASA's PSI evidence, and this app.
+2. **Built-in knowledge** — core concepts (PMMA, cool flames, flame spread, how rankings work…) are answered instantly from curated explanations.
+3. **Computed answers** — data questions ("how many tests used PMMA?") are computed directly from the PSI tables.
+4. **Retrieval** — otherwise I search the indexed NASA sources and, if an AI model is enabled, summarise **only those sources**, with a citation like **[S1]** on every fact.
+5. **Abstain** — if the evidence is weak or missing, I say so rather than invent an answer. Numbers not found in any source are flagged.
+
+So: trust the citations, click through to the primary record for anything important, and remember this is **decision support, not a safety certification**.`,
+    pathways: [
+      { label: "Deep Research (Ask page)", href: "/assistant", badge: "RESEARCH", description: "Full answers with sources" },
+      { label: "AndroFlame architecture", href: "/androflame", badge: "ABOUT" },
+    ],
+  },
+  {
+    // AI model / bring your own key
+    match: /\b(byok|bring your own key|own (groq |api )?key|which (ai|model|llm)|what (ai|model|llm)|(ai|llm) (model|provider)|groq|gpt[- ]?oss|ai settings)\b/i,
+    summary: `**AI model**: optional AI summaries use **GPT OSS 120B on Groq**. Without any AI model the app still works — it gives **computed direct answers** from the PSI tables plus the retrieved sources.
+
+**Bring your own key (optional)**: on the **AI Settings** page you can paste your own Groq key. It is:
+• kept only in **your browser tab** (sessionStorage, cleared when you close the tab);
+• sent over HTTPS **only** with AI requests (questions and investigation overviews);
+• used for that one request — never stored, logged or returned by the server.
+
+(I can't share the project's own keys or any internal configuration.)`,
+    pathways: [
+      { label: "AI Settings", href: "/settings", badge: "SETTINGS" },
+      { label: "Deep Research (Ask page)", href: "/assistant", badge: "RESEARCH" },
+    ],
+  },
+  {
+    // Limitations / certification / safety rating
+    match: /\b(limitations?|certif\w*|safety rating|hazard (score|rating)|is (it|this) a (safety|hazard)|caveats?|disclaimer)\b/i,
+    summary: `Important limits of **Flame in Freefall**:
+
+• **Decision support / discovery only** — not a certified fire-risk calculator, materials qualification system, or spacecraft safety authority. No result certifies a material as safe.
+• **Scenario fit ≠ hazard**: a high ranking means "lots of relevant test evidence", not "dangerous" or "safe".
+• **No partial-gravity data**: PSI has no Moon/Mars-gravity combustion data yet; microgravity results don't directly establish lunar or Martian behaviour (future experiments like LUCI and FM2 aim to fill this gap).
+• **Indexed sources only**: answers come from the official challenge resources; if they don't cover something, the app says so.`,
+    pathways: [
+      { label: "Lunar & Martian Partial Gravity", href: "/lunar", badge: "LUNAR" },
+      { label: "Coverage Matrix", href: "/coverage", badge: "COVERAGE" },
+    ],
+  },
+  {
+    // Coverage matrix
+    match: /\bcoverage( matrix)?\b|\bhas (work|research|testing) (already )?been done\b|\b(gap|gaps) in (the )?(data|evidence|research)\b/i,
+    summary: `The **Coverage Matrix** answers *"has work already been done for these parameters?"*
+
+You pick conditions — material, oxygen %, pressure, airflow, gravity regime, hardware, measurement type — and each investigation is marked **matched / mismatched / unknown** per parameter. Run-level conditions (material, O₂, pressure, airflow) must all hold on the **same test run**, and unknown never counts as a match. The overlap score is matched ÷ requested for the best run.
+
+It only says what the indexed catalog documents — it never claims work doesn't exist anywhere.`,
+    pathways: [
+      { label: "Coverage Matrix", href: "/coverage", badge: "COVERAGE" },
+      { label: "Evidence Explorer", href: "/explorer", badge: "EXPLORE" },
+    ],
+  },
+  {
+    // App pages / features tour
+    match: /\b(what (pages|features|tools|sections) (are there|does (this|the) app have|can i use)|list (of )?(the )?(pages|features|tools)|tour of (the|this) (app|site)|what can i do (here|on this site|in this app))\b/i,
+    summary: `Here's a quick tour of **Flame in Freefall**:
+
+• **Learning FireLab** — hands-on BASS-II ISS experiment and flame-front extraction.
+• **Fire Dynamics Explorer** — interactive 3D Fire Tetrahedron, 0g vs 1g, linked to NASA evidence.
+• **Catalog Explorer** — search and filter the 24 NASA combustion investigations and their test tables.
+• **Coverage Matrix** — check which O₂ / pressure / airflow / material combinations have been tested.
+• **Compare Studies** — side-by-side multi-study comparison.
+• **Scenario Ranking** — research-fit scores for Lunar, Mars and ISS scenarios.
+• **SpaceFire Evolution** — 50-year timeline of spacecraft fire safety.
+• **Beyond PSI** — NASA programs named in the resources but not in PSI.
+• **Ask (Deep Research)** — full cited answers from the NASA sources.`,
+    pathways: [
+      { label: "Learning FireLab", href: "/firelab", badge: "LEARN" },
+      { label: "Catalog Explorer", href: "/explorer", badge: "EXPLORE" },
+      { label: "Scenario Ranking", href: "/insights", badge: "RANKING" },
+    ],
+  },
+  {
+    // Space Apps challenge / project origin
+    match: /\b(space apps|hackathon|which challenge|what challenge|who (built|made|created|developed) (this|the) (app|site|project|website)|about (this|the) project|what is this project)\b/i,
+    summary: `**Flame in Freefall** was built for the **2026 NASA Space Apps Challenge** (the *Flame in Freefall* fire-safety challenge)
+
+It's a research-discovery dashboard over NASA's PSI combustion investigations that helps researchers answer *"has work already been done for these parameters?"* — inspecting, comparing and ranking experiments by research relevance, and asking evidence-grounded questions with citations.`,
+    pathways: [
+      { label: "AndroFlame introduction", href: "/androflame", badge: "ABOUT" },
+      { label: "Catalog Explorer", href: "/explorer", badge: "EXPLORE" },
+    ],
+  },
+];
+
+/** Answer questions about the project itself (rankings, data sources, limits, pages) and combustion-science basics. */
+export function getProjectAnswer(query: string): GeneralConcept | null {
+  const q = query.trim();
+  for (const c of PROJECT_FAQ) {
+    if (c.match.test(q)) return c;
+  }
+  return null;
+}
+
 /** Check if the query matches a known generalized fire science concept */
 export function getGeneralConcept(query: string): GeneralConcept | null {
   const q = query.trim();
@@ -308,10 +511,21 @@ export function getConversationalReply(query: string): ConversationalReply | nul
     };
   }
 
-  // Help / What can you do
-  if (/^(help|what can you do|how to use|features|commands|options)$/.test(q)) {
+  // How are you
+  if (/\bhow are you\b|\bhow'?s it going\b/.test(q)) {
     return {
-      text: "Here is what I can do for you:\n\n• **Direct Facts & Data**: Ask about fuel samples, test points, or conditions (e.g. *\"Where are PMMA tests?\"* or *\"How many samples in Saffire-II?\"*)\n• **Microgravity Combustion Physics**: Ask about flame spread, spherical flames, or extinction limits.\n• **In-App Pathways**: Ask where to find specific tools (3D Fire Tetrahedron, Comparison, Coverage, Lunar partial gravity).",
+      text: "I'm running hot — like a well-ventilated flame! 🔥 What would you like to explore: combustion science, NASA's PSI experiments, or how this app works?",
+      pathways: [
+        { label: "Evidence Explorer", href: "/explorer", badge: "EXPLORE" },
+        { label: "Scenario Ranking", href: "/insights", badge: "RANKING" },
+      ],
+    };
+  }
+
+  // Help / What can you do
+  if (/^(help|what can you do|what do you do|how (do i|to) use (you|this)|how to use|features|commands|options)$/.test(q)) {
+    return {
+      text: "Here is what I can do for you:\n\n• **Combustion Science**: Ask about flame spread, spherical flames, cool flames, extinction limits (e.g. *\"What is combustion science?\"*)\n• **NASA Evidence & Data**: Ask about fuels, test points or conditions (e.g. *\"Where are PMMA tests?\"* or *\"How many samples in Saffire-II?\"*)\n• **How the App Works**: Ask how the rankings are made, where the data comes from, or what the Coverage Matrix does.\n• **In-App Pathways**: Ask where to find specific tools (3D Fire Tetrahedron, Comparison, Coverage, Lunar partial gravity).\n\nI stick to this project — I won't answer unrelated questions or share any keys or internal configuration.",
       pathways: [
         { label: "3D Fire Dynamics Explorer", href: "/fire-dynamics", badge: "3D TOOL" },
         { label: "Compare Investigations", href: "/compare", badge: "COMPARE" },

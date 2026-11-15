@@ -14,6 +14,18 @@ interface AppItem {
 
 const RESEARCH_APPS: AppItem[] = [
   {
+    href: "/fire-dynamics",
+    title: "Fire Dynamics Explorer",
+    desc: "Fire Tetrahedron → NASA experiment evidence",
+    category: "Science",
+    color: "#E43700",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3 2.5 20h19Z" /><path d="M7.25 11.5h9.5" /><path d="M7.25 11.5 12 20l4.75-8.5" />
+      </svg>
+    ),
+  },
+  {
     href: "/explorer",
     title: "Catalog Explorer",
     desc: "24 NASA flight investigations & tables",

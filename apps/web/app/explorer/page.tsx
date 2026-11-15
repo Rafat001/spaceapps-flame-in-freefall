@@ -9,7 +9,7 @@ import { CondCell, ErrorBox, EvidenceLabel, Loading, Notice, PageHead } from "@/
 import { Markdown, citeHref } from "@/components/Markdown";
 import { assistantHeaders } from "@/lib/byok";
 
-const FIELDS = ["q", "family", "fuel_class", "topic", "measurement_type", "material", "hardware", "platform", "lens", "oxygen_min", "oxygen_max",
+const FIELDS = ["q", "family", "fuel_class", "topic", "measurement_type", "material", "hardware", "platform", "gravity_regime", "lens", "oxygen_min", "oxygen_max",
   "pressure_min", "pressure_max", "pressure_unit", "airflow_min", "airflow_max", "airflow_unit", "sort", "scenario"] as const;
 
 function Explorer() {

@@ -1012,3 +1012,62 @@ a.cite-ref:hover { color: var(--accent); text-decoration: underline; }
 .rank-explainer ul { margin: 8px 0 4px; padding-left: 18px; font-size: .84rem; color: var(--ash); line-height: 1.55; }
 .rank-explainer li { margin: 3px 0; }
 .entry-reason { margin: 8px 0 0; }
+
+/* ---------- Fire Dynamics Explorer (/fire-dynamics) ---------- */
+.fd-stage { display: grid; grid-template-columns: minmax(280px, 420px) minmax(0, 1fr); gap: 40px; align-items: start; margin: 8px 0 32px; }
+@media (max-width: 860px) { .fd-stage { grid-template-columns: 1fr; gap: 24px; } }
+.fd-tetra { margin: 0; }
+.fd-tetra svg { width: 100%; height: auto; display: block; overflow: visible; }
+.fd-face { cursor: pointer; outline: none; }
+.fd-face polygon { opacity: .38; stroke: var(--deep-blue); stroke-width: 3; stroke-linejoin: round; transition: opacity .15s ease; }
+.fd-face:hover polygon { opacity: .7; }
+.fd-face.on polygon { opacity: 1; stroke: var(--accent); stroke-width: 4; }
+.fd-face:focus-visible polygon { stroke: var(--focus); stroke-width: 4; stroke-dasharray: 8 5; opacity: .85; }
+.fd-face.on:focus-visible polygon { stroke-dasharray: none; }
+.fd-face.on { filter: drop-shadow(0 0 10px rgba(234, 254, 7, .25)); }
+.fd-face-name { font-family: var(--f-display); font-weight: 900; font-size: 21px; fill: var(--white); pointer-events: none; letter-spacing: .01em; }
+.fd-face-tick { font-family: var(--f-mono); font-size: 11px; fill: var(--accent); pointer-events: none; letter-spacing: .06em; text-transform: uppercase; }
+.fd-fold { fill: none; stroke: var(--deep-blue); stroke-width: 1.5; stroke-dasharray: 5 5; pointer-events: none; opacity: .9; }
+@media (prefers-reduced-motion: reduce) { .fd-face polygon { transition: none; } }
+
+.fd-paths { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
+.fd-paths > p { flex-basis: 100%; margin: 0; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .08em; font-size: .7rem; }
+.fd-path { min-height: 36px; padding: 6px 12px; font-size: .86rem; }
+
+.fd-panel { border-left: 1px solid var(--rule); padding-left: 28px; }
+@media (max-width: 860px) { .fd-panel { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 18px; } }
+.fd-element + .fd-element { border-top: 1px solid var(--rule); margin-top: 18px; padding-top: 18px; }
+.fd-element-name { margin: 0 0 6px; font-size: 1.35rem; padding-left: 12px; border-left: 4px solid var(--rule-strong); }
+.fd-element-fuel .fd-element-name { border-left-color: var(--martian-red); }
+.fd-element-heat .fd-element-name { border-left-color: var(--rocket-red); }
+.fd-element-oxidizer .fd-element-name { border-left-color: var(--blue-yonder); }
+.fd-element-reaction .fd-element-name { border-left-color: var(--neon-blue); }
+.fd-vars .chip { display: inline-block; margin: 2px 4px 2px 0; }
+
+.fd-env { margin: 0 0 36px; }
+.fd-env-actions { display: flex; align-items: flex-end; padding-top: 8px; }
+.fd-env-actions .btn, .fd-env-actions button { width: 100%; }
+@media (max-width: 760px) { .fd-env .console-grid { grid-template-columns: 1fr 1fr; } .fd-env .console-grid > div:empty { display: none; } }
+
+.fd-evidence { margin-bottom: 40px; }
+.fd-example { border: 1px solid var(--rule-strong); padding: 22px 22px 8px; }
+.fd-example .kicker { margin: 0 0 4px; }
+.fd-example-title { margin: 0 0 6px; font-size: 1.6rem; }
+.fd-question { font-size: 1.08rem; color: var(--ink-2); font-style: italic; margin: 0 0 8px; }
+.fd-example h4 { margin: 22px 0 8px; font-size: 1rem; }
+.fd-quote { margin: 0 0 10px; }
+.fd-map tr.fd-map-on th { color: var(--accent); }
+.fd-map tr.fd-map-on th::before { content: "● "; }
+.fd-psi { margin: 0 0 24px; }
+.fd-psi h4 { margin-top: 10px; }
+.fd-runs { margin-top: 10px; }
+.fd-runs .table-wrap { max-height: 460px; overflow: auto; }
+.fd-example-list { list-style: none; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.fd-example-list button { width: 100%; justify-content: space-between; margin-bottom: 6px; }
+
+.fd-gravity { margin: 0 0 32px; }
+.fd-gravity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+@media (max-width: 640px) { .fd-gravity-grid { grid-template-columns: 1fr; } }
+.fd-gravity figure { margin: 0; border: 1px solid var(--rule); padding: 16px; }
+.fd-gravity svg { width: 100%; max-width: 200px; height: auto; display: block; margin: 0 auto 10px; }
+.fd-gravity figcaption { color: var(--ink-2); font-size: .95rem; }

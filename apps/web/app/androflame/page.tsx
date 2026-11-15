@@ -53,6 +53,13 @@ const INSTRUMENTS = [
     tagline: "External flight tests & complementary flight programs",
     desc: "Index of international and commercial microgravity combustion projects (Saffire, Sounding Rockets, Drop Towers, and ESA/JAXA collaborations).",
   },
+  {
+    href: "/fire-dynamics",
+    title: "Fire Dynamics Explorer",
+    badge: "08 · Science",
+    tagline: "Interactive 3D Fire Tetrahedron linked to NASA test records",
+    desc: "Select fuel, heat, oxidizer or chain-reaction faces, set gravity, O₂ and airflow, and follow guided pathways into BASS-II, SoFIE and Saffire experiment data.",
+  },
 ];
 
 const TEAM_MEMBERS = [
@@ -162,7 +169,7 @@ export default function AndroFlamePage() {
       <section className="intro-panel" aria-labelledby="tips-title">
         <h2 id="tips-title" className="intro-panel-title">Tips and Tricks (Top Module Guide by Researcher Level)</h2>
         <p>
-          The navigation bar and the <strong>Apps</strong> menu at the top of the interface provide 6 specialized research modules. Here is how different levels of researchers can get the most value from each module:
+          The navigation bar and the <strong>Apps</strong> menu at the top of the interface provide 7 specialized research modules. Here is how different levels of researchers can get the most value from each module:
         </p>
 
         <div className="tips-levels-grid">
@@ -173,6 +180,12 @@ export default function AndroFlamePage() {
               Focus on fundamental physical differences and historical context:
             </p>
             <ul className="tips-modules-list">
+              <li>
+                <Link href="/fire-dynamics" className="tips-module-link">
+                  <span className="tips-module-name">Fire Dynamics Explorer ↗</span>
+                  <span className="tips-module-desc">Learn the Fire Tetrahedron in 3D, then see how each face shows up in real NASA microgravity experiments.</span>
+                </Link>
+              </li>
               <li>
                 <Link href="/spacefire" className="tips-module-link">
                   <span className="tips-module-name">SpaceFire Evolution ↗</span>
@@ -246,7 +259,7 @@ export default function AndroFlamePage() {
         </div>
       </section>
 
-      {/* Row 5: All 7 Research Instruments */}
+      {/* Row 5: All 8 Research Instruments */}
       <section style={{ margin: "40px 0" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: "10px", marginBottom: "18px" }}>
           <div>

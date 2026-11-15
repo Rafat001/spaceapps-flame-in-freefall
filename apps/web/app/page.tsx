@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import { PointsLine, RankingExplainer, TargetAtmosphere } from "@/components/RankingExplainer";
 import Mark from "@/components/Mark";
 import { SpaceFireTeaser } from "@/components/SpaceFire";
+import { VideoTour } from "@/components/VideoTour";
 import { Disclaimer, ErrorBox, EvidenceLabel, Loading } from "@/components/ui";
 
 const TRY = ["PMMA flame spread", "smoke detection", "BASS-II"];
@@ -55,6 +56,8 @@ export default function Home() {
           </dl>
         </aside>
       </section>
+
+      <VideoTour />
 
       <SpaceFireTeaser />
 

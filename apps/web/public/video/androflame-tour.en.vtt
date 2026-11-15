@@ -1,0 +1,189 @@
+WEBVTT
+
+1
+00:00:00.600 --> 00:00:04.219
+Fire in space doesn't behave like fire on Earth.
+
+2
+00:00:04.219 --> 00:00:06.858
+Without gravity, flames don't rise.
+
+3
+00:00:06.858 --> 00:00:09.496
+They burn as slow, glowing spheres,
+
+4
+00:00:09.496 --> 00:00:13.794
+and understanding that is key to keeping astronauts safe.
+
+5
+00:00:13.794 --> 00:00:19.147
+This is AndroFlame, our project for the 2026 NASA Space Apps Challenge:
+
+6
+00:00:19.147 --> 00:00:20.504
+Flame in Freefall.
+
+7
+00:00:21.600 --> 00:00:24.461
+Everything starts on the AndroFlame tab.
+
+8
+00:00:24.461 --> 00:00:29.897
+Our mission is to take fifty years of NASA microgravity combustion research,
+
+9
+00:00:29.897 --> 00:00:34.261
+twenty-four investigations and nearly two thousand test runs,
+
+10
+00:00:34.261 --> 00:00:37.122
+and turn it into answers anyone can use.
+
+11
+00:00:37.122 --> 00:00:41.414
+This page also explains who the platform is for, its limits,
+
+12
+00:00:41.414 --> 00:00:43.488
+and which tools to try first.
+
+13
+00:00:44.438 --> 00:00:45.578
+New to space fire?
+
+14
+00:00:45.578 --> 00:00:47.605
+Open the New in Space Fire menu.
+
+15
+00:00:47.605 --> 00:00:51.658
+The Learning FireLab puts you in the shoes of a NASA researcher.
+
+16
+00:00:51.658 --> 00:00:56.598
+In the FLEX droplet lab, you'll see why a flame on Earth is a rising teardrop,
+
+17
+00:00:56.598 --> 00:00:59.512
+but in orbit it becomes a near-perfect sphere.
+
+18
+00:00:59.512 --> 00:01:04.388
+You watch the flame, change a condition, and measure the droplet as it burns.
+
+19
+00:01:04.388 --> 00:01:09.455
+A second lab, BASS two, lets you design a solid fuel experiment and compare your
+
+20
+00:01:09.455 --> 00:01:12.875
+results with real flight tests from the space station.
+
+21
+00:01:13.825 --> 00:01:19.049
+The Fire Dynamics Explorer teaches the basics with an interactive 3D fire
+
+22
+00:01:19.049 --> 00:01:23.200
+tetrahedron: fuel, heat, oxidizer, and the chain reaction.
+
+23
+00:01:23.200 --> 00:01:26.062
+Pick a face, or follow a guided pathway,
+
+24
+00:01:26.062 --> 00:01:30.785
+and it links you straight to the NASA experiments that studied it.
+
+25
+00:01:31.735 --> 00:01:34.098
+To dig deeper, open the Apps menu.
+
+26
+00:01:34.098 --> 00:01:39.727
+The Catalog Explorer searches all twenty-four investigations by material, oxygen,
+
+27
+00:01:39.727 --> 00:01:41.256
+pressure, and airflow.
+
+28
+00:01:41.256 --> 00:01:46.746
+Tick a few studies, and Compare Studies lines them up side by side: conditions,
+
+29
+00:01:46.746 --> 00:01:50.915
+hardware, fuels, and measurements, with gaps clearly marked.
+
+30
+00:01:50.915 --> 00:01:53.903
+The Coverage Matrix answers a key question:
+
+31
+00:01:53.903 --> 00:01:56.891
+has anyone already tested these conditions?
+
+32
+00:01:56.891 --> 00:02:01.686
+Enter a lunar habitat atmosphere, and it shows which test rows match,
+
+33
+00:02:01.686 --> 00:02:03.285
+and where the gaps are.
+
+34
+00:02:03.285 --> 00:02:08.913
+Scenario Ranking then scores each study for the Moon, Mars, or the space station.
+
+35
+00:02:09.863 --> 00:02:13.445
+The Ask tab lets you question the evidence directly.
+
+36
+00:02:13.445 --> 00:02:16.959
+Every answer is computed from the actual NASA data,
+
+37
+00:02:16.959 --> 00:02:21.712
+with numbered citations that point back to the exact table row, page,
+
+38
+00:02:21.712 --> 00:02:23.021
+or video timestamp.
+
+39
+00:02:23.021 --> 00:02:28.807
+And if the records can't answer a question, the system says so, instead of guessing.
+
+40
+00:02:29.757 --> 00:02:32.213
+Finally, on every page, there's Dr.
+
+41
+00:02:32.213 --> 00:02:34.037
+Spark, a friendly chatbot.
+
+42
+00:02:34.037 --> 00:02:39.159
+Ask it anything, from simple fire science to where a material was tested,
+
+43
+00:02:39.159 --> 00:02:44.773
+and it answers with sources, then suggests pathways to the right tool inside the
+
+44
+00:02:44.773 --> 00:02:45.053
+app.
+
+45
+00:02:46.500 --> 00:02:51.017
+AndroFlame turns decades of NASA flight data into clear, cited,
+
+46
+00:02:51.017 --> 00:02:56.897
+and explorable knowledge, helping the next generation of explorers keep fire under
+
+47
+00:02:56.897 --> 00:02:58.617
+control, beyond gravity.

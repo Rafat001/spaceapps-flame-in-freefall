@@ -1,2 +1,3 @@
 2026-11-13T12:00:00-05:00
 19 microgravity records first fetched 2026-11-10 and re-fetched 2026-11-13 (byte-identical); 5 ground records fetched 2026-11-13.
+2026-11-15: PSI-108 and PSI-181 fetched into adjacent/ (the two non-combustion hits in the PSI web search "combustion", 26 results). Analyzed Data for PSI-39 (32 files) and PSI-47 (12 files) downloaded into analyzed/; every file size matches its record. Research-area listing re-checked: still 24 Combustion Science records.

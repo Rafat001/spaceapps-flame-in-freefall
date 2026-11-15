@@ -14,18 +14,6 @@ interface AppItem {
 
 const NEW_IN_SPACE_FIRE_APPS: AppItem[] = [
   {
-    href: "/firelab",
-    title: "Learning FireLab",
-    desc: "Hands-on BASS-II ISS experiment & flame-front extraction",
-    category: "Interactive Lab",
-    color: "#EAFE07",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0" /><path d="M5.52 16h12.96" />
-      </svg>
-    ),
-  },
-  {
     href: "/fire-dynamics",
     title: "Fire Dynamics Explorer",
     desc: "Fire Tetrahedron → NASA experiment evidence",
@@ -34,6 +22,18 @@ const NEW_IN_SPACE_FIRE_APPS: AppItem[] = [
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 3 2.5 20h19Z" /><path d="M7.25 11.5h9.5" /><path d="M7.25 11.5 12 20l4.75-8.5" />
+      </svg>
+    ),
+  },
+  {
+    href: "/firelab",
+    title: "Learning FireLab",
+    desc: "Hands-on BASS-II ISS experiment & flame-front extraction",
+    category: "Interactive Lab",
+    color: "#EAFE07",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0" /><path d="M5.52 16h12.96" />
       </svg>
     ),
   },

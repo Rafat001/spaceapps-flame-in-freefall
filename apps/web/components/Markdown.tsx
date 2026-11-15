@@ -58,3 +58,5 @@ export function Markdown({ text, className = "", citations }: { text: string; cl
     </div>
   );
 }
+
+export default Markdown;

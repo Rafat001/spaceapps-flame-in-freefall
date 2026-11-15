@@ -61,6 +61,24 @@ Rules you must follow:
    facts from general knowledge (no gravity levels, dates, values or names that are not in the sources). Be concise (<= 250 words), use Markdown bullets, no tables."""
 
 
+# Questions that try to extract credentials or configuration, or to override the assistant's instructions. These are
+# refused before retrieval or any model call (the chatbot also refuses them client-side; this is the server backstop).
+RESTRICTED_QUESTION_PATTERNS = [
+    r"\b(your|ur|the|this|server'?s?|admin|backend|system|app'?s?|site'?s?|project'?s?|groq|openai|anthropic|gemini)\b"
+    r"(?:\s+\w+){0,2}\s+(api[ _-]?keys?|access[ _-]?keys?|secret[ _-]?keys?|tokens?|passwords?|credentials?|"
+    r"env(?:ironment)?\s+(?:vars?|variables?)|\.env|config(?:uration)?\s+files?)\b",
+    r"\b(GROQ|OPENAI|ANTHROPIC|GEMINI)_API_KEY\b|\bADMIN_TOKEN\b|\bX-(LLM-Key|Admin-Token)\b",
+    r"\b(system|hidden|initial|developer)\s+prompt\b|\byour\s+(prompt|instructions)\b",
+    r"\b(ignore|disregard|forget|override)\b.{0,30}\b(previous|prior|above|earlier|all|your)\b.{0,20}\b(instructions?|rules?|prompts?)\b",
+]
+RESTRICTED_ANSWER = ("I can't help with that. I only answer questions about NASA microgravity combustion evidence and this "
+                     "app, and I never share keys, tokens, passwords, prompts or internal configuration.")
+
+
+def is_restricted_question(q: str) -> bool:
+    return any(re.search(p, q, flags=re.I) for p in RESTRICTED_QUESTION_PATTERNS)
+
+
 def sanitize(text_: str) -> tuple[str, bool]:
     flagged = False
     out = text_
@@ -172,6 +190,10 @@ def ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: i
 def _ask(session: Session, question: str, llm: LLMProvider, embedder, index, k: int = 6,
          investigation_ids: list[str] | None = None) -> dict:
     q = question.strip()
+    if is_restricted_question(q):
+        return {"question": q, "citations": [], "policy_notes": [], "llm": llm.health(), "retrieval": {},
+                "mode": "abstained", "abstained": True, "refused": True, "abstain_reason": "restricted request",
+                "answer": RESTRICTED_ANSWER, "answer_label": label("computed")}
     doi_out = _doi_answer(session, q, llm, k)
     if doi_out is not None:
         return doi_out

@@ -84,7 +84,7 @@ export function resolveConversationContext(
   // Determine active topic cleanly
   // If recentConcept is present (e.g. CFD, cool flames), that is the primary concept
   // Otherwise combine experiment acronym and fuel (e.g. "BASS PMMA")
-  let activeTopic = recentConcept;
+  let activeTopic: string | undefined = recentConcept || undefined;
   if (!activeTopic) {
     const parts = [recentAcronym, recentFuel].filter(Boolean);
     activeTopic = parts.length > 0 ? parts.join(" ") : undefined;

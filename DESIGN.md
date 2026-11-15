@@ -1,7 +1,8 @@
 # DESIGN.md — High-level architecture
 
 Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion Data  
-2026 NASA Space Apps Challenge · independent participant project (not affiliated with or endorsed by NASA)
+2026 NASA Space Apps Challenge · independent participant project (not affiliated with or endorsed by NASA)  
+Live app: https://spaceapps-flame-in-freefall.vercel.app/
 
 This document describes how the running app is put together. Every statement is grounded in the current code and config. For local setup commands, see [README.md](README.md). For the investigation-page AI overview in more detail, see [docs/AI_OVERVIEW.md](docs/AI_OVERVIEW.md). [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) is a one-page summary of this file (the 10 November 2026 first draft it replaced is in git history).
 
@@ -17,7 +18,7 @@ It is decision support only — not a certified fire-risk calculator, materials 
 
 Every indexed item carries a `provenance` field (`resource`, `reference` with its parent resource, or `user_supplied_guide`), enforced by `apps/api/tests/test_provenance.py`. Saved copies and SHA-256 checksums are in `data/sources/official/MANIFEST.md`.
 
-**Corpus (as loaded at ingest).** 24 PSI Combustion Science records (19 microgravity + 5 ground/modeling) and all of their experimental tables; 8 NASA fact sheets and the Researcher's Guide, chunked per page; the challenge brief; Apollo 1, Apollo 13 and Mir pages; 3 spinoff pages; the NASA Combustion Science page and its linked FM2 / SoFIE / FLARE pages; the guidance-video transcript. Raw PSI zip and video archives are listed as metadata and linked out; they are not hosted or ingested (`LINK_ONLY` in `apps/api/app/ingest/official_sources.py`).
+**Corpus (as loaded at ingest).** 24 PSI Combustion Science records (19 microgravity + 5 ground/modeling) and all of their experimental tables; PSI "Analyzed Data" for CFI (PSI-39 per-test summary PDFs, text extracted once into `data/sources/psi/analyzed_text/`) and DAFT (PSI-47 instrument workbooks), stored apart from table rows (`app/ingest/analyzed.py`); 8 NASA fact sheets and the Researcher's Guide, chunked per page; the challenge brief; Apollo 1, Apollo 13 and Mir pages; 3 spinoff pages; the NASA Combustion Science page and its linked FM2 / SoFIE / FLARE pages; the guidance-video transcript. Raw PSI zip and video archives are listed as metadata and linked out; they are not hosted or ingested (`LINK_ONLY` in `apps/api/app/ingest/official_sources.py`).
 
 ---
 
@@ -49,21 +50,24 @@ Next.js App Router + TypeScript (`output: "standalone"`). Pages are client compo
 
 | Route | Screen |
 | --- | --- |
-| `/` | Home: lead lunar coverage teaser, catalog stats, search box (goes to Explorer), top ranked investigations |
+| `/` | Home: search box (goes to Explorer), catalog stats, narrated project tour video (`components/VideoTour.tsx`), SpaceFire teaser, top ranked investigations, reference atmospheres |
 | `/androflame` | Intro / product story (`/intro` is an alias) |
+| `/fire-dynamics` | Fire Dynamics Explorer: fire-tetrahedron faces and environment filters → official quotes and matching PSI table rows (`lib/fireDynamics.ts`) |
+| `/firelab` | Learning FireLab: browser-only hands-on labs for FLEX (PSI-69 droplet burning) and BASS-II (flame spread) using NASA experiment videos in `public/firelab`; measurements, rate fits and CSV export are computed client-side (`lib/firelabData.ts`) |
 | `/explorer` | Catalog search, filters, scenario-fit ranking (one score, highest first; reason line and points per factor), search synthesis, compare picks |
 | `/coverage` | “Has it been done?” parameter coverage form |
 | `/compare` | Side-by-side comparison of 2–3 investigations |
 | `/insights` | Scenario-fit ranking with per-criterion score breakdown |
 | `/investigations/[id]` | Investigation detail, optional AI overview (`?from_q=` or `?q=` from Explorer) |
 | `/assistant` | Ask the evidence |
-| `/earth` | Documented vs inferred Earth links; explainer quotes |
 | `/spacefire` | Spacecraft fire-safety timeline (quotes from official pages) |
 | `/beyond-psi` | Experiments and facilities the official resources name that have no PSI Combustion Science record |
 | `/lunar` | Lead lunar O2/pressure demo (chart, same-row matches). Still served; not in the current nav |
 | `/settings` | Bring-your-own Groq key (sessionStorage) and admin AI / ingest controls |
 
-The nav (`components/Nav.tsx`) groups the research tools under a menu: Explorer, Coverage, Compare, Insights, Earth, SpaceFire, Beyond PSI. AndroFlame, Assistant and Settings are top-level.
+The nav (`components/Nav.tsx`) has four entries: **AndroFlame**; an **Apps** menu (Catalog Explorer, Coverage Matrix, Compare Studies, Scenario Ranking, SpaceFire Evolution, Beyond PSI); a **New in Space Fire?** menu for beginners (Fire Dynamics Explorer, Learning FireLab); and **Ask** (`/assistant`). Settings is reached from links on the Ask page and in Dr. Spark, not from the nav. The Earth page was removed; its API endpoints remain but nothing in the web app calls them.
+
+**Dr. Spark** (`components/Chatbot.tsx`, mounted in `app/layout.tsx` on every page) is a floating chat assistant. Every question first passes `lib/sparkGuardrails.ts` (refuses harmful, prompt-injection, secrets and off-topic requests; client-side, for UX). Greetings, concept explanations and "where do I find…" questions are answered from built-in text (`lib/copilotKnowledge.ts`, `lib/queryClassifier.ts`, `lib/contextResolver.ts`) with links to app pages (`lib/pathways.ts`). Evidence questions go to `POST /api/ask` with the same BYOK headers as the Assistant, so the server-side grounding, abstention and quota rules apply unchanged.
 
 ### 3.2 API (`apps/api`)
 
@@ -85,8 +89,8 @@ FastAPI app in `app/main.py` (title “Flame in Freefall API”, version `0.1.0`
 | `GET` | `/api/rank` | Deterministic scenario-fit ranking (`sfsri-v0.5`) with reasons and a "How ranking works" explainer |
 | `POST` | `/api/compare` | Compare 2–3 investigations |
 | `GET` | `/api/lunar/points` | Countable rows with known O2 and pressure, for the lunar chart |
-| `GET` | `/api/earth` | Earth / spinoff panel |
-| `GET` | `/api/explainer` | Official-resource explainer quotes |
+| `GET` | `/api/earth` | Earth / spinoff panel (no longer used by the web app) |
+| `GET` | `/api/explainer` | Official-resource explainer quotes (no longer used by the web app) |
 | `GET` | `/api/nasa/other-experiments` | Named programmes with no PSI Combustion Science record |
 | `GET` | `/api/settings/ai` | Provider, index and limit status (no secrets) |
 | `PUT` | `/api/settings/ai` | Switch providers in memory (admin token) |
@@ -103,7 +107,7 @@ SQLAlchemy models in `app/models.py`. Default store is SQLite at `data/db/flame.
 
 | Table | What it holds |
 | --- | --- |
-| `investigations` | One PSI campaign: accession, acronym, title, family, fuel class, hardware, gravity regime, platform, DOI, topics, measurement types, lenses, provenance, file lists |
+| `investigations` | One PSI campaign: accession, acronym, title, family, fuel class, hardware, gravity regime, platform, DOI, topics, measurement types, lenses, provenance, file lists, `analyzed_data` (PSI Analyzed Data, kept apart from table rows) |
 | `documents` | PSI records, experimental-table files, publications (title/authors/DOI only), official PDFs/HTML, the brief, the guidance video |
 | `chunks` | Searchable passages: text, section, locator (`p. 26`, `CSV record 12`, `[05:54]`), `source_url`, `source_type`, `verification_status`, provenance, optional `embedding_id` |
 | `test_runs` | One experimental-table row: `row_kind` (`test`, `session`, `test_matrix`, plus notes / pre-test / continuation, which are kept but not counted), material, O2 / pressure / airflow min–max, diluents, flags, raw cells |
@@ -404,8 +408,10 @@ Equivalent scripts: `./scripts/setup.sh`, `./scripts/dev.sh`, `./scripts/test.sh
 | `test_nasa_program.py`, `test_spacefire.py` | Programme excerpts and SpaceFire quotes are verbatim |
 | `test_overview_context.py` | Dataset and publication context citations |
 | `test_endpoints.py` | Smoke: read endpoints the web app calls return 200 |
+| `test_analyzed.py` | PSI-39 CFI summary parsing, PSI-47 DAFT logs, adjacent records never seeded as investigations |
+| `test_citation_order.py` | Citations renumbered S1, S2… in order of first mention; chunks never split mid-word |
 | `test_boundaries.py`, `test_units.py` | 10.2 psi ceiling and unit parsing |
-| Web Vitest | `citeHref` / text fragments, BYOK headers, friendly errors, quota UI, titles, NASA and SpaceFire components |
+| Web Vitest | `citeHref` / text fragments, BYOK headers, friendly errors, quota status line, titles, NASA and SpaceFire components, Dr. Spark chatbot and guardrails, query classifier and context resolver, pathways, Fire Dynamics, FireLab calculations, video tour |
 
 ---
 
@@ -413,7 +419,7 @@ Equivalent scripts: `./scripts/setup.sh`, `./scripts/dev.sh`, `./scripts/test.sh
 
 Grounded in the current code, [README.md](README.md) “Current limitations”, and [docs/AI_OVERVIEW.md](docs/AI_OVERVIEW.md):
 
-- Raw PSI data archives and experiment videos are not ingested; file lists are metadata, with links out.
+- Raw PSI data archives and experiment videos are not ingested; file lists are metadata, with links out. FireLab serves three short NASA experiment clips from `apps/web/public/firelab` for its labs; they are not indexed.
 - Structured QA routes by patterns plus a generic one-investigation resolver. Unusual phrasing falls through to retrieval.
 - Sensors, topics and lenses are rule-based tags with quoted evidence. Fuel-class and ranking weights are product hypotheses for the domain lead.
 - Some experimental tables list no oxygen, pressure or airflow (for example BASS, SLICE, E-FIELD). Those fields stay Not reported, so coverage is conservative.

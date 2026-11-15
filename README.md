@@ -2,6 +2,8 @@
 
 2026 NASA Space Apps Challenge · [Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion Data](https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/?tab=details)
 
+**Live app:** https://spaceapps-flame-in-freefall.vercel.app/
+
 A research-discovery dashboard over NASA **Physical Sciences Informatics (PSI)** combustion investigations that answers
 **"has work already been done for these parameters?"** (fuel/material, oxygen, pressure, airflow, gravity regime, hardware,
 measurement type), and lets researchers inspect, compare, rank by research relevance, and ask evidence-grounded questions.
@@ -24,8 +26,9 @@ cannot answer, the assistant abstains. Every indexed item carries a `provenance`
 parent resource), enforced by `apps/api/tests/test_provenance.py`. Saved copies and SHA-256 checksums:
 `data/sources/official/MANIFEST.md`.
 
-Corpus: 24 PSI Combustion Science records (19 microgravity + 5 ground/modeling) and all their experimental tables; 8 NASA fact
-sheets and the Researcher's Guide chunked per page; the brief; Apollo 1, Apollo 13 and Mir pages; 3 spinoff pages; NASA
+Corpus: 24 PSI Combustion Science records (19 microgravity + 5 ground/modeling) and all their experimental tables; PSI
+"Analyzed Data" files for CFI (PSI-39 per-test summary PDFs) and DAFT (PSI-47 instrument workbooks), kept apart from the table
+rows; 8 NASA fact sheets and the Researcher's Guide chunked per page; the brief; Apollo 1, Apollo 13 and Mir pages; 3 spinoff pages; NASA
 Combustion Science page; guidance-video transcript.
 
 ## Quick start (local, no Docker)
@@ -99,7 +102,8 @@ overview are limited per IP (`ASK_RATE_PER_MIN=20`, `ASK_RATE_PER_DAY=300`) and 
 fails (402, 429, 5xx, timeout, empty reply) is refunded and does not count. Over the limit, the visitor still gets the
 computed answer and sources, with a notice. Counters are in memory and reset on restart. `GET /api/ask/quota` returns the
 caller's and the site's limits, remaining answers and reset times without using any quota; `POST /api/ask` returns the same
-`quota` object, shown on the Ask page as a live counter. A visitor's own key (Settings) is not limited by the site.
+`quota` object. The Ask page no longer shows a counter: it shows a status line only when the visitor uses their own key or
+AI summaries are off on the site. A visitor's own key (Settings) is not limited by the site.
 
 ### Gemini on the server (optional, not the default)
 
@@ -131,19 +135,30 @@ rebuild vectors (`make ingest` or the button in AI settings) — the API detects
 
 ## What is in the app
 
+The top nav has **AndroFlame** (intro), an **Apps** menu (Catalog Explorer, Coverage Matrix, Compare Studies, Scenario
+Ranking, SpaceFire Evolution, Beyond PSI), a **New in Space Fire?** menu (Fire Dynamics Explorer, Learning FireLab) and
+**Ask**. Settings is linked from the Ask page and from Dr. Spark, not from the nav.
+
 | Screen | API |
 | --- | --- |
-| **Lunar (lead demo, `/lunar`; still served but not linked from the current nav)** — rows meeting O2 ≥ 30 % and ≤ 10.2 psi on the same row, burner-stream toggle, closest misses, O2-vs-pressure chart, ranking agreement, partial-gravity gap | `POST /api/coverage`, `GET /api/lunar/points`, `GET /api/rank`, `GET /api/stats` |
-| **Home** — lead lunar answer, catalog stats with as-of date, search, top research-relevant investigations | `GET /api/meta`, `GET /api/rank` |
-| **Earth** — Documented vs Inferred links from spinoffs / Researcher's Guide / video to PSI investigations; explainer quotes | `GET /api/earth`, `GET /api/explainer` |
+| **Home** — search, catalog stats with as-of date, narrated ~3-minute project tour video (SI-generated, captioned), SpaceFire teaser, top scenario-fit investigations with reasons, reference atmospheres | `GET /api/meta`, `GET /api/rank` |
+| **AndroFlame** (`/androflame`, alias `/intro`) — product story and a guide to every tool | — |
+| **Fire Dynamics Explorer** (`/fire-dynamics`) — pick faces of the fire tetrahedron and environment filters, see official quotes and the PSI table rows that test them | `GET /api/investigations/{id}` |
+| **Learning FireLab** (`/firelab`) — hands-on labs for FLEX (PSI-69, droplet burning, with the NASA flight video) and BASS-II (flame spread, with experiment videos): measure from video frames, fit a rate, compare with documented runs, export CSV. Runs in the browser | — |
+| **Dr. Spark** — chat widget on every page: client-side scope guardrails, built-in explanations of concepts and app pages, and evidence questions sent to the same ask pipeline | `POST /api/ask` |
+| **Lunar (`/lunar`; still served but not linked from the nav)** — rows meeting O2 ≥ 30 % and ≤ 10.2 psi on the same row, burner-stream toggle, closest misses, O2-vs-pressure chart, ranking agreement, partial-gravity gap | `POST /api/coverage`, `GET /api/lunar/points`, `GET /api/rank`, `GET /api/stats` |
+| **SpaceFire Evolution** (`/spacefire`) — spacecraft fire-safety timeline with quotes from official pages | — (bundled `lib/spacefire.json`) |
+| **Beyond PSI** (`/beyond-psi`) — experiments and facilities the official resources name that have no PSI Combustion Science record | `GET /api/nasa/other-experiments` |
 | **Explorer** — filters (family, fuel class, topic, measurement type, material, O2 %, pressure kPa/psi/atm/bar, airflow m/s/cm/s), sort, compare picks, CSV export | `GET /api/investigations`, `GET /api/export.csv` |
 | **Investigation detail** — template interpretation, relationships (ground studies → flight data), lenses with quotes, hotlinked PSI images, varied vs constant variables, data-quality flags, conditions per row with source text, file tree, version | `GET /api/investigations/{id}` |
 | **Has it been done?** — parameter coverage form: documented match / partial overlap / no documented overlap, per-parameter status (match, match in other runs, mismatch, unknown), matching rows | `POST /api/coverage` |
 | **Compare** — 2–3 investigations side by side with labels and Not reported cells | `POST /api/compare` |
-| **Scenario-fit ranking** — PRD §9 weighted score (one score fixes the order) with a plain reason per row, per-factor points, citations and flags | `GET /api/rank?scenario=lunar_habitat` |
+| **Scenario Ranking** (`/insights`) — PRD §9 weighted score (one score fixes the order) with a plain reason per row, per-factor points, citations and flags | `GET /api/rank?scenario=lunar_habitat` |
 | **Ask the evidence** — direct computed answers (counts, ranges, maxima, row lookups, official quotes) with CSV-row / page / `[mm:ss]` citations, abstention, hybrid-RAG passages, optional AI summary | `POST /api/ask`, `POST /api/qa` |
 | **Modeling export** — every countable row with SI units, verbatim cells, flags, source row; data dictionary | `GET /api/export/modeling.csv`, `GET /api/export/dictionary` |
-| **AI settings** — provider status and switch, index status, rebuild | `GET/PUT /api/settings/ai`, `POST /api/ingest/rebuild` |
+| **AI settings** (`/settings`) — bring-your-own Groq key, provider status and switch, index status, rebuild | `GET/PUT /api/settings/ai`, `POST /api/ingest/rebuild` |
+
+`GET /api/earth` and `GET /api/explainer` are still served by the API but no page uses them since the Earth page was removed.
 
 ### Architecture
 
@@ -202,7 +217,8 @@ not counted. LUCI and FM2 appear only as the partial-gravity gap named in the br
 
 ## Current limitations
 
-- Raw data archives and videos are not ingested (file lists are metadata only).
+- Raw data archives and videos are not ingested (file lists are metadata only). The FireLab page hosts three short NASA
+  experiment clips in `apps/web/public/firelab` for its hands-on labs; they are played, not indexed.
 - Structured QA routes by patterns plus a generic one-investigation resolver; unusual phrasings fall back to retrieval.
 - Sensors, topics and lenses are rule-based tags with quoted evidence; materials/fuel classes need domain-lead validation.
 - Some tables list no oxygen/pressure/airflow (e.g. BASS, SLICE, E-FIELD) → Not reported, so coverage is conservative.

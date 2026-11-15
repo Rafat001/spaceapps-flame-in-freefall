@@ -12,7 +12,7 @@ interface AppItem {
   icon: React.ReactNode;
 }
 
-const RESEARCH_APPS: AppItem[] = [
+const NEW_IN_SPACE_FIRE_APPS: AppItem[] = [
   {
     href: "/firelab",
     title: "Learning FireLab",
@@ -37,6 +37,9 @@ const RESEARCH_APPS: AppItem[] = [
       </svg>
     ),
   },
+];
+
+const RESEARCH_APPS: AppItem[] = [
   {
     href: "/explorer",
     title: "Catalog Explorer",
@@ -112,7 +115,19 @@ const RESEARCH_APPS: AppItem[] = [
   },
 ];
 
-export default function Nav() {
+interface NavDropdownProps {
+  label: string;
+  ariaLabel: string;
+  title: string;
+  subtitle: string;
+  apps: AppItem[];
+  icon: React.ReactNode;
+  active: boolean;
+  popoverClassName?: string;
+  footer?: { href: string; label: string };
+}
+
+function NavDropdown({ label, ariaLabel, title, subtitle, apps, icon, active, popoverClassName, footer }: NavDropdownProps) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLLIElement>(null);
@@ -137,12 +152,108 @@ export default function Nav() {
     };
   }, [open]);
 
-  // Check if current route is one of the grouped research tools (excluding FireLab which has its own top-level link)
+  // Close when the route changes
+  useEffect(() => {
+    setOpen(false);
+  }, [path]);
+
+  return (
+    <li className="nav-apps-wrapper" ref={menuRef}>
+      <button
+        type="button"
+        className={`nav-apps-btn ${active ? "active" : ""} ${open ? "open" : ""}`}
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-haspopup="true"
+        aria-label={ariaLabel}
+      >
+        <span className="waffle-icon" aria-hidden="true">{icon}</span>
+        <span>{label}</span>
+        <svg className={`chevron ${open ? "rotated" : ""}`} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+
+      {/* Popover Flyout Menu with Backdrop */}
+      {open && (
+        <>
+          <div className="apps-backdrop" onClick={() => setOpen(false)} aria-hidden="true" />
+          <div className={`apps-popover ${popoverClassName ?? ""}`} role="dialog" aria-label={title}>
+            <div className="apps-popover-head">
+              <div>
+                <h3 className="apps-popover-title">{title}</h3>
+                <p className="apps-popover-subtitle">{subtitle}</p>
+              </div>
+              <button type="button" className="apps-close-btn" onClick={() => setOpen(false)} aria-label="Close menu">✕</button>
+            </div>
+
+            <div className="apps-grid">
+              {apps.map((app) => {
+                const appActive = path?.startsWith(app.href) || (app.href === "/explorer" && path?.startsWith("/investigations"));
+                return (
+                  <Link
+                    key={app.href}
+                    href={app.href}
+                    className={`app-card ${appActive ? "active" : ""}`}
+                    onClick={() => setOpen(false)}
+                    aria-current={appActive ? "page" : undefined}
+                  >
+                    <div className="app-card-icon" style={{ color: app.color, borderColor: app.color }}>
+                      {app.icon}
+                    </div>
+                    <div className="app-card-content">
+                      <div className="app-card-header">
+                        <span className="app-card-title">{app.title}</span>
+                        <span className="app-card-category">{app.category}</span>
+                      </div>
+                      <p className="app-card-desc">{app.desc}</p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {footer && (
+              <div className="apps-popover-foot">
+                <Link href={footer.href} onClick={() => setOpen(false)}>
+                  {footer.label}
+                </Link>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+    </li>
+  );
+}
+
+const WAFFLE_ICON = (
+  <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+    <circle cx="3.5" cy="3.5" r="2.2" />
+    <circle cx="10" cy="3.5" r="2.2" />
+    <circle cx="16.5" cy="3.5" r="2.2" />
+    <circle cx="3.5" cy="10" r="2.2" />
+    <circle cx="10" cy="10" r="2.2" />
+    <circle cx="16.5" cy="10" r="2.2" />
+    <circle cx="3.5" cy="16.5" r="2.2" />
+    <circle cx="10" cy="16.5" r="2.2" />
+    <circle cx="16.5" cy="16.5" r="2.2" />
+  </svg>
+);
+
+const SPARK_ICON = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+  </svg>
+);
+
+export default function Nav() {
+  const path = usePathname();
+
   const isToolActive =
-    RESEARCH_APPS.filter((app) => app.href !== "/firelab").some((app) => path?.startsWith(app.href)) ||
-    path?.startsWith("/investigations");
+    RESEARCH_APPS.some((app) => path?.startsWith(app.href)) || !!path?.startsWith("/investigations");
+  const isNewActive = NEW_IN_SPACE_FIRE_APPS.some((app) => path?.startsWith(app.href));
   const isIntroActive = path?.startsWith("/androflame") || path?.startsWith("/intro");
-  const isFirelabActive = path?.startsWith("/firelab");
   const isAskActive = path?.startsWith("/assistant");
 
   return (
@@ -155,92 +266,31 @@ export default function Nav() {
           </Link>
         </li>
 
-        {/* Learning FireLab */}
-        <li>
-          <Link href="/firelab" aria-current={isFirelabActive ? "page" : undefined} style={{ color: isFirelabActive ? "var(--accent)" : undefined }}>
-            <span className="nav-no" aria-hidden="true" style={{ color: "var(--accent)" }}>🔥</span>FireLab
-          </Link>
-        </li>
+        {/* 2. Research Apps Launcher */}
+        <NavDropdown
+          label="Apps"
+          ariaLabel="Research Apps and Tools launcher"
+          title="Research Apps & Tools"
+          subtitle="NASA Space Apps 2026 · Microgravity Combustion"
+          apps={RESEARCH_APPS}
+          icon={WAFFLE_ICON}
+          active={isToolActive}
+          footer={{ href: "/androflame", label: "Read full AndroFlame introduction & architecture →" }}
+        />
 
-        {/* 2. Apps Launcher Waffle Menu */}
-        <li className="nav-apps-wrapper" ref={menuRef}>
-          <button
-            type="button"
-            className={`nav-apps-btn ${isToolActive ? "active" : ""} ${open ? "open" : ""}`}
-            onClick={() => setOpen((prev) => !prev)}
-            aria-expanded={open}
-            aria-haspopup="true"
-            aria-label="Research Apps and Tools launcher"
-          >
-            <span className="waffle-icon" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                <circle cx="3.5" cy="3.5" r="2.2" />
-                <circle cx="10" cy="3.5" r="2.2" />
-                <circle cx="16.5" cy="3.5" r="2.2" />
-                <circle cx="3.5" cy="10" r="2.2" />
-                <circle cx="10" cy="10" r="2.2" />
-                <circle cx="16.5" cy="10" r="2.2" />
-                <circle cx="3.5" cy="16.5" r="2.2" />
-                <circle cx="10" cy="16.5" r="2.2" />
-                <circle cx="16.5" cy="16.5" r="2.2" />
-              </svg>
-            </span>
-            <span>Apps</span>
-            <svg className={`chevron ${open ? "rotated" : ""}`} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
+        {/* 3. New in Space Fire? — beginner entry points */}
+        <NavDropdown
+          label="New in Space Fire?"
+          ariaLabel="New in Space Fire? beginner tools"
+          title="New in Space Fire?"
+          subtitle="Start here · hands-on labs & fire science basics"
+          apps={NEW_IN_SPACE_FIRE_APPS}
+          icon={SPARK_ICON}
+          active={isNewActive}
+          popoverClassName="apps-popover--end"
+        />
 
-          {/* Popover Flyout Menu with Backdrop */}
-          {open && (
-            <>
-              <div className="apps-backdrop" onClick={() => setOpen(false)} aria-hidden="true" />
-              <div className="apps-popover" role="dialog" aria-label="Research Tools Menu">
-              <div className="apps-popover-head">
-                <div>
-                  <h3 className="apps-popover-title">Research Apps & Tools</h3>
-                  <p className="apps-popover-subtitle">NASA Space Apps 2026 · Microgravity Combustion</p>
-                </div>
-                <button type="button" className="apps-close-btn" onClick={() => setOpen(false)} aria-label="Close menu">✕</button>
-              </div>
-
-              <div className="apps-grid">
-                {RESEARCH_APPS.map((app) => {
-                  const active = path?.startsWith(app.href) || (app.href === "/explorer" && path?.startsWith("/investigations"));
-                  return (
-                    <Link
-                      key={app.href}
-                      href={app.href}
-                      className={`app-card ${active ? "active" : ""}`}
-                      onClick={() => setOpen(false)}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      <div className="app-card-icon" style={{ color: app.color, borderColor: app.color }}>
-                        {app.icon}
-                      </div>
-                      <div className="app-card-content">
-                        <div className="app-card-header">
-                          <span className="app-card-title">{app.title}</span>
-                          <span className="app-card-category">{app.category}</span>
-                        </div>
-                        <p className="app-card-desc">{app.desc}</p>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-
-              <div className="apps-popover-foot">
-                <Link href="/androflame" onClick={() => setOpen(false)}>
-                  Read full AndroFlame introduction & architecture →
-                </Link>
-              </div>
-            </div>
-            </>
-          )}
-        </li>
-
-        {/* 3. Ask (Assistant) */}
+        {/* 4. Ask (Assistant) */}
         <li>
           <Link href="/assistant" aria-current={isAskActive ? "page" : undefined}>
             <span className="nav-no" aria-hidden="true">01</span>Ask

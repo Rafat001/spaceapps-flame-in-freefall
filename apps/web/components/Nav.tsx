@@ -144,7 +144,6 @@ export default function Nav() {
   const isIntroActive = path?.startsWith("/androflame") || path?.startsWith("/intro");
   const isFirelabActive = path?.startsWith("/firelab");
   const isAskActive = path?.startsWith("/assistant");
-  const isConfigActive = path?.startsWith("/settings");
 
   return (
     <nav aria-label="Main" className="nav">
@@ -245,13 +244,6 @@ export default function Nav() {
         <li>
           <Link href="/assistant" aria-current={isAskActive ? "page" : undefined}>
             <span className="nav-no" aria-hidden="true">01</span>Ask
-          </Link>
-        </li>
-
-        {/* 4. AI Config (Settings) */}
-        <li>
-          <Link href="/settings" aria-current={isConfigActive ? "page" : undefined}>
-            <span className="nav-no" aria-hidden="true">02</span>AI Config
           </Link>
         </li>
       </ul>

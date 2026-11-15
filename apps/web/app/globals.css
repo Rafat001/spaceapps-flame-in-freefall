@@ -158,6 +158,7 @@ button.nav-apps-btn.open {
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
   z-index: 1000; padding: 18px 20px; animation: popoverIn .16s ease-out;
 }
+.apps-popover--end { right: 0; }
 @media (max-width: 600px) {
   .apps-popover {
     position: fixed; top: 60px; left: 16px; right: 16px; width: auto; max-width: calc(100vw - 32px);
